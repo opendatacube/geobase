@@ -6,7 +6,7 @@ versions='
 openjpeg 2.3.1 https://github.com/uclouvain/openjpeg/archive/v{{version}}.tar.gz
 geos     3.7.2 https://github.com/libgeos/geos/archive/{{version}}.tar.gz
 proj     6.1.1 https://github.com/OSGeo/proj/releases/download/{{version}}/proj-{{version}}.tar.gz
-gdal     2.4.1 https://github.com/OSGeo/gdal/archive/v{{version}}.tar.gz
+gdal     2.4.2 https://download.osgeo.org/gdal/{{version}}/gdal-{{version}}.tar.gz
 '
 
 ncpus=$(awk '/^processor/{print $3}' /proc/cpuinfo | wc -l)
@@ -161,7 +161,7 @@ expat
 pcre
 threads
 "
-    (cd "${src}/gdal" \
+    (cd "${src}" \
          && ./configure \
                 --prefix="${prefix}" \
                 --enable-lto \
