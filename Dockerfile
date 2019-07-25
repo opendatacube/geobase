@@ -33,7 +33,10 @@ RUN apt-get update -y \
     && apt-get install -y --fix-missing --no-install-recommends \
     cmake-curses-gui \
     sudo \
+    vim \
     less
+
+RUN pip3 install cython
 
 VOLUME ["/src"]
 VOLUME ["/dl"]
