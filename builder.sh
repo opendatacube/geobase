@@ -61,6 +61,8 @@ build_geos () {
     local prefix="${2:-/usr}"
     local b="${3:-${src}-build}"
     local src_absolute=$(readlink -f "${src}")
+    local rundir=$(pwd)
+    local v=$(get_version geos)
 
     [ -d "${b}" ] || mkdir -p "${b}"
     (cd "${b}" \
@@ -69,7 +71,16 @@ build_geos () {
               -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
               -DCMAKE_INSTALL_PREFIX="${prefix}" \
      && make -j"${ncpus}" \
-     && sudo make install/strip \
+     && fakeroot checkinstall -y -D \
+                 --pkgversion=${v} \
+                 --pkgname=libgeos \
+                 --backup=no \
+                 --nodoc \
+                 --fstrans=yes \
+                 --install=no \
+                 --pakdir="${rundir}" \
+                 --maintainer=ODC \
+                 make install \
     )
 }
 
@@ -78,6 +89,9 @@ build_proj () {
     local prefix="${2:-/usr}"
     local b="${3:-${src}-build}"
     local src_absolute=$(readlink -f "${src}")
+    local rundir=$(pwd)
+    local v=$(get_version proj)
+
 
     [ -d "${b}" ] || mkdir -p "${b}"
     (cd "${b}" \
@@ -87,7 +101,16 @@ build_proj () {
               -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
               -DCMAKE_INSTALL_PREFIX="${prefix}" \
      && make -j"${ncpus}" \
-     && sudo make install/strip \
+     && fakeroot checkinstall -y -D \
+                 --pkgversion=${v} \
+                 --pkgname=libproj \
+                 --backup=no \
+                 --nodoc \
+                 --fstrans=yes \
+                 --install=no \
+                 --pakdir="${rundir}" \
+                 --maintainer=ODC \
+                 make install \
     )
 }
 
@@ -96,6 +119,9 @@ build_openjpeg () {
     local prefix="${2:-/usr}"
     local b="${3:-${src}-build}"
     local src_absolute=$(readlink -f "${src}")
+    local rundir=$(pwd)
+    local v=$(get_version openjpeg)
+
 
     [ -d "${b}" ] || mkdir -p "${b}"
     (cd "${b}" \
@@ -104,7 +130,16 @@ build_openjpeg () {
                  -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
                  -DCMAKE_INSTALL_PREFIX="${prefix}" \
         && make -j"${ncpus}" \
-        && sudo make install/strip \
+        && fakeroot checkinstall -y -D \
+                    --pkgversion=${v} \
+                    --pkgname=libopenjp2 \
+                    --backup=no \
+                    --nodoc \
+                    --fstrans=yes \
+                    --install=no \
+                    --pakdir="${rundir}" \
+                    --maintainer=ODC \
+                    make install \
     )
 }
 
@@ -130,6 +165,8 @@ gdal_configure_libs () {
 build_gdal () {
     local src="${1%/}"
     local prefix="${2:-/usr}"
+    local rundir=$(pwd)
+    local v=$(get_version gdal)
 
     local libs="
 geos
@@ -171,21 +208,32 @@ threads
                 $(gdal_configure_libs $libs) \
          && make -j${ncpus} \
          && strip ./libgdal.so \
-         && sudo make install \
+         && fakeroot checkinstall -y -D \
+                     --pkgversion=${v} \
+                     --pkgname=libgdal \
+                     --backup=no \
+                     --nodoc \
+                     --fstrans=yes \
+                     --install=no \
+                     --pakdir="${rundir}" \
+                     --maintainer=ODC \
+                     make install \
         )
 }
 
+build_lib () {
+    local lib="${1}"
+    local dl="${2:-/dl}"
+    local bdir="${3:-./}"
+    local prefix="${4:-/usr}"
 
-dl="${1:-/dl}"
-bdir="${2:-/src}"
-prefix="${3:-/usr}"
+    [ -d "${dl}" ] || mkdir -p "${dl}"
+    [ -d "${bdir}" ] || mkdir -p "${bdir}"
 
-[ -d "${dl}" ] || mkdir -p "${dl}"
-[ -d "${bdir}" ] || mkdir -p "${bdir}"
-
-for lib in $(all_libs); do
     v=$(get_version "$lib")
     download "${lib}" "${dl}"
     unpack "${lib}" "${dl}" "${bdir}"
     (cd "${bdir}" && "build_${lib}" "${lib}-${v}" "${prefix}")
-done
+}
+
+build_lib $@

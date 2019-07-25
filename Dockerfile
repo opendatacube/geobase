@@ -4,10 +4,10 @@ ENV LC_ALL C.UTF-8
 
 RUN apt-get update -y && \
      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-       python3-dev python3-pip
+       python3-dev python3-pip python3-venv
 
 RUN pip3 install --no-cache --upgrade pip && hash -r && \
-    pip3 install --no-cache setuptools wheel
+    pip3 install --no-cache setuptools wheel cython
 
 RUN pip3 install numpy
 
@@ -26,19 +26,17 @@ RUN apt-get update -y \
     libopenjp2-7-dev \
     libkml-dev
 
-#libgeos-dev \
-
 # dev conveniences
 RUN apt-get update -y \
     && apt-get install -y --fix-missing --no-install-recommends \
     cmake-curses-gui \
     sudo \
     vim \
+    fakeroot \
+    checkinstall \
     less
 
-RUN pip3 install cython
-
-VOLUME ["/src"]
+VOLUME ["/build"]
 VOLUME ["/dl"]
 
 ARG USER_NAME=ubuntu
@@ -49,7 +47,7 @@ RUN adduser ${USER_NAME} sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 USER ${USER_NAME}
-WORKDIR /src
+WORKDIR /build
 
 COPY ./builder.sh /usr/local/bin/
 
