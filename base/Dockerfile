@@ -2,11 +2,11 @@ FROM buildpack-deps:bionic
 
 ENV LC_ALL C.UTF-8
 
-RUN apt-get update -y && \
-     DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
-       python3-dev python3-pip python3-venv \
-       fakeroot checkinstall
-
+RUN apt-get update -y \
+&& DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
+   python3-dev python3-pip python3-venv \
+   fakeroot checkinstall \
+&& rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install --no-cache --upgrade pip && hash -r && \
     pip3 install --no-cache setuptools wheel cython numpy
