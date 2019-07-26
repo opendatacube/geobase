@@ -3,7 +3,7 @@ kkodc/geo-builder
 
 Docker to build recent versions of geospatial libraries
 
-- PROJ 6.1.1
+- PROJ 5.2.0
 - GEOS 3.7.2
 - GDAL 2.4.2
 

@@ -41,7 +41,7 @@ RUN apt-get update -y \
 COPY ./builder.sh /usr/local/bin/
 
 RUN echo "Building base libs" \
-    && builder.sh proj /tmp/dl /tmp/build \
+    && builder.sh proj-5.2.0 /tmp/dl /tmp/build \
     && dpkg -i /tmp/build/libproj_*deb \
     && builder.sh geos /tmp/dl /tmp/build \
     && dpkg -i /tmp/build/libgeos_*deb \
