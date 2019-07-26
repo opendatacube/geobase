@@ -13,13 +13,13 @@ ncpus=$(awk '/^processor/{print $3}' /proc/cpuinfo | wc -l)
 
 get_version () {
     local lib="${1}"
-    echo "${versions}" | awk "/^${lib}/"'{print $2}'
+    echo "${versions}" | awk "/^${lib} /"'{print $2}'
 }
 
 get_url () {
     local lib="${1}"
-    local v=$(get_version $lib)
-    local uu=$(echo "${versions}" | awk "/^${lib}/"'{print $3}')
+    local v=${2:-$(get_version "${lib}")}
+    local uu=$(echo "${versions}" | awk "/^${lib} /"'{print $3}')
     echo $uu | sed "s/{{version}}/${v}/g"
 }
 
@@ -29,9 +29,9 @@ all_libs () {
 
 download () {
     local lib="${1}"
-    local dl="${2}"
-    local v=$(get_version "${lib}")
-    local u=$(get_url "${lib}")
+    local v=${2:-$(get_version "${lib}")}
+    local dl="${3}"
+    local u=$(get_url "${lib}" "${v}")
     local dst="${dl}/${lib}-${v}.tar.gz"
 
     if [ ! -f "${dst}" ] ; then
@@ -44,10 +44,10 @@ download () {
 
 unpack () {
     local lib="${1}"
-    local dl="${2}"
-    local v=$(get_version "${lib}")
+    local v=${2:-$(get_version "${lib}")}
+    local dl="${3}"
     local src="${dl}/${lib}-${v}.tar.gz"
-    local dst="${3:-.}/${lib}-${v}"
+    local dst="${4:-.}/${lib}-${v}"
 
     if [ ! -d "${dst}" ] ; then
         echo "Unpacking: $src -> $dst"
@@ -58,11 +58,11 @@ unpack () {
 
 build_geos () {
     local src="${1%/}"
-    local prefix="${2:-/usr}"
-    local b="${3:-${src}-build}"
+    local v="${2}"
+    local prefix="${3:-/usr}"
+    local b="${4:-${src}-build}"
     local src_absolute=$(readlink -f "${src}")
     local rundir=$(pwd)
-    local v=$(get_version geos)
 
     [ -d "${b}" ] || mkdir -p "${b}"
     (cd "${b}" \
@@ -86,12 +86,11 @@ build_geos () {
 
 build_proj () {
     local src="${1%/}"
-    local prefix="${2:-/usr}"
-    local b="${3:-${src}-build}"
+    local v="${2}"
+    local prefix="${3:-/usr}"
+    local b="${4:-${src}-build}"
     local src_absolute=$(readlink -f "${src}")
     local rundir=$(pwd)
-    local v=$(get_version proj)
-
 
     [ -d "${b}" ] || mkdir -p "${b}"
     (cd "${b}" \
@@ -102,7 +101,7 @@ build_proj () {
               -DCMAKE_INSTALL_PREFIX="${prefix}" \
      && make -j"${ncpus}" \
      && fakeroot checkinstall -y -D \
-                 --pkgversion=${v} \
+                 --pkgversion="${v}" \
                  --pkgname=libproj \
                  --backup=no \
                  --nodoc \
@@ -116,12 +115,11 @@ build_proj () {
 
 build_openjpeg () {
     local src="${1%/}"
-    local prefix="${2:-/usr}"
-    local b="${3:-${src}-build}"
+    local v="${2}"
+    local prefix="${3:-/usr}"
+    local b="${4:-${src}-build}"
     local src_absolute=$(readlink -f "${src}")
     local rundir=$(pwd)
-    local v=$(get_version openjpeg)
-
 
     [ -d "${b}" ] || mkdir -p "${b}"
     (cd "${b}" \
@@ -131,7 +129,7 @@ build_openjpeg () {
                  -DCMAKE_INSTALL_PREFIX="${prefix}" \
         && make -j"${ncpus}" \
         && fakeroot checkinstall -y -D \
-                    --pkgversion=${v} \
+                    --pkgversion="${v}" \
                     --pkgname=libopenjp2 \
                     --backup=no \
                     --nodoc \
@@ -164,9 +162,10 @@ gdal_configure_libs () {
 
 build_gdal () {
     local src="${1%/}"
-    local prefix="${2:-/usr}"
+    local v="${2}"
+    local prefix="${3:-/usr}"
+    local src_absolute=$(readlink -f "${src}")
     local rundir=$(pwd)
-    local v=$(get_version gdal)
 
     local libs="
 geos
@@ -205,11 +204,11 @@ threads
                 --with-hide-internal-symbols \
                 --with-rename-internal-libtiff-symbols \
                 --with-rename-internal-libgeotiff-symbols \
-                $(gdal_configure_libs $libs) \
+                $(gdal_configure_libs ${libs}) \
          && make -j${ncpus} \
          && strip ./libgdal.so \
          && fakeroot checkinstall -y -D \
-                     --pkgversion=${v} \
+                     --pkgversion="${v}" \
                      --pkgname=libgdal \
                      --backup=no \
                      --nodoc \
@@ -222,18 +221,31 @@ threads
 }
 
 build_lib () {
-    local lib="${1}"
+    local lib=$(echo "${1}" | awk -F - '{print $1}')
+    local v=$(echo "${1}" | awk -F - '{print $2}')
     local dl="${2:-/dl}"
     local bdir="${3:-./}"
     local prefix="${4:-/usr}"
 
+    v=${v:=$(get_version $lib)}
+
     [ -d "${dl}" ] || mkdir -p "${dl}"
     [ -d "${bdir}" ] || mkdir -p "${bdir}"
+    echo "Buidling: ${lib}::<${v}>   paths: dl:$dl build:$bdir prefix:$prefix"
 
-    v=$(get_version "$lib")
-    download "${lib}" "${dl}"
-    unpack "${lib}" "${dl}" "${bdir}"
-    (cd "${bdir}" && "build_${lib}" "${lib}-${v}" "${prefix}")
+    download "${lib}" "${v}" "${dl}"
+    unpack "${lib}" "${v}" "${dl}" "${bdir}"
+    (cd "${bdir}" \
+         && "build_${lib}" "${lib}-${v}" "${v}" "${prefix}")
 }
 
-build_lib $@
+if [ $# -eq 0 ]; then
+    echo 'Usage:'
+    echo '   builder.sh ${lib} [dowdload_dir=/dl build_dir=./ prefix=/usr]'
+    echo '   builder.sh ${lib}-${version} [dowdload_dir=/dl build_dir=./ prefix=/usr]'
+    echo ''
+    echo 'Where ${lib} is one of geos|proj|openjpeg|gdal'
+else
+   build_lib $@
+fi
+
