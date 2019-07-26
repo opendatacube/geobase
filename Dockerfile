@@ -53,4 +53,16 @@ WORKDIR /build
 
 COPY ./builder.sh /usr/local/bin/
 
+RUN echo "Building base libs" \
+    && builder.sh proj /tmp/dl /tmp/build \
+    && sudo dpkg -i /tmp/build/libproj_*deb \
+    && builder.sh geos /tmp/dl /tmp/build \
+    && sudo dpkg -i /tmp/build/libgeos_*deb \
+    && builder.sh gdal /tmp/dl /tmp/build \
+    && sudo dpkg -i /tmp/build/libgdal_*deb \
+    && sudo mv /tmp/build/*deb /opt/ \
+    && sudo mv /tmp/dl/* /opt/ \
+    && rm -rf /tmp/dl /tmp/build \
+    && ls -lh /opt/*deb
+
 CMD ["/bin/bash"]
