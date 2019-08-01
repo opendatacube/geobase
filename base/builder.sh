@@ -95,6 +95,8 @@ build_proj () {
     [ -d "${b}" ] || mkdir -p "${b}"
     (cd "${b}" \
      && cmake "${src_absolute}" \
+              -DLIBDIR="${prefix}/lib" \
+              -DPROJ_TESTS=OFF \
               -DENABLE_LTO=YES \
               -DCMAKE_BUILD_TYPE=Release \
               -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
@@ -112,6 +114,30 @@ build_proj () {
                  make install \
     )
 }
+
+build_proj_static () {
+    local src="${1%/}"
+    local v="${2}"
+    local prefix="${3:-/usr}"
+    local b="${4:-${src}-build}"
+    local src_absolute=$(readlink -f "${src}")
+    local rundir=$(pwd)
+
+    [ -d "${b}" ] || mkdir -p "${b}"
+    (cd "${b}" \
+         && cmake "${src_absolute}" \
+                  -DLIBDIR="${prefix}/lib" \
+                  -DPROJ_TESTS=OFF \
+                  -DBUILD_LIBPROJ_SHARED=OFF \
+                  -DENABLE_LTO=YES \
+                  -DCMAKE_BUILD_TYPE=Release \
+                  -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+                  -DCMAKE_INSTALL_PREFIX="${prefix}" \
+         && make -j"${ncpus}" \
+         && make install \
+    )
+}
+
 
 build_openjpeg () {
     local src="${1%/}"
@@ -166,10 +192,15 @@ build_gdal () {
     local prefix="${3:-/usr}"
     local src_absolute=$(readlink -f "${src}")
     local rundir=$(pwd)
+    local proj="proj"
+
+    if [ -n "${PROJ_DIR}" ]; then
+        proj="proj=${PROJ_DIR}"
+    fi
 
     local libs="
+${proj}
 geos
-proj
 curl
 crypto
 libtiff=internal
@@ -226,6 +257,11 @@ build_lib () {
     local dl="${2:-/dl}"
     local bdir="${3:-./}"
     local prefix="${4:-/usr}"
+    local build_func="build_${lib}"
+
+    if [ "${STATIC:-no}" == "yes" ]; then
+        build_func="${build_func}_static"
+    fi
 
     v=${v:=$(get_version $lib)}
 
@@ -236,7 +272,7 @@ build_lib () {
     download "${lib}" "${v}" "${dl}"
     unpack "${lib}" "${v}" "${dl}" "${bdir}"
     (cd "${bdir}" \
-         && "build_${lib}" "${lib}-${v}" "${v}" "${prefix}")
+         && "${build_func}" "${lib}-${v}" "${v}" "${prefix}")
 }
 
 if [ $# -eq 0 ]; then
@@ -246,6 +282,6 @@ if [ $# -eq 0 ]; then
     echo ''
     echo 'Where ${lib} is one of geos|proj|openjpeg|gdal'
 else
-   build_lib $@
+    build_lib $@
 fi
 
