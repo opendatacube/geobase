@@ -1,0 +1,15 @@
+image: atlassian/default-image:2
+
+pipelines:
+  default:
+    - step:
+        services:
+          - docker
+        script:
+          # Set $DOCKER_HUB_USERNAME and $DOCKER_HUB_PASSWORD as environment variables in repository settings
+          - export IMAGE_NAME=kkodc/geo-builder:$BITBUCKET_COMMIT
+          - docker build -t $IMAGE_NAME ./base
+          # authenticate with the Docker Hub registry
+          # - docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
+          # push the new Docker image to the Docker registry
+          #- docker push $IMAGE_NAME
