@@ -3,14 +3,16 @@ kkodc/geo-builder
 
 Docker to build recent versions of geospatial libraries
 
-- PROJ 5.2.0
+- PROJ 5.2.0 and 6.1.1
 - GEOS 3.7.2
 - GDAL 2.4.2
 
 Folder structure:
 
 - `base/{Dockerfile,builder.sh}` base image: `docker pull kkodc/geo-builder`
-  - `/opt/` contains built `.deb` for proj/geos/gdal and their sources
+  - `/opt/` contains built `.deb` for geos/gdal and their sources
+  - `/opt/proj5` contains static proj5
+  - `/opt/proj6` contains static proj6
 - `local/Dockerfile` build this locally with your `USER` and `UID`
 
 Typical work flow:
