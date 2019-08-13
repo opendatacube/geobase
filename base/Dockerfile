@@ -40,22 +40,26 @@ RUN apt-get update -y \
 
 COPY ./builder.sh /usr/local/bin/
 
-RUN echo "Building proj" \
-    && STATIC=yes builder.sh proj-5.2.0 /tmp/dl /tmp/build /opt/proj5 \
-    && STATIC=yes builder.sh proj-6.1.1 /tmp/dl /tmp/build /opt/proj6 \
-    && mv /tmp/dl/* /opt/ \
-    && rm -rf /tmp/dl /tmp/build
+RUN echo "Building proj 5" \
+&& STATIC=yes builder.sh proj-5.2.0 /tmp/dl /tmp/build /opt/proj5 \
+&& mv /tmp/dl/* /opt/ \
+&& rm -rf /tmp/dl /tmp/build
+
+RUN echo "Building proj 6" \
+&& STATIC=yes builder.sh proj-6.1.1 /tmp/dl /tmp/build /opt/proj6 \
+&& mv /tmp/dl/* /opt/ \
+&& rm -rf /tmp/dl /tmp/build
 
 RUN echo "Building geos" \
-    && builder.sh geos /tmp/dl /tmp/build \
-    && dpkg -i /tmp/build/libgeos_*deb \
-    && mv /tmp/build/*deb /opt/ \
-    && mv /tmp/dl/* /opt/ \
-    && rm -rf /tmp/dl /tmp/build
+&& builder.sh geos /tmp/dl /tmp/build \
+&& dpkg -i /tmp/build/libgeos_*deb \
+&& mv /tmp/build/*deb /opt/ \
+&& mv /tmp/dl/* /opt/ \
+&& rm -rf /tmp/dl /tmp/build
 
 RUN echo "Building gdal" \
-    && PROJ_DIR="/opt/proj5" builder.sh gdal /tmp/dl /tmp/build /usr \
-    && dpkg -i /tmp/build/libgdal_*deb \
-    && mv /tmp/build/*deb /opt/ \
-    && mv /tmp/dl/* /opt/ \
-    && rm -rf /tmp/dl /tmp/build
+&& PROJ_DIR="/opt/proj5" builder.sh gdal /tmp/dl /tmp/build /usr \
+&& dpkg -i /tmp/build/libgdal_*deb \
+&& mv /tmp/build/*deb /opt/ \
+&& mv /tmp/dl/* /opt/ \
+&& rm -rf /tmp/dl /tmp/build
