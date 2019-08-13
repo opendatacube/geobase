@@ -1,4 +1,4 @@
-FROM kkodc/geo-builder:proj5
+FROM kkodc/geo-builder:latest
 
 VOLUME ["/build"]
 VOLUME ["/dl"]
