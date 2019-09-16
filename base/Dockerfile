@@ -40,26 +40,35 @@ RUN apt-get update -y \
 
 COPY ./builder.sh /usr/local/bin/
 
+RUN echo "Downloading libs" \
+  && mkdir -p /dl \
+  && builder.sh proj-5.2.0 /dl :download: \
+  && builder.sh proj-6.1.1 /dl :download: \
+  && builder.sh geos-3.7.2 /dl :download: \
+  && builder.sh gdal-2.4.2 /dl :download: \
+  && echo "done"
+
+COPY ./build_openjpeg.sh /usr/local/bin/
+
+COPY ./build_proj.sh /usr/local/bin/
 RUN echo "Building proj 5" \
-&& STATIC=yes builder.sh proj-5.2.0 /tmp/dl /tmp/build /opt/proj5 \
-&& mv /tmp/dl/* /opt/ \
-&& rm -rf /tmp/dl /tmp/build
-
+  && STATIC=yes builder.sh proj-5.2.0 /dl/ /tmp/build /opt/proj5 \
+  && rm -rf /tmp/build
 RUN echo "Building proj 6" \
-&& STATIC=yes builder.sh proj-6.1.1 /tmp/dl /tmp/build /opt/proj6 \
-&& mv /tmp/dl/* /opt/ \
-&& rm -rf /tmp/dl /tmp/build
+  && STATIC=yes builder.sh proj-6.1.1 /dl/ /tmp/build /opt/proj6 \
+  && rm -rf /tmp/build
 
+COPY ./build_geos.sh /usr/local/bin/
 RUN echo "Building geos" \
-&& builder.sh geos /tmp/dl /tmp/build \
-&& dpkg -i /tmp/build/libgeos_*deb \
-&& mv /tmp/build/*deb /opt/ \
-&& mv /tmp/dl/* /opt/ \
-&& rm -rf /tmp/dl /tmp/build
+  && builder.sh geos /dl /tmp/build \
+  && dpkg -i /tmp/build/libgeos_*deb \
+  && mv /tmp/build/*deb /opt/ \
+  && rm -rf /tmp/build
 
+COPY ./build_gdal.sh /usr/local/bin/
+COPY ./gdal.opts /opt/
 RUN echo "Building gdal" \
-&& PROJ_DIR="/opt/proj5" builder.sh gdal /tmp/dl /tmp/build /usr \
+&& FEATURES="$(cat /opt/gdal.opts)" builder.sh gdal-2.4.2 /dl /tmp/build /usr \
 && dpkg -i /tmp/build/libgdal_*deb \
 && mv /tmp/build/*deb /opt/ \
-&& mv /tmp/dl/* /opt/ \
-&& rm -rf /tmp/dl /tmp/build
+&& rm -rf /tmp/build

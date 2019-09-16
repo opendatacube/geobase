@@ -10,7 +10,8 @@ Docker to build recent versions of geospatial libraries
 Folder structure:
 
 - `base/{Dockerfile,builder.sh}` base image: `docker pull kkodc/geo-builder`
-  - `/opt/` contains built `.deb` for geos/gdal and their sources
+  - `/dl/` contains downloaded sources
+  - `/opt/` contains built `.deb` for geos/gdal
   - `/opt/proj5` contains static proj5
   - `/opt/proj6` contains static proj6
 - `local/Dockerfile` build this locally with your `USER` and `UID`

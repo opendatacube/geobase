@@ -1,3 +1,5 @@
+#!/bin/bash
+
 set -eu
 
 SDIR="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd)"
