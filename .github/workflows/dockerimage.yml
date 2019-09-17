@@ -3,19 +3,31 @@ name: Docker Image CI
 on: [push]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v1
-    - name: Build the Docker image
+
+    - name: Pull Base Image
       run: |
         if docker pull kkodc/geobase:builder ; then
            docker tag kkodc/geobase:builder local:cache
            echo "Using cache"
         else
-           echo "Building from scratch"
+           echo "Will build from scratch"
         fi
+
+    - name: Build the Docker image
+      run: |
+        docker images
         docker build --tag kkodc/geobase:builder --cache-from local:cache ./base
+
+    - name: Push to DockerHub
+      run: |
+        docker images
+        docker login --username $DOCKER_USER --password $DOCKER_PASSWORD
+        docker push kkodc/geobase:builder
+      env:
+        docker_user: ${{ secrets.DOCKER_USER }} 
+        docker_password: ${{ secrets.DOCKER_PASSWORD }}
