@@ -5,18 +5,17 @@ on: [push]
 jobs:
 
   build:
- 
+
     runs-on: ubuntu-latest
- 
+
     steps:
     - uses: actions/checkout@v1
     - name: Build the Docker image
       run: |
         if docker pull kkodc/geobase:builder ; then
+           docker tag kkodc/geobase:builder local:cache
            echo "Using cache"
-           cache="--cache-from kkodc/geobase:builder"
         else
            echo "Building from scratch"
-           cache=""
         fi
-        docker build base --tag kkodc/geobase:builder $cache
+        docker build --tag kkodc/geobase:builder --cache-from local:cache ./base
