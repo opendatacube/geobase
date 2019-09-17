@@ -23,11 +23,11 @@ jobs:
         docker images
         docker build --tag kkodc/geobase:builder --cache-from local:cache ./base
 
-    - name: Push to DockerHub
-      run: |
-        docker images
-        docker login --username $DOCKER_USER --password $DOCKER_PASSWORD
-        docker push kkodc/geobase:builder
+    - name: DockerHub Login
       env:
-        docker_user: ${{ secrets.DOCKER_USER }} 
-        docker_password: ${{ secrets.DOCKER_PASSWORD }}
+        docker_user: kkodc
+        docker_password: ${{ secrets.DockerPassword }}
+      run: docker login -u "${docker_user}" -p "${docker_password}"
+
+    - name: DockerHub Push
+      run: docker push kkodc/geobase:builder
