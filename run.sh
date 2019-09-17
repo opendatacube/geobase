@@ -13,4 +13,4 @@ docker run \
        -v $(pwd)/dl:/dl \
        -v $(pwd)/build:/build \
        -ti --rm \
-       geo-builder:local $@
+       geobase:local $@

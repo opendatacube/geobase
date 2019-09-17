@@ -1,5 +1,5 @@
-kkodc/geo-builder
-=================
+kkodc/geobase
+=============
 
 Docker to build recent versions of geospatial libraries
 
@@ -9,7 +9,7 @@ Docker to build recent versions of geospatial libraries
 
 Folder structure:
 
-- `base/{Dockerfile,builder.sh}` base image: `docker pull kkodc/geo-builder`
+- `base/{Dockerfile,builder.sh}` base image: `docker pull kkodc/geobase:builder`
   - `/dl/` contains downloaded sources
   - `/opt/` contains built `.deb` for geos/gdal
   - `/opt/proj5` contains static proj5
@@ -21,10 +21,7 @@ Typical work flow:
 - Build local builder image that will write files with your username to supplied volume
 
 ```
-docker build \
-       --build-arg USER_NAME=$USER \
-       --build-arg UID=$UID \
-       --tag geo-builder:local ./local
+./build-docker.sh
 ```
 
 - Run shell inside it
@@ -36,13 +33,14 @@ docker run \
        -v $(pwd)/dl:/dl \
        -v $(pwd)/build:/build \
        -ti --rm \
-       geo-builder:local
+       geobase:local
 ```
 
-Once inside you can build python wheels, for example:
+Once inside you can build python wheels or whole environments, for example:
 
 ```
-pip3 wheel --no-deps --no-binary :all: \
+PROJ_DIR=/opt/proj6 \
+ pip3 wheel --no-deps --no-binary :all: \
      GDAL==$(gdal-config --version) \
      pyproj \
      Shapely \
