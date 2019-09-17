@@ -9,19 +9,33 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - name: Pull Base Image
+    - name: Pull Base Image (builder)
       run: |
         if docker pull kkodc/geobase:builder ; then
-           docker tag kkodc/geobase:builder local:cache
+           docker tag kkodc/geobase:builder local:builder
            echo "Using cache"
         else
            echo "Will build from scratch"
         fi
 
-    - name: Build the Docker image
+    - name: Build the Docker image (builder)
       run: |
         docker images
-        docker build --tag kkodc/geobase:builder --cache-from local:cache ./base
+        docker build --tag kkodc/geobase:builder --cache-from local:builder ./base
+
+    - name: Pull Base Image (runner)
+      run: |
+        if docker pull kkodc/geobase:runner ; then
+           docker tag kkodc/geobase:runner local:runner
+           echo "Using cache"
+        else
+           echo "Will build from scratch"
+        fi
+
+    - name: Build the Docker image (runner)
+      run: |
+        docker images
+        docker build --tag kkodc/geobase:runner --cache-from local:runner ./runner
 
     - name: DockerHub Login
       env:
@@ -30,4 +44,6 @@ jobs:
       run: docker login -u "${docker_user}" -p "${docker_password}"
 
     - name: DockerHub Push
-      run: docker push kkodc/geobase:builder
+      run: |
+        docker push kkodc/geobase:builder
+        docker push kkodc/geobase:runner
