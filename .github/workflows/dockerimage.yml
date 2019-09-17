@@ -12,5 +12,11 @@ jobs:
     - uses: actions/checkout@v1
     - name: Build the Docker image
       run: |
-        docker pull kkodc/geobase:builder
-        docker build base --cache-from kkodc/geobase:builder --file Dockerfile --tag kkodc/geobase:builder
+        if docker pull kkodc/geobase:builder ; then
+           echo "Using cache"
+           cache="--cache-from kkodc/geobase:builder"
+        else
+           echo "Building from scratch"
+           cache=""
+        fi
+        docker build base --tag kkodc/geobase:builder $cache
