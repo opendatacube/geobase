@@ -1,6 +1,9 @@
 kkodc/geobase
 =============
 
+[![Actions Status](https://github.com/Kirill888/geobase/workflows/Docker%20Image%20CI/badge.svg)](https://github.com/Kirill888/geobase/actions)
+
+
 Docker to build recent versions of geospatial libraries
 
 - PROJ 5.2.0 and 6.1.1
