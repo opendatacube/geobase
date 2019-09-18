@@ -8,9 +8,6 @@ RUN apt-get update -y \
    fakeroot checkinstall \
 && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install --no-cache --upgrade pip && hash -r && \
-    pip3 install --no-cache setuptools wheel cython numpy
-
 RUN apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
     cmake \
@@ -25,6 +22,7 @@ RUN apt-get update -y \
     libhdf5-serial-dev \
     libopenjp2-7-dev \
     libkml-dev \
+    libatlas-base-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # dev conveniences
@@ -37,6 +35,10 @@ RUN apt-get update -y \
     vim \
     less \
     && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install --no-cache --upgrade pip \
+  && hash -r \
+  && pip3 install --no-cache setuptools wheel cython
 
 COPY ./builder.sh /usr/local/bin/
 
