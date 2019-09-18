@@ -34,8 +34,17 @@ jobs:
 
     - name: Build the Docker image (runner)
       run: |
-        docker images
         docker build --tag kkodc/geobase:runner --cache-from local:runner ./runner
+
+    - name: Build the Docker image (local)
+      run: |
+        docker build \
+          --build-arg USER_NAME=$USER \
+          --build-arg UID=$UID \
+          --tag geobase:local ./local
+        docker run --rm geobase:local gdal-config --version
+        docker run --rm geobase:local gdal-config --formats
+
 
     - name: DockerHub Login
       env:
