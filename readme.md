@@ -35,6 +35,7 @@ mkdir -p build dl
 docker run \
        -v $(pwd)/dl:/dl \
        -v $(pwd)/build:/build \
+       -v $(pwd)/envs:/envs \
        -ti --rm \
        geobase:local
 ```

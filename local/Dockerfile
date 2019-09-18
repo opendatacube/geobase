@@ -2,6 +2,7 @@ FROM kkodc/geobase:builder
 
 VOLUME ["/build"]
 VOLUME ["/dl"]
+VOLUME ["/envs"]
 
 ARG USER_NAME=ubuntu
 ARG UID=1000
