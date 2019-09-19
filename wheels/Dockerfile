@@ -38,7 +38,7 @@ RUN pip wheel \
   --no-deps \
   rasterio \
   fiona \
-  shapely \
+  shapely
 
 RUN pip wheel \
   --no-cache-dir \
