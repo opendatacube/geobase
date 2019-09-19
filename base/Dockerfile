@@ -23,6 +23,7 @@ RUN apt-get update -y \
     libopenjp2-7-dev \
     libkml-dev \
     libatlas-base-dev \
+    gfortran \
     && rm -rf /var/lib/apt/lists/*
 
 # dev conveniences

@@ -23,6 +23,7 @@ RUN apt-get update -y \
   libkmlbase1 libkmlconvenience1 libkmldom1 libkmlengine1 libkmlregionator1 libkmlxsd1 \
   libyaml-0-2 \
   libatlas3-base \
+  libgfortran4 \
   && rm -rf /var/lib/apt/lists/*
 
 # TODO: we don't really need .deb files polluting this docker image, but alternatives are annoying to use
