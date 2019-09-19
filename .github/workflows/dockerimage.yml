@@ -23,6 +23,19 @@ jobs:
         docker images
         docker build --tag kkodc/geobase:builder --cache-from local:builder ./base
 
+    - name: Pull Base Image (wheels)
+      run: |
+        if docker pull kkodc/geobase:wheels ; then
+           docker tag kkodc/geobase:wheels local:runner
+           echo "Using cache"
+        else
+           echo "Will build from scratch"
+        fi
+
+    - name: Build the Docker image (wheels)
+      run: |
+        docker build --tag kkodc/geobase:wheels --cache-from local:wheels ./wheels
+
     - name: Pull Base Image (runner)
       run: |
         if docker pull kkodc/geobase:runner ; then
