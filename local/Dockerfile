@@ -1,4 +1,4 @@
-FROM kkodc/geobase:builder
+FROM kkodc/geobase:wheels
 
 VOLUME ["/build"]
 VOLUME ["/dl"]

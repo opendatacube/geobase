@@ -54,11 +54,12 @@ RUN pip wheel \
   psycopg2
 
 
-# RUN PATH=/opt/proj6/bin:$PATH \
-#   CFLAGS="-I/opt/proj6/include -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1" \
-#   LDFLAGS=-L/opt/proj6/lib \
-#   pip wheel --no-cache-dir \
-#   --no-binary=:cartopy: \
-#   --no-build-isolation \
-#   --no-deps \
-#  cartopy
+RUN PATH=/opt/proj6/bin:$PATH \
+  CFLAGS="-I/opt/proj6/include -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1" \
+  LDFLAGS=-L/opt/proj6/lib \
+  pip wheel \
+  --no-cache-dir \
+  --no-binary=:all: \
+  --no-build-isolation \
+  --no-deps \
+  cartopy
