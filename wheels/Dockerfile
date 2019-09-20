@@ -77,3 +77,13 @@ RUN echo "Building scientific stack" \
   matplotlib \
   numexpr \
 && echo done
+
+RUN echo "Building scientific stack: image processing" \
+&& pip wheel \
+  --no-cache-dir \
+  --no-binary=:all:  \
+  --no-build-isolation \
+  --no-deps \
+  Pillow \
+  scikit-image \
+&& echo done
