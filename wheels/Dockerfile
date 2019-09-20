@@ -87,3 +87,18 @@ RUN echo "Building scientific stack: image processing" \
   Pillow \
   scikit-image \
 && echo done
+
+RUN echo "Building jupyter related libs" \
+&& pip wheel \
+  --no-cache-dir \
+  --no-binary=:all:  \
+  --no-build-isolation \
+  --no-deps \
+  pyzmq \
+  msgpack \
+  tornado \
+  yarl \
+  multidict \
+  aiohttp \
+  MarkupSafe \
+&& echo done
