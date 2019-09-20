@@ -40,20 +40,6 @@ RUN pip wheel \
   fiona \
   shapely
 
-RUN pip wheel \
-  --no-cache-dir \
-  --no-binary=:all:  \
-  --no-build-isolation \
-  --no-deps \
-  h5py \
-  netcdf4 \
-  pyyaml \
-  ruamel.yaml \
-  pyrsistent \
-  ciso8601 \
-  psycopg2
-
-
 RUN PATH=/opt/proj6/bin:$PATH \
   CFLAGS="-I/opt/proj6/include -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1" \
   LDFLAGS=-L/opt/proj6/lib \
@@ -63,3 +49,20 @@ RUN PATH=/opt/proj6/bin:$PATH \
   --no-build-isolation \
   --no-deps \
   cartopy
+
+RUN pip wheel \
+  --no-cache-dir \
+  --no-binary=:all:  \
+  --no-build-isolation \
+  --no-deps \
+  h5py \
+  netcdf4 \
+  pyyaml \
+  ruamel.yaml \
+  ruamel.yaml.clib \
+  pyrsistent \
+  cffi \
+  cftime \
+  ciso8601 \
+  psycopg2
+
