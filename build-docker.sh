@@ -6,8 +6,9 @@ SDIR="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd)"
 cd "${SDIR}"
 
 [ "${1-:}" == "base" ] && {
-    # by default pull base from docker hub
+    # by default pull builder/wheels from docker hub
     docker build --tag "kkodc/geobase:builder" ./base
+    docker build --tag "kkodc/geobase:wheels" ./wheels
 }
 
 docker build \
