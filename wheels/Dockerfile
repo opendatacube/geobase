@@ -66,3 +66,14 @@ RUN pip wheel \
   ciso8601 \
   psycopg2
 
+RUN echo "Building scientific stack" \
+&& pip wheel \
+  --no-cache-dir \
+  --no-binary=:all:  \
+  --no-build-isolation \
+  --no-deps \
+  scipy \
+  pandas \
+  matplotlib \
+  numexpr \
+&& echo done
