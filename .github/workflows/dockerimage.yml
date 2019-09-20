@@ -26,7 +26,7 @@ jobs:
     - name: Pull Base Image (wheels)
       run: |
         if docker pull kkodc/geobase:wheels ; then
-           docker tag kkodc/geobase:wheels local:runner
+           docker tag kkodc/geobase:wheels local:wheels
            echo "Using cache"
         else
            echo "Will build from scratch"
