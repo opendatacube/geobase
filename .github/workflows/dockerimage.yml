@@ -58,6 +58,11 @@ jobs:
         docker run --rm geobase:local gdal-config --version
         docker run --rm geobase:local gdal-config --formats
 
+    - name: Build the Docker image (sample)
+      if: github.ref == 'refs/heads/kk'
+      run: |
+        docker build --tag kkodc/dev:sandbox sample
+
     - name: DockerHub Login
       if: github.ref == 'refs/heads/master'
       env:
