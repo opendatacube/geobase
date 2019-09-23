@@ -58,14 +58,15 @@ jobs:
         docker run --rm geobase:local gdal-config --version
         docker run --rm geobase:local gdal-config --formats
 
-
     - name: DockerHub Login
+      if: github.ref == 'refs/heads/master'
       env:
         docker_user: kkodc
         docker_password: ${{ secrets.DockerPassword }}
       run: docker login -u "${docker_user}" -p "${docker_password}"
 
     - name: DockerHub Push
+      if: github.ref == 'refs/heads/master'
       run: |
         docker push kkodc/geobase:builder
         docker push kkodc/geobase:runner
