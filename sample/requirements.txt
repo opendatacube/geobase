@@ -77,4 +77,4 @@ odc_dscache
 odc_dtools
 otps
 fc
-hdmedians
+hdstats
