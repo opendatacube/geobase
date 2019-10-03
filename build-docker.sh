@@ -7,8 +7,9 @@ cd "${SDIR}"
 
 [ "${1-:}" == "base" ] && {
     # by default pull builder/wheels from docker hub
-    docker build --tag "kkodc/geobase:builder" ./base
-    docker build --tag "kkodc/geobase:wheels" ./wheels
+    docker build --tag "kkodc/geobase:builder" ./base/builder
+    docker build --tag "kkodc/geobase:wheels" ./base/wheels
+    docker build --tag "kkodc/geobase:runner" ./base/runner
 }
 
 docker build \

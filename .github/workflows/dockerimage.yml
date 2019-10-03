@@ -21,7 +21,7 @@ jobs:
     - name: Build the Docker image (builder)
       run: |
         docker images
-        docker build --tag kkodc/geobase:builder --cache-from local:builder ./base
+        docker build --tag kkodc/geobase:builder --cache-from local:builder ./base/builder
 
     - name: Pull Base Image (wheels)
       run: |
@@ -34,7 +34,7 @@ jobs:
 
     - name: Build the Docker image (wheels)
       run: |
-        docker build --tag kkodc/geobase:wheels --cache-from local:wheels ./wheels
+        docker build --tag kkodc/geobase:wheels --cache-from local:wheels ./base/wheels
 
     - name: Pull Base Image (runner)
       run: |
@@ -47,7 +47,7 @@ jobs:
 
     - name: Build the Docker image (runner)
       run: |
-        docker build --tag kkodc/geobase:runner --cache-from local:runner ./runner
+        docker build --tag kkodc/geobase:runner --cache-from local:runner ./base/runner
 
     - name: Build the Docker image (local)
       run: |
