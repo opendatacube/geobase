@@ -58,25 +58,8 @@ jobs:
         docker run --rm geobase:local gdal-config --version
         docker run --rm geobase:local gdal-config --formats
 
-    - name: Build and publish sample (only on kk branch)
-      if: github.ref == 'refs/heads/kk'
-      run: |
-        if docker pull kkodc/dev:sandbox ; then
-           docker tag kkodc/dev:sandbox local:sandbox
-           echo "Using cache"
-        else
-           echo "Will build from scratch"
-        fi
-
-        docker build --cache-from local:sandbox --tag kkodc/dev:sandbox sample
-        docker login -u "${docker_user}" -p "${docker_password}"
-        docker push kkodc/dev:sandbox
-      env:
-        docker_user: kkodc
-        docker_password: ${{ secrets.DockerPassword }}
-
     - name: DockerHub Login
-      if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/sample'
       env:
         docker_user: kkodc
         docker_password: ${{ secrets.DockerPassword }}
@@ -88,3 +71,16 @@ jobs:
         docker push kkodc/geobase:builder
         docker push kkodc/geobase:runner
         docker push kkodc/geobase:wheels
+
+    - name: Build and publish sample (only on sample branch)
+      if: github.ref == 'refs/heads/sample'
+      run: |
+        if docker pull kkodc/geobase:sample ; then
+           docker tag kkodc/gebase:sample local:sample
+           echo "Using cache"
+        else
+           echo "Will build from scratch"
+        fi
+
+        docker build --cache-from local:sample --tag kkodc/geobase:sample sample
+        docker push kkodc/geobase:sample
