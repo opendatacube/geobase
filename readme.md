@@ -18,14 +18,14 @@ Basic idea is to use multi-stage builds to minimize output docker image size and
 Each step is described in more detail below. Overall structure is as following
 
 1. Build C/C++ libs for PROJ,GEOS,GDAL in `base/builder`, package GEOS and GDAL in `.deb`
-2. Download and build python wheels against compiled GDAL/GEOS/PROJ in `base/wheels` 
+2. Download and build python wheels against compiled GDAL/GEOS/PROJ in `base/wheels`
 3. Include run-time libs needed by libs/wheels built in stages 1 and 2 in `base/runner`
 4. Use multi-stage building technique to construct docker image with customized python environment that suits your needs:
    - Base `builder` stage on `kkodc/geobase:wheels`
-   - Install any extra dev libs you might need that are missing from `geobase:wheels`
+   - Install any extra missing dev libs you need via `apt-get`
    - Construct python environment taking care to use pre-compiled wheels where possible
    - Base runner stage on `kkodc/geobase:runner`
-   - Install any extra C/C++ libs via `apt-get` you might need to run extra python wheels you added
+   - Install any extra C/C++ run time libs via `apt-get`
    - Copy the entire python environment across from `builder` stage
 
 
@@ -51,7 +51,7 @@ Folder structure:
 
 Next layer up from `builder`. Downloads and builds a collection of geospatial/numeric and related python wheels:
 
-- GEO: GDAL, shapely, pyproj, ratserio, fiona, cartopy
+- GEO: GDAL, shapely, pyproj, rasterio, fiona, cartopy
 - Numeric: scipy, pandas, scikit-image, numexpr, matplotlib
 - IO: h5py, netcdf4, pyzmq, tornado, aiohttp
 - MISC, covers categories like: yaml, time, db, serialization, jupyter related libs
