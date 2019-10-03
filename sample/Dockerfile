@@ -70,6 +70,9 @@ COPY --from=builder $py_env_path $py_env_path
 ENV LC_ALL=C.UTF-8
 ENV PATH=${py_env_path}/bin:$PATH
 
+COPY docker-entrypoint.sh /usr/local/bin/
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+
 USER $nb_user
 
 EXPOSE 9988
