@@ -78,7 +78,7 @@ Typical work flow:
 - Build local builder image that will write files with your username to supplied volume
 
 ```
-./build-docker.sh
+./scripts/build-docker.sh
 ```
 
 - Run shell inside it
@@ -96,7 +96,7 @@ docker run \
        geobase:local
 ```
 
-There is `./run.sh` that does just that.
+There is `./scripts/run-builder.sh` that does just that.
 
 Once inside you can build python wheels or whole environments, for example:
 

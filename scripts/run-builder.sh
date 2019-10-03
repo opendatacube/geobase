@@ -2,10 +2,6 @@
 
 set -eu
 
-SDIR="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd)"
-
-cd "${SDIR}"
-
 mkdir -p run
 cd run
 mkdir -p build dl envs
