@@ -33,16 +33,6 @@ RUN echo "Building python environment" \
 
 ENV PATH=${py_env_path}/bin:$PATH
 
-# for jupyter lab builds
-RUN apt-get update \
-  && apt-get install -y \
-  libssl1.0-dev nodejs-dev \
-  && apt-get install -y libssl-dev \
-  && apt-get install -y \
-  npm \
-  nodejs \
-  && rm -rf /var/lib/apt/lists/*
-
 RUN echo "Adding jupyter lab extensions" \
   && jupyter labextension install --no-build @jupyter-widgets/jupyterlab-manager@v1.0.2 \
   && jupyter labextension install --no-build @jupyterlab/geojson-extension@v1.0.0 \

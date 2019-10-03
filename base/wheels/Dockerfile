@@ -102,3 +102,13 @@ RUN echo "Building jupyter related libs" \
   aiohttp \
   MarkupSafe \
 && echo done
+
+# for jupyter lab builds we need npm
+RUN apt-get update \
+  && apt-get install -y \
+  libssl1.0-dev nodejs-dev \
+  && apt-get install -y libssl-dev \
+  && apt-get install -y \
+  npm \
+  nodejs \
+  && rm -rf /var/lib/apt/lists/*
