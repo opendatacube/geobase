@@ -2,9 +2,6 @@
 
 set -eu
 
-SDIR="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd)"
-cd "${SDIR}"
-
 [ "${1-:}" == "base" ] && {
     # by default pull builder/wheels from docker hub
     docker build --tag "kkodc/geobase:builder" ./base/builder
