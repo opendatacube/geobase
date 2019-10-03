@@ -65,6 +65,8 @@ ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 USER $nb_user
 
+VOLUME ["/nb"]
+WORKDIR /nb
 EXPOSE 9988
 
 CMD ["jupyter", "lab", \
