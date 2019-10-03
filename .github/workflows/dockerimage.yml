@@ -81,6 +81,7 @@ jobs:
         docker build --target builder --cache-from $build_base --tag $build_base sample
         docker build --cache-from $base --cache-from $build_base --tag $base sample
         docker push $base
+        docker push $build_base
       env:
         build_base: 'kkodc/dev:sandbox_builder'
         base: 'kkodc/dev:sandbox'
