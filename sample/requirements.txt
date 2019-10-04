@@ -26,7 +26,7 @@ h5py
 netcdf4
 
 # misc
-aiobotocore[boto3]
+aiobotocore[boto3,awscli]
 cython
 pyyaml
 ruamel.yaml
@@ -62,19 +62,3 @@ folium
 geoviews
 holoviews
 cartopy
-
-# ODC/DEA
---extra-index-url="https://packages.dea.gadevs.ga"
-datacube[performance]
-odc_ui
-odc_index
-odc_aws
-odc_geom
-odc_io
-odc_aio
-odc_ppt
-odc_dscache
-odc_dtools
-otps
-fc
-hdstats
