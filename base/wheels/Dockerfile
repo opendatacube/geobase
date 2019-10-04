@@ -75,6 +75,7 @@ RUN echo "Building scientific stack" \
   scipy \
   pandas \
   matplotlib \
+  scikit-learn \
   numexpr \
 && echo done
 
