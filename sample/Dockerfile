@@ -47,6 +47,16 @@ RUN echo "Adding jupyter lab extensions" \
   && jupyter labextension list \
   && echo "...done"
 
+COPY requirements-odc.txt /wk/
+
+RUN echo "Adding odc-dependencies" \
+  && ${py_env_path}/bin/pip install \
+  --find-links=/wk/wheels \
+  --no-cache-dir \
+  -c /wk/bins.txt \
+  -r /wk/requirements-odc.txt \
+  && echo "====================================================="
+
 
 FROM kkodc/geobase:runner
 ARG py_env_path
