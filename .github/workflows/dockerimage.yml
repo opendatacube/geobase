@@ -66,7 +66,7 @@ jobs:
       run: docker login -u "${docker_user}" -p "${docker_password}"
 
     - name: DockerHub Push
-      if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/kk'
       run: |
         docker push kkodc/geobase:builder
         docker push kkodc/geobase:runner
