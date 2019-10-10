@@ -95,7 +95,10 @@ ENV PATH=${py_env_path}/bin:$PATH
 COPY docker-entrypoint.sh /usr/local/bin/
 ENTRYPOINT ["/bin/tini", "-s", "--", "docker-entrypoint.sh"]
 
-RUN useradd -m -s /bin/bash -N -u $nb_uid $nb_user
+RUN useradd -m -s /bin/bash -N -u $nb_uid $nb_user \
+&& adduser ${nb_user} sudo \
+&& echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
 USER $nb_user
 
 VOLUME ["/nb"]
