@@ -64,15 +64,38 @@ ARG nb_user=jovyan
 ARG nb_uid=1000
 ARG nb_gid=100
 
-RUN useradd -m -s /bin/bash -N -u $nb_uid $nb_user
+RUN apt-get update -y \
+&& DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
+  # developer convenience
+  postgresql-client-10 \
+  less \
+  wget \
+  curl \
+  vim \
+  tmux \
+  htop \
+  fish \
+  tig \
+  git \
+  openssh-client \
+&& rm -rf /var/lib/apt/lists/*
 
+# Install Tini
+RUN curl -s -L -O https://github.com/krallin/tini/releases/download/v0.18.0/tini \
+&& echo "12d20136605531b09a2c2dac02ccee85e1b874eb322ef6baf7561cd93f93c855 *tini" | sha256sum -c - \
+&& install -m 755 tini /bin/tini \
+&& rm tini
+
+# Copy python env
 COPY --from=builder $py_env_path $py_env_path
+
 ENV LC_ALL=C.UTF-8
 ENV PATH=${py_env_path}/bin:$PATH
 
 COPY docker-entrypoint.sh /usr/local/bin/
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+ENTRYPOINT ["/bin/tini", "-s", "--", "docker-entrypoint.sh"]
 
+RUN useradd -m -s /bin/bash -N -u $nb_uid $nb_user
 USER $nb_user
 
 VOLUME ["/nb"]
