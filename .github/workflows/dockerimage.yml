@@ -59,21 +59,21 @@ jobs:
         docker run --rm geobase:local gdal-config --formats
 
     - name: DockerHub Login
-      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/sample' || github.ref == 'refs/heads/kk'
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/sandbox'
       env:
         docker_user: kkodc
         docker_password: ${{ secrets.DockerPassword }}
       run: docker login -u "${docker_user}" -p "${docker_password}"
 
     - name: DockerHub Push
-      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/kk'
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/sandbox'
       run: |
         docker push kkodc/geobase:builder
         docker push kkodc/geobase:runner
         docker push kkodc/geobase:wheels
 
-    - name: Build and publish sample sandbox (only on kk branch)
-      if: github.ref == 'refs/heads/kk'
+    - name: Build and publish sample sandbox (only on sandbox branch)
+      if: github.ref == 'refs/heads/sandbox'
       run: |
         docker pull $build_base || true
         docker pull $base || true
