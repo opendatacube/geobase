@@ -60,10 +60,6 @@ RUN echo "Adding odc-dependencies" \
 
 FROM kkodc/geobase:runner
 ARG py_env_path
-ARG nb_user=jovyan
-ARG nb_uid=1000
-ARG nb_gid=100
-
 RUN apt-get update -y \
 && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
   # developer convenience
@@ -95,6 +91,10 @@ ENV PATH=${py_env_path}/bin:$PATH
 COPY docker-entrypoint.sh /usr/local/bin/
 ENTRYPOINT ["/bin/tini", "-s", "--", "docker-entrypoint.sh"]
 
+ARG nb_user=jovyan
+ARG nb_uid=1000
+ARG nb_gid=100
+
 RUN useradd -m -s /bin/bash -N -u $nb_uid $nb_user \
 && adduser ${nb_user} sudo \
 && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
@@ -102,6 +102,7 @@ RUN useradd -m -s /bin/bash -N -u $nb_uid $nb_user \
 USER $nb_user
 
 VOLUME ["/nb"]
+VOLUME ['/run/postgresql']
 WORKDIR /nb
 EXPOSE 9988
 
