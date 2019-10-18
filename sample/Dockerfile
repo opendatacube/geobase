@@ -74,6 +74,7 @@ RUN apt-get update -y \
   tig \
   git \
   openssh-client \
+  sudo \
 && rm -rf /var/lib/apt/lists/*
 
 # Install Tini
