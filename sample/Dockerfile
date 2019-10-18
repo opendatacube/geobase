@@ -96,15 +96,17 @@ ARG nb_user=jovyan
 ARG nb_uid=1000
 ARG nb_gid=100
 
-RUN useradd -m -s /bin/bash -N -u $nb_uid $nb_user \
+RUN useradd -m -s /bin/bash -N -g $nb_gid -u $nb_uid $nb_user \
 && adduser ${nb_user} sudo \
 && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
+RUN install --owner "${nb_user}" -D -d /conf
+
 USER $nb_user
 
-VOLUME ["/nb"]
+VOLUME ["/home/$nb_user"]
 VOLUME ['/run/postgresql']
-WORKDIR /nb
+WORKDIR "/home/$nb_user"
 EXPOSE 9988
 
 CMD ["jupyter", "lab", \
