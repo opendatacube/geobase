@@ -5,7 +5,7 @@ set -euo pipefail
 versions='
 openjpeg 2.3.1 https://github.com/uclouvain/openjpeg/archive/v{{version}}.tar.gz
 geos     3.7.2 https://github.com/libgeos/geos/archive/{{version}}.tar.gz
-proj     6.1.1 https://github.com/OSGeo/proj/releases/download/{{version}}/proj-{{version}}.tar.gz
+proj     6.2.0 https://github.com/OSGeo/proj/releases/download/{{version}}/proj-{{version}}.tar.gz
 gdal     2.4.2 https://download.osgeo.org/gdal/{{version}}/gdal-{{version}}.tar.gz
 '
 
