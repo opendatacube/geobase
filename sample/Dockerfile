@@ -43,6 +43,9 @@ RUN echo "Adding jupyter lab extensions" \
   && jupyter labextension install --no-build jupyterlab_bokeh@v1.0.0 \
   && jupyter labextension install --no-build nbdime-jupyterlab@v1.0.0 \
   && jupyter labextension install --no-build @ryantam626/jupyterlab_code_formatter@v0.5.0 \
+  && jupyter labextension install --no-build @jupyter-widgets/jupyterlab-sidecar@v0.4.0 \
+  && jupyter labextension install --no-build ipyevents@v1.7.0 \
+  && jupyter labextension install --no-build ipycanvas@v0.3.4 \
   && jupyter lab build \
   && jupyter labextension list \
   && echo "...done"
