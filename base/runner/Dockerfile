@@ -11,6 +11,7 @@ RUN apt-get update -y \
 RUN apt-get update -y \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
   libopenjp2-7 \
+  libtiff5 \
   libzstd1 \
   liblzma5 \
   libcurl4 \
