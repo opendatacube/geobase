@@ -113,3 +113,11 @@ RUN apt-get update \
   npm \
   nodejs \
   && rm -rf /var/lib/apt/lists/*
+
+# Install Tini
+# tini is useful inside runners, it's easier to copy it from builder than download (which requires curl or wget)
+RUN curl -s -L -O https://github.com/krallin/tini/releases/download/v0.18.0/tini \
+  && echo "12d20136605531b09a2c2dac02ccee85e1b874eb322ef6baf7561cd93f93c855 *tini" | sha256sum -c - \
+  && install -m 755 tini /bin/tini \
+  && rm tini
+

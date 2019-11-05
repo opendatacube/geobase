@@ -67,6 +67,7 @@ RUN apt-get update -y \
 && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
   # developer convenience
   postgresql-client-10 \
+  postgresql-10 \
   less \
   wget \
   curl \
@@ -81,10 +82,7 @@ RUN apt-get update -y \
 && rm -rf /var/lib/apt/lists/*
 
 # Install Tini
-RUN curl -s -L -O https://github.com/krallin/tini/releases/download/v0.18.0/tini \
-&& echo "12d20136605531b09a2c2dac02ccee85e1b874eb322ef6baf7561cd93f93c855 *tini" | sha256sum -c - \
-&& install -m 755 tini /bin/tini \
-&& rm tini
+COPY --from=builder /bin/tini /bin/tini
 
 # Copy python env
 COPY --from=builder $py_env_path $py_env_path
