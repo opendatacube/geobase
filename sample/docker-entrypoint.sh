@@ -32,7 +32,9 @@ else
     export CONF_FILE="$HOME/.datacube.conf"
 fi
 
-# Build Config file
+# Build Config file, only if it doesn't exist already
+
+[ -e "${CONF_FILE}" ] || {
 echo "[datacube]" > $CONF_FILE
 
 file_env 'DB_DATABASE'
@@ -65,5 +67,6 @@ file_env 'DB_PORT'
 if [ "$DB_PORT" ]; then
     echo "db_port: $DB_PORT" >> $CONF_FILE
 fi
+}
 
 exec "$@"
