@@ -63,6 +63,16 @@ RUN echo "Adding odc-dependencies" \
 
 FROM kkodc/geobase:runner
 ARG py_env_path
+
+# Install Tini
+COPY --from=builder /bin/tini /bin/tini
+
+# Copy python env
+COPY --from=builder $py_env_path $py_env_path
+
+ENV LC_ALL=C.UTF-8
+ENV PATH=${py_env_path}/bin:$PATH
+
 RUN apt-get update -y \
 && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
   # developer convenience
@@ -80,15 +90,6 @@ RUN apt-get update -y \
   openssh-client \
   sudo \
 && rm -rf /var/lib/apt/lists/*
-
-# Install Tini
-COPY --from=builder /bin/tini /bin/tini
-
-# Copy python env
-COPY --from=builder $py_env_path $py_env_path
-
-ENV LC_ALL=C.UTF-8
-ENV PATH=${py_env_path}/bin:$PATH
 
 COPY docker-entrypoint.sh /usr/local/bin/
 ENTRYPOINT ["/bin/tini", "-s", "--", "docker-entrypoint.sh"]
