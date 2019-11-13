@@ -1,6 +1,7 @@
 # ODC/DEA
 --extra-index-url="https://packages.dea.ga.gov.au"
 datacube[performance]
+odc_algo
 odc_ui
 odc_index
 odc_aws
