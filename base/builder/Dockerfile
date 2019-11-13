@@ -48,7 +48,7 @@ RUN echo "Downloading libs" \
   && builder.sh proj-5.2.0 /dl :download: \
   && builder.sh proj-6.2.0 /dl :download: \
   && builder.sh geos-3.7.2 /dl :download: \
-  && builder.sh gdal-2.4.2 /dl :download: \
+  && builder.sh gdal-2.4.3 /dl :download: \
   && echo "done"
 
 COPY ./build_openjpeg.sh /usr/local/bin/
@@ -71,7 +71,7 @@ RUN echo "Building geos" \
 COPY ./build_gdal.sh /usr/local/bin/
 COPY ./gdal.opts /opt/
 RUN echo "Building gdal" \
-&& FEATURES="$(cat /opt/gdal.opts)" builder.sh gdal-2.4.2 /dl /tmp/build /usr \
+&& FEATURES="$(cat /opt/gdal.opts)" builder.sh gdal-2.4.3 /dl /tmp/build /usr \
 && dpkg -i /tmp/build/libgdal_*deb \
 && mv /tmp/build/*deb /opt/ \
 && rm -rf /tmp/build

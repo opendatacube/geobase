@@ -8,7 +8,7 @@ Set of docker images to build recent versions of geospatial libraries and python
 
 - PROJ 5.2.0 and 6.2.0
 - GEOS 3.7.2
-- GDAL 2.4.2
+- GDAL 2.4.3
 
 Overview
 ========
