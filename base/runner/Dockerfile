@@ -11,7 +11,6 @@ RUN apt-get update -y \
 RUN apt-get update -y \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
   libopenjp2-7 \
-  libtiff5 \
   libzstd1 \
   liblzma5 \
   libcurl4 \
@@ -25,6 +24,15 @@ RUN apt-get update -y \
   libyaml-0-2 \
   libatlas3-base \
   libgfortran4 \
+  libgomp1 \
+  # PIL
+  libtiff5 \
+  libpng16-16 \
+  liblcms2-2 \
+  libwebpmux3 \
+  libwebpdemux2 \
+  # matplotlib
+  libfreetype6 \
   && rm -rf /var/lib/apt/lists/*
 
 # TODO: we don't really need .deb files polluting this docker image, but alternatives are annoying to use
