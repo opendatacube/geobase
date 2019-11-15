@@ -1,3 +1,13 @@
+# misc
+aiobotocore[boto3,awscli]
+cython
+pyyaml
+ruamel.yaml
+pyrsistent
+ciso8601
+psycopg2
+param
+
 # Scientific Stack
 numpy
 scipy
@@ -25,16 +35,6 @@ pyproj
 h5py
 netcdf4
 
-# misc
-aiobotocore[boto3,awscli]
-cython
-pyyaml
-ruamel.yaml
-pyrsistent
-ciso8601
-psycopg2
-param
-
 # jupyter things
 jupyter==1.0.0
 jupyterlab==1.0.9
@@ -54,6 +54,7 @@ autopep8
 yapf
 isort
 mypy
+line_profiler
 
 # jupyter + matplotlib
 matplotlib
@@ -66,3 +67,4 @@ folium
 geoviews
 holoviews
 cartopy
+seaborn
