@@ -58,7 +58,9 @@ RUN echo "Building proj 5" \
   && STATIC=yes builder.sh proj-5.2.0 /dl/ /tmp/build /opt/proj5 \
   && rm -rf /tmp/build
 RUN echo "Building proj 6" \
-  && STATIC=yes builder.sh proj-6.2.0 /dl/ /tmp/build /opt/proj6 \
+  && builder.sh proj-6.2.0 /dl/ /tmp/build \
+  && dpkg -i /tmp/build/libproj_*deb \
+  && mv /tmp/build/*deb /opt/ \
   && rm -rf /tmp/build
 
 COPY ./build_geos.sh /usr/local/bin/

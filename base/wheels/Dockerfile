@@ -43,7 +43,7 @@ RUN echo "GDAL==$(gdal-config --version)" > /tmp/constraints.txt \
   GDAL \
   && rm /tmp/constraints.txt
 
-RUN PROJ_DIR=/opt/proj6 pip wheel --no-cache-dir \
+RUN pip wheel --no-cache-dir \
   --no-binary=:all: \
   --no-build-isolation \
   --no-deps \
@@ -58,9 +58,7 @@ RUN pip wheel \
   fiona \
   shapely
 
-RUN PATH=/opt/proj6/bin:$PATH \
-  CFLAGS="-I/opt/proj6/include -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1" \
-  LDFLAGS=-L/opt/proj6/lib \
+RUN CFLAGS="-DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1" \
   pip wheel \
   --no-cache-dir \
   --no-binary=:all: \
