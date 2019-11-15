@@ -25,6 +25,7 @@ RUN apt-get update -y \
   libatlas3-base \
   libgfortran4 \
   libgomp1 \
+  libsqlite3-0 \
   # PIL
   libtiff5 \
   libpng16-16 \
@@ -42,5 +43,6 @@ RUN apt-get update -y \
 COPY --from=builder /opt/*deb /opt/
 RUN echo "Installing geo libs" \
   && dpkg -i /opt/libgeos*deb \
+  && dpkg -i /opt/libproj*deb \
   && dpkg -i /opt/libgdal*deb \
   && echo "Done"

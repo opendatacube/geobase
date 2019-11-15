@@ -41,9 +41,8 @@ Folder structure:
 
 - `base/builder/Dockerfile` base builder image: `docker pull kkodc/geobase:builder`
   - `/dl/` contains downloaded sources
-  - `/opt/` contains built `.deb` for geos/gdal
+  - `/opt/` contains built `.deb` for geos/gdal/proj6
   - `/opt/proj5` contains static proj5
-  - `/opt/proj6` contains static proj6
 - `base/builder/gdal.opts` feature selection for compiled GDAL, removing features should be easy, adding might require installing extra build dependencies with `apt-get`, might also need to add those extra libs to `base/runner/Dockerfile`.
 
 
