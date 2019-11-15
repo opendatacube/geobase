@@ -76,12 +76,12 @@ jobs:
       if: github.ref == 'refs/heads/sandbox'
       run: |
         docker pull $build_base || true
-        docker pull $base || true
+        docker pull $base       || true
 
         docker build --target builder --cache-from $build_base --tag $build_base sample
         docker build --cache-from $base --cache-from $build_base --tag $base sample
-        docker push $base
         docker push $build_base
+        docker push $base
       env:
-        build_base: 'kkodc/dev:sandbox_builder'
-        base: 'kkodc/dev:sandbox'
+        build_base: 'kkodc/sandbox:builder'
+        base: 'kkodc/sandbox:latest'
