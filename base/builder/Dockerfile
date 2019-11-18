@@ -24,6 +24,8 @@ RUN apt-get update -y \
     libkml-dev \
     libatlas-base-dev \
     gfortran \
+    libspatialindex-dev \
+    libudunits2-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # dev conveniences
