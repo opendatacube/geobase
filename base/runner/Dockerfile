@@ -26,6 +26,8 @@ RUN apt-get update -y \
   libgfortran4 \
   libgomp1 \
   libsqlite3-0 \
+  libspatialindex-c4v5 \
+  libspatialindex4v5 \
   # PIL
   libtiff5 \
   libpng16-16 \
