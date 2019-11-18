@@ -28,6 +28,7 @@ RUN apt-get update -y \
   libsqlite3-0 \
   libspatialindex-c4v5 \
   libspatialindex4v5 \
+  libudunits2-0 \
   # PIL
   libtiff5 \
   libpng16-16 \
