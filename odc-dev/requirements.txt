@@ -1,0 +1,108 @@
+# s3/boto, let aiobotocore decide botocore/boto3/awscli versions
+aiobotocore[boto3,awscli]==0.11.0
+python-dateutil==2.8.0
+
+# datacube[test]
+moto==1.3.14
+pylint==1.8.4
+compliance-checker==3.1.1
+hypothesis
+mock
+pycodestyle
+pytest
+pytest-cov
+pytest-timeout
+pytest-httpserver
+
+# datacube[performance]
+bottleneck
+ciso8601
+
+# datacube[doc]
+Sphinx
+setuptools
+
+# datacube[s3]  s3aio
+SharedArray
+pathos
+zstandard
+
+# odc-tools
+lmdb
+
+# misc
+cython
+pyyaml
+ruamel.yaml
+pyrsistent
+ciso8601
+psycopg2
+param
+dill
+
+# Scientific Stack
+numpy
+scipy
+pandas
+scikit-image
+scikit-learn
+numexpr
+numba
+statsmodels
+Pillow
+dask[distributed]
+distributed
+xarray
+
+# Geo stack
+geopy
+fiona
+rasterstats
+geopandas
+cligj
+GDAL
+rasterio
+Shapely
+pyproj
+h5py
+netcdf4
+rtree
+pandana
+pysal
+mapclassify
+urbanaccess
+
+# jupyter things
+jupyter==1.0.0
+jupyterlab==1.0.9
+jupyterhub==1.0.0
+ipyleaflet==0.11.1
+jupyter-server-proxy==1.1.0
+dask-labextension==1.0.3
+nbdime==1.1.0
+jupyterlab_code_formatter==0.5.0
+sidecar==0.3.0
+ipyevents==0.7.0
+ipycanvas==0.3.4
+jupyter-ui-poll
+nbgitpuller
+black
+autopep8
+yapf
+isort
+mypy
+line_profiler
+
+# jupyter + matplotlib
+matplotlib
+bokeh
+descartes
+ipympl
+datashader
+graphviz
+folium
+geoviews
+holoviews
+cartopy
+seaborn
+dash[testing]

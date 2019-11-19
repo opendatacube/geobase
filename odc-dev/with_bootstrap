@@ -1,0 +1,43 @@
+#!/bin/bash
+
+export GDAL_DATA=$(gdal-config --datadir)
+
+if [ -e "${PYENV}/bin/activate" ]; then
+    echo "Activating python env"
+    source "${PYENV}/bin/activate"
+else
+    echo "No Python environment found, bootstrapping"
+    build_env.sh
+    source "${PYENV}/bin/activate"
+fi
+
+[ -e "$HOME/.datacube_integration.conf" ] || {
+    cp /wk/datacube_integration.conf "$HOME/.datacube_integration.conf"
+}
+
+[ -e "$HOME/.datacube.conf" ] || {
+    cat <<EOF > "$HOME/.datacube.conf"
+[default]
+db_database: datacube
+
+EOF
+}
+
+case "${1:-}" in
+    lab)
+        cd /nb
+        exec jupyter lab --ip=0.0.0.0 --port="${NB_PORT}" --no-browser
+    ;;
+
+    check-code)
+        cd /src/datacube-core
+        exec ./check-code.sh integration_tests
+        ;;
+
+    "")
+        ;;
+
+    *)
+        exec $@
+        ;;
+esac

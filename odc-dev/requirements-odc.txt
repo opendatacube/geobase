@@ -1,0 +1,19 @@
+--extra-index-url="https://packages.dea.ga.gov.au"
+--no-binary=fc,hdstats
+-e /src/datacube-core[test,doc,performance,s3,celery,distributed,replicas,interactive]
+-e /src/odc-tools/libs/io
+-e /src/odc-tools/libs/aws
+-e /src/odc-tools/libs/ppt
+-e /src/odc-tools/libs/geom
+-e /src/odc-tools/libs/algo
+-e /src/odc-tools/libs/dtools
+-e /src/odc-tools/libs/index
+-e /src/odc-tools/libs/dscache
+-e /src/odc-tools/libs/ui
+-e /src/odc-tools/libs/aio
+-e /src/odc-tools/apps/cloud[THREDDS,GCP]
+-e /src/odc-tools/apps/dc_tools
+fc
+hdstats
+eodatasets3
+#otps
