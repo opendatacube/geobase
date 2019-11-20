@@ -59,6 +59,7 @@ COPY with_bootstrap /bin/
 COPY datacube_integration.conf /wk/
 COPY requirements-odc.txt /wk/
 COPY build_env.sh /bin/
+COPY dc_config_render.py /bin/
 
 USER $nb_user
 

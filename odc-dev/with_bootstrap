@@ -2,6 +2,8 @@
 
 export GDAL_DATA=$(gdal-config --datadir)
 
+dc_config_render.py auto
+
 if [ -e "${PYENV}/bin/activate" ]; then
     echo "Activating python env"
     source "${PYENV}/bin/activate"
@@ -11,16 +13,9 @@ else
     source "${PYENV}/bin/activate"
 fi
 
+
 [ -e "$HOME/.datacube_integration.conf" ] || {
     cp /wk/datacube_integration.conf "$HOME/.datacube_integration.conf"
-}
-
-[ -e "$HOME/.datacube.conf" ] || {
-    cat <<EOF > "$HOME/.datacube.conf"
-[default]
-db_database: datacube
-
-EOF
 }
 
 case "${1:-}" in
