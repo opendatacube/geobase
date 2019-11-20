@@ -15,7 +15,7 @@ fi
 
 
 [ -e "$HOME/.datacube_integration.conf" ] || {
-    cp /wk/datacube_integration.conf "$HOME/.datacube_integration.conf"
+    cp /conf/datacube_integration.conf "$HOME/.datacube_integration.conf"
 }
 
 case "${1:-}" in
