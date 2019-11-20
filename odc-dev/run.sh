@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # settings
-nb_dir="${HOME}/NB}"
+nb_dir="${HOME}/NB"
 src_dir="${HOME}/wk"
 nb_port="9988"
 env_volume="odc-dev.${USER}.env"
@@ -18,6 +18,7 @@ done
 #cmd="jupyter lab --ip=0.0.0.0 --port=${nb_port} --no-browser"
 exec docker run \
        -ti --rm \
+       --hostname "odc-dev-dkr" \
        -v ${nb_dir}:"/nb" \
        -v ${src_dir}:"/src" \
        -v ${env_volume}:"/env" \
