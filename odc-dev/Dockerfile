@@ -34,32 +34,40 @@ RUN install --owner "${nb_user}" -D -d /nb \
 &&  install --owner "${nb_user}" -D -d /src \
 &&  install --owner "${nb_user}" -D -d "${py_env_path}"
 
-RUN mkdir -p /wk \
-  && find /wheels -type f -name "*whl" > /wk/bins.txt
+RUN mkdir -p /conf \
+  && find /wheels -type f -name "*whl" > /conf/bins.txt
 
-COPY requirements.txt /wk/
-
+# First process base requirements
+#   this will just download/build/re-use existing wheels
+#   /wheels/ should contain all the wheels needed to construct base environment
+COPY requirements.txt /conf/
 RUN echo "Fetching wheels" \
-&& mkdir -p /wk/wheels \
+&& mkdir -p /tmp/wheels \
 # get all the wheels from requirements.txt, making sure pre-compiled wheels are used
 && pip wheel \
   --no-cache-dir \
   --find-links=/wheels \
-  -c /wk/bins.txt \
-  -r /wk/requirements.txt \
-  -w /wk/wheels \
-&& mv /wk/wheels/* /wheels/ \
-&& rmdir /wk/wheels \
-&& find /wheels -type f -name "*whl" > /wk/bins.txt \
+  -c /conf/bins.txt \
+  -r /conf/requirements.txt \
+  -w /tmp/wheels \
+&& mv /tmp/wheels/* /wheels/ \
+&& rmdir /tmp/wheels \
+&& find /wheels -type f -name "*whl" > /conf/bins.txt \
 && ls -lh /wheels \
 && echo "====================================================="
 
+# this will be used by integration tests
+COPY datacube_integration.conf /conf/
 
-COPY with_bootstrap /bin/
-COPY datacube_integration.conf /wk/
-COPY requirements-odc.txt /wk/
-COPY build_env.sh /bin/
+# install scripts
 COPY dc_config_render.py /bin/
+COPY with_bootstrap      /bin/
+COPY build_env.sh        /bin/
+
+# copy over further environment configs
+COPY requirements-odc.txt      /conf/
+COPY lab-extensions.txt        /conf/
+COPY lab-server-extensions.txt /conf/
 
 USER $nb_user
 
