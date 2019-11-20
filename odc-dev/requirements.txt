@@ -69,6 +69,7 @@ netcdf4
 rtree
 pandana
 pysal
+pyepsg
 mapclassify
 urbanaccess
 
