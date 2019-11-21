@@ -100,8 +100,7 @@ There is `./scripts/run-builder.sh` that does just that.
 Once inside you can build python wheels or whole environments, for example:
 
 ```
-PROJ_DIR=/opt/proj6 \
- pip3 wheel --no-deps --no-binary :all: \
+pip3 wheel --no-deps --no-binary :all: \
      GDAL==$(gdal-config --version) \
      pyproj \
      Shapely \
