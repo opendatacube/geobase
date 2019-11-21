@@ -1,8 +1,14 @@
 #!/bin/bash
 
 # settings
-nb_dir="${HOME}/NB"
+#  src_dir is where you `datacube-core` and `odc-tools` are checked out
+#    git clone git@github.com:opendatacube/datacube-core.git
+#    git clone git@github.com:opendatacube/odc-tools.git
+#
+#  nb_dir is for notebooks
+#
 src_dir="${HOME}/wk"
+nb_dir="${HOME}/NB"
 nb_port="9988"
 env_volume="odc-dev.${USER}.env"
 home_volume="odc-dev.${USER}.home"
@@ -15,7 +21,6 @@ for volume in ${home_volume} ${env_volume}; do
     }
 done
 
-#cmd="jupyter lab --ip=0.0.0.0 --port=${nb_port} --no-browser"
 exec docker run \
        -ti --rm \
        --hostname "odc-dev-dkr" \
