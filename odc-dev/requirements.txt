@@ -39,6 +39,7 @@ ciso8601
 psycopg2
 param
 dill
+python-ffmpeg
 
 # Scientific Stack
 numpy
@@ -47,12 +48,15 @@ pandas
 scikit-image
 scikit-learn
 numexpr
+numexpr3
 numba
 statsmodels
 Pillow
 dask[distributed]
 distributed
 xarray
+tensorflow
+tensorflow-gpu
 
 # Geo stack
 geopy
