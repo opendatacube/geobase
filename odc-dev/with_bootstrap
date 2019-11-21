@@ -1,12 +1,16 @@
 #!/bin/bash
 
-export GDAL_DATA=$(gdal-config --datadir)
+[ -n "$GDAL_DATA" ] || {
+    export GDAL_DATA=$(gdal-config --datadir)
+}
 
 dc_config_render.py auto
 
 if [ -e "${PYENV}/bin/activate" ]; then
-    echo "Activating python env"
-    source "${PYENV}/bin/activate"
+    [ -n "${VIRTUAL_ENV}" ] || {
+        echo "Activating python env"
+        source "${PYENV}/bin/activate"
+    }
 else
     echo "No Python environment found, bootstrapping"
     build_env.sh
@@ -19,9 +23,21 @@ fi
 }
 
 case "${1:-}" in
-    lab)
+    lab|notebook)
         cd /nb
-        exec jupyter lab --ip=0.0.0.0 --port="${NB_PORT}" --no-browser
+        [ -z "$SHELL" ] || {
+            export SHELL="$(which bash)"
+        }
+        exec jupyter "${1}" --ip=0.0.0.0 --port="${NB_PORT}" --no-browser
+    ;;
+
+    rebuild-env)
+        echo "Will wipe out environment in 5 seconds"
+        sleep 5
+        find $PYENV/ -maxdepth 1 ! -path $PYENV/ -exec rm -rf {} \+
+        echo "Building new environment"
+        build_env.sh
+        exit 0
     ;;
 
     check-code)
@@ -32,6 +48,13 @@ case "${1:-}" in
     "")
         ;;
 
+    help)
+        echo "Following commands are supported"
+        echo "  check-code  -- run datacube tests"
+        echo "  lab         -- launch jupyter lab"
+        echo "  notebook    -- launch jupyter notebook"
+        echo "  rebuild-env -- rebuild python environment"
+        ;;
     *)
         exec $@
         ;;
