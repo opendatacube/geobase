@@ -18,4 +18,4 @@ docker run \
        -e DATACUBE_CONFIG_PATH="/conf/datacube.conf" \
        -e DB_DATABASE=datacube \
        -p ${nb_port}:9988 \
-       geobase:local_sample
+       geobase:local_sandbox

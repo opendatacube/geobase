@@ -9,11 +9,11 @@ set -eu
     docker build --tag "kkodc/geobase:runner" ./base/runner
 }
 
-[ "${1-:}" == "sample" ] && {
+[ "${1-:}" == "sandbox" ] && {
     docker build \
            --build-arg nb_user=$USER \
            --build-arg nb_uid=$(id -u $USER) \
-           --tag "geobase:local_sample" ./sample
+           --tag "geobase:local_sandbox" ./sandbox
     exit 0
 }
 

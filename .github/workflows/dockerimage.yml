@@ -72,14 +72,14 @@ jobs:
         docker push kkodc/geobase:runner
         docker push kkodc/geobase:wheels
 
-    - name: Build and publish sample sandbox (only on sandbox branch)
+    - name: Build and publish sandbox (only on sandbox branch)
       if: github.ref == 'refs/heads/sandbox'
       run: |
         docker pull $build_base || true
         docker pull $base       || true
 
-        docker build --target builder --cache-from $build_base --tag $build_base sample
-        docker build --cache-from $base --cache-from $build_base --tag $base sample
+        docker build --target builder --cache-from $build_base --tag $build_base sandbox
+        docker build --cache-from $base --cache-from $build_base --tag $base sandbox
         docker push $build_base
         docker push $base
       env:
