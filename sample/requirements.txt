@@ -1,5 +1,6 @@
 # misc
-aiobotocore[boto3,awscli]
+aiobotocore[boto3,awscli]==0.11.0
+python-dateutil==2.8.0
 cython
 pyyaml
 ruamel.yaml
@@ -8,6 +9,7 @@ ciso8601
 psycopg2
 param
 dill
+python-ffmpeg
 
 # Scientific Stack
 numpy
@@ -16,12 +18,15 @@ pandas
 scikit-image
 scikit-learn
 numexpr
+numexpr3
 numba
 statsmodels
 Pillow
-dask
+dask[distributed]
 distributed
 xarray
+tensorflow
+tensorflow-gpu
 
 # Geo stack
 geopy
@@ -38,6 +43,7 @@ netcdf4
 rtree
 pandana
 pysal
+pyepsg
 mapclassify
 urbanaccess
 
@@ -49,10 +55,14 @@ ipyleaflet==0.11.1
 jupyter-server-proxy==1.1.0
 dask-labextension==1.0.3
 nbdime==1.1.0
-jupyterlab_code_formatter==0.5.0
+jupyterlab-code-formatter==0.5.0
 sidecar==0.3.0
 ipyevents==0.7.0
 ipycanvas==0.3.4
+jupyterlab-git
+jupyter-nbextensions-configurator
+jupyter-contrib-nbextensions
+jupyter-contrib-core
 jupyter-ui-poll
 nbgitpuller
 black
