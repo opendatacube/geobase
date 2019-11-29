@@ -22,7 +22,7 @@ RUN echo "Fetching wheels" \
 RUN echo "Building python environment" \
   && mkdir -p ${py_env_path} \
   && python3 -m venv ${py_env_path} \
-  && ${py_env_path}/bin/pip install --upgrade pip \
+  && ${py_env_path}/bin/pip install --upgrade pip setuptools \
   && ${py_env_path}/bin/pip install \
   --find-links=/wk/wheels \
   --no-cache-dir \
