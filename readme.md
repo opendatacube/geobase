@@ -6,9 +6,9 @@ kkodc/geobase
 
 Set of docker images to build recent versions of geospatial libraries and python environments that use them.
 
-- PROJ 5.2.0 and 6.2.0
+- PROJ 6.2.0
 - GEOS 3.7.2
-- GDAL 2.4.3
+- GDAL 3.0.2
 
 Overview
 ========
@@ -42,7 +42,6 @@ Folder structure:
 - `base/builder/Dockerfile` base builder image: `docker pull kkodc/geobase:builder`
   - `/dl/` contains downloaded sources
   - `/opt/` contains built `.deb` for geos/gdal/proj6
-  - `/opt/proj5` contains static proj5
 - `base/builder/gdal.opts` feature selection for compiled GDAL, removing features should be easy, adding might require installing extra build dependencies with `apt-get`, might also need to add those extra libs to `base/runner/Dockerfile`.
 
 
