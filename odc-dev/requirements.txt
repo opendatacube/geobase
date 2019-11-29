@@ -39,7 +39,7 @@ ciso8601
 psycopg2
 param
 dill
-python-ffmpeg
+ffmpeg-python
 
 # Scientific Stack
 numpy
