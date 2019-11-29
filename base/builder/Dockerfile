@@ -8,9 +8,15 @@ RUN apt-get update -y \
    fakeroot checkinstall \
 && rm -rf /var/lib/apt/lists/*
 
+# get a more recent cmake than what's in Ubuntu
+RUN wget https://github.com/Kitware/CMake/releases/download/v3.16.0/cmake-3.16.0-Linux-x86_64.sh \
+  -q -O /tmp/cmake-install.sh \
+  && chmod u+x /tmp/cmake-install.sh \
+  && /tmp/cmake-install.sh --skip-license --prefix=/usr/local/ \
+  && rm /tmp/cmake-install.sh
+
 RUN apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
-    cmake \
     sqlite3 \
     libjpeg-dev \
     libexpat-dev \
@@ -31,7 +37,6 @@ RUN apt-get update -y \
 # dev conveniences
 RUN apt-get update -y \
     && apt-get install -y --fix-missing --no-install-recommends \
-    cmake-curses-gui \
     htop \
     tmux \
     sudo \
@@ -47,18 +52,14 @@ COPY ./builder.sh /usr/local/bin/
 
 RUN echo "Downloading libs" \
   && mkdir -p /dl \
-  && builder.sh proj-5.2.0 /dl :download: \
   && builder.sh proj-6.2.0 /dl :download: \
   && builder.sh geos-3.7.2 /dl :download: \
-  && builder.sh gdal-2.4.3 /dl :download: \
+  && builder.sh gdal-3.0.2 /dl :download: \
   && echo "done"
 
 COPY ./build_openjpeg.sh /usr/local/bin/
 
 COPY ./build_proj.sh /usr/local/bin/
-RUN echo "Building proj 5" \
-  && STATIC=yes builder.sh proj-5.2.0 /dl/ /tmp/build /opt/proj5 \
-  && rm -rf /tmp/build
 RUN echo "Building proj 6" \
   && builder.sh proj-6.2.0 /dl/ /tmp/build \
   && dpkg -i /tmp/build/libproj_*deb \
@@ -75,7 +76,7 @@ RUN echo "Building geos" \
 COPY ./build_gdal.sh /usr/local/bin/
 COPY ./gdal.opts /opt/
 RUN echo "Building gdal" \
-&& FEATURES="$(cat /opt/gdal.opts)" builder.sh gdal-2.4.3 /dl /tmp/build /usr \
+&& FEATURES="$(cat /opt/gdal.opts)" builder.sh gdal-3.0.2 /dl /tmp/build /usr \
 && dpkg -i /tmp/build/libgdal_*deb \
 && mv /tmp/build/*deb /opt/ \
 && rm -rf /tmp/build

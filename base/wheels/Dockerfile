@@ -43,7 +43,8 @@ RUN echo "GDAL==$(gdal-config --version)" > /tmp/constraints.txt \
   GDAL \
   && rm /tmp/constraints.txt
 
-RUN pip wheel --no-cache-dir \
+RUN pip wheel \
+  --no-cache-dir \
   --no-binary=:all: \
   --no-build-isolation \
   --no-deps \
@@ -73,6 +74,13 @@ RUN pip wheel \
   --no-deps \
   h5py \
   netcdf4 \
+  && true
+
+RUN pip wheel \
+  --no-cache-dir \
+  --no-binary=:all:  \
+  --no-build-isolation \
+  --no-deps \
   pyyaml \
   ruamel.yaml \
   ruamel.yaml.clib \
@@ -80,34 +88,11 @@ RUN pip wheel \
   cffi \
   cftime \
   ciso8601 \
-  psycopg2
-
-RUN echo "Building scientific stack" \
-&& pip wheel \
-  --no-cache-dir \
-  --no-binary=:all:  \
-  --no-build-isolation \
-  --no-deps \
-  scipy \
-  pandas \
-  matplotlib \
-  scikit-learn \
-  numexpr \
-  numexpr3 \
-&& echo done
-
-RUN echo "Building scientific stack: image processing" \
-&& pip wheel \
-  --no-cache-dir \
-  --no-binary=:all:  \
-  --no-build-isolation \
-  --no-deps \
-  Pillow \
-  scikit-image \
-&& echo done
+  psycopg2 \
+  && true
 
 RUN echo "Building jupyter related libs" \
-&& pip wheel \
+  && pip wheel \
   --no-cache-dir \
   --no-binary=:all:  \
   --no-build-isolation \
@@ -119,5 +104,28 @@ RUN echo "Building jupyter related libs" \
   multidict \
   aiohttp \
   MarkupSafe \
-&& echo done
+  && true
 
+RUN echo "Building scientific stack" \
+  && pip wheel \
+  --no-cache-dir \
+  --no-binary=:all:  \
+  --no-build-isolation \
+  --no-deps \
+  scipy \
+  pandas \
+  matplotlib \
+  scikit-learn \
+  numexpr \
+  numexpr3 \
+  && echo done
+
+RUN echo "Building scientific stack: image processing" \
+  && pip wheel \
+  --no-cache-dir \
+  --no-binary=:all:  \
+  --no-build-isolation \
+  --no-deps \
+  Pillow \
+  scikit-image \
+  && echo done
