@@ -9,7 +9,7 @@ jupyter="${env_dir}/bin/jupyter"
 cc="/conf"
 python3 -m venv "${env_dir}"
 
-$pip install -U pip
+$pip install -U pip setuptools
 
 $pip install \
     --find-links=/wheels/ \
