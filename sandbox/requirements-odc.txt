@@ -14,7 +14,7 @@ odc_dscache
 odc_dtools
 otps
 fc
-hdstats
+hdstats>=0.1.3
 eodatasets3
 odc-apps-dc-tools
 odc-apps-cloud
