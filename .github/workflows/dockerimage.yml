@@ -57,7 +57,8 @@ jobs:
     - name: DockerHub Push
       if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/sandbox'
       run: |
-        docker login -u "${DOCKER_USER}" -p "${{ secrets.DockerPassword }}"
+        echo "Login to DockerHub as ${DOCKER_USER}"
+        echo "${{ secrets.DockerPassword }}" | docker login -u "${DOCKER_USER}" --password-stdin 
         docker push ${ORG}/${IMAGE}:builder
         docker push ${ORG}/${IMAGE}:runner
         docker push ${ORG}/${IMAGE}:wheels
