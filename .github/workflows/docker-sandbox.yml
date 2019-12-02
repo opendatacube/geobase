@@ -1,0 +1,48 @@
+name: Sandbox Docker
+
+on:
+  push:
+    paths:
+      - 'sandbox/**'
+      - '.github/workflows/docker-sandbox.yml'
+
+env:
+  ORG: opendatacube
+  IMAGE: sandbox
+  BUILDER_TAG: _build_cache
+  DOCKER_USER: gadockersvc
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Build Sandbox Docker
+      run: |
+        docker pull ${ORG}/${IMAGE}:latest         || true
+        docker pull ${ORG}/${IMAGE}:${BUILDER_TAG} || true
+
+        # build and cache first stage (builder)
+        docker build \
+          --target builder \
+          --cache-from ${ORG}/${IMAGE}:${BUILDER_TAG} \
+          --tag        ${ORG}/${IMAGE}:${BUILDER_TAG} \
+          ./sandbox/
+
+        # now build second stage making sure first stage is from cache
+        docker build \
+          --cache-from ${ORG}/${IMAGE}:${BUILDER_TAG} \
+          --cache-from ${ORG}/${IMAGE}:latest \
+          --tag        ${ORG}/${IMAGE}:latest \
+          ./sandbox/
+
+    - name: DockerHub Push
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/sandbox'
+      run: |
+        echo "Login to DockerHub as ${DOCKER_USER}"
+        echo "${{ secrets.DockerPassword }}" | docker login -u "${DOCKER_USER}" --password-stdin 
+        docker push ${ORG}/${IMAGE}:${BUILDER_TAG}
+        docker push ${ORG}/${IMAGE}:latest
