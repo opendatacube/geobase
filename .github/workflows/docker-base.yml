@@ -5,7 +5,7 @@ on:
     paths:
       - 'base/**'
       - 'local/**'
-      - '.github/workflows/**'
+      - '.github/workflows/docker-base.yml'
 
 
 env:
