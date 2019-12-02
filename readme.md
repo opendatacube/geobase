@@ -1,7 +1,7 @@
-kkodc/geobase
-=============
+opendatacube/geobase
+====================
 
-[![Actions Status](https://github.com/Kirill888/geobase/workflows/Docker%20Image%20CI/badge.svg)](https://github.com/Kirill888/geobase/actions)
+[![Actions Status](https://github.com/opendatacube/geobase/workflows/Docker%20Image%20CI/badge.svg)](https://github.com/opendatacube/geobase/actions)
 
 
 Set of docker images to build recent versions of geospatial libraries and python environments that use them.
@@ -21,10 +21,10 @@ Each step is described in more detail below. Overall structure is as following
 2. Download and build python wheels against compiled GDAL/GEOS/PROJ in `base/wheels`
 3. Include run-time libs needed by libs/wheels built in stages 1 and 2 in `base/runner`
 4. Use multi-stage building technique to construct docker image with customized python environment that suits your needs:
-   - Base `builder` stage on `kkodc/geobase:wheels`
+   - Base `builder` stage on `opendatacube/geobase:wheels`
    - Install any extra missing dev libs you need via `apt-get`
    - Construct python environment taking care to use pre-compiled wheels where possible
-   - Base runner stage on `kkodc/geobase:runner`
+   - Base runner stage on `opendatacube/geobase:runner`
    - Install any extra C/C++ run time libs via `apt-get`
    - Copy the entire python environment across from `builder` stage
 
@@ -39,7 +39,7 @@ Each step is described in more detail below. Overall structure is as following
 
 Folder structure:
 
-- `base/builder/Dockerfile` base builder image: `docker pull kkodc/geobase:builder`
+- `base/builder/Dockerfile` base builder image: `docker pull opendatacube/geobase:builder`
   - `/dl/` contains downloaded sources
   - `/opt/` contains built `.deb` for geos/gdal/proj6
 - `base/builder/gdal.opts` feature selection for compiled GDAL, removing features should be easy, adding might require installing extra build dependencies with `apt-get`, might also need to add those extra libs to `base/runner/Dockerfile`.
@@ -69,7 +69,7 @@ It is used as base for "runner dockers" that use multi-stage building technique:
 Mostly used as a development aid, useful for investigating compilation issues for new libs one would want to add.
 
 - `local/Dockerfile` build this locally with your `USER` and `UID`
-- It's basically just `kkodc/geobose:wheels` that runs by default with your user id and ads some data volumes
+- It's basically just `opendatacube/geobose:wheels` that runs by default with your user id and ads some data volumes
 
 Typical work flow:
 

@@ -67,8 +67,8 @@ Following files fully define python environment, they can be customized by devel
 
 Python environment build process is in several stages.
 
-1. `requirements.txt` is used during docker build to download and build all the python packages. Pre-built packages are stored in `/wheels` directory of the docker image. Some of those wheels will be already present in the base image `kkodc/geobase:wheels`.
-2. On the first run python environment will be bootstraped from those wheels
+1. `requirements.txt` is used during docker build to download and build all the python packages. Pre-built packages are stored in `/wheels` directory of the docker image. Some of those wheels will be already present in the base image `opendatacube/geobase:wheels`.
+2. On the first run python environment will be bootstrapped from those wheels
 3. More packages will be installed from `requirements-odc.txt`, these are mostly installed in edit mode
 4. Any jupyter lab extensions will be installed and compiled next
 5. Any jupyter lab extensions that have server component will be enabled

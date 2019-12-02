@@ -1,4 +1,4 @@
-FROM kkodc/geobase:builder as builder
+FROM opendatacube/geobase:builder as builder
 
 RUN mkdir -p /wheels
 WORKDIR /wheels

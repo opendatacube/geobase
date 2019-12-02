@@ -1,4 +1,4 @@
-FROM kkodc/geobase:wheels
+FROM opendatacube/geobase:wheels
 
 VOLUME ["/build"]
 VOLUME ["/dl"]

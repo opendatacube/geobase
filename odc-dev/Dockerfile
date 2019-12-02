@@ -1,4 +1,4 @@
-FROM kkodc/geobase:wheels
+FROM opendatacube/geobase:wheels
 
 RUN apt-get update -y \
 && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \

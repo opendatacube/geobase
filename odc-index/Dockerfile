@@ -1,7 +1,7 @@
 ARG py_env_path=/env
 
 # Basically env_builder stage should not need to change from service to service
-FROM kkodc/geobase:wheels as env_builder
+FROM opendatacube/geobase:wheels as env_builder
 ARG py_env_path
 
 RUN mkdir -p /conf \
@@ -32,12 +32,12 @@ RUN echo "Building python environment" \
   && echo "====================================================="
 
 # we need a better place for this thing, maybe even package it properly
-RUN curl -s -L https://raw.githubusercontent.com/Kirill888/geobase/51649f75d5250bd3bba08c6a283da0269f10c3b9/odc-dev/dc_config_render.py > /bin/dc_config_render.py \
+RUN curl -s -L https://raw.githubusercontent.com/opendatacube/geobase/51649f75d5250bd3bba08c6a283da0269f10c3b9/odc-dev/dc_config_render.py > /bin/dc_config_render.py \
 && chmod 755 /bin/dc_config_render.py
 
 
 # Runner stage might need changing if extra Ubuntu packages are needed for different purposes
-FROM kkodc/geobase:runner
+FROM opendatacube/geobase:runner
 ARG py_env_path
 
 # Copy python env

@@ -4,9 +4,9 @@ set -eu
 
 [ "${1-:}" == "base" ] && {
     # by default pull builder/wheels from docker hub
-    docker build --tag "kkodc/geobase:builder" ./base/builder
-    docker build --tag "kkodc/geobase:wheels" ./base/wheels
-    docker build --tag "kkodc/geobase:runner" ./base/runner
+    docker build --tag "opendatacube/geobase:builder" ./base/builder
+    docker build --tag "opendatacube/geobase:wheels" ./base/wheels
+    docker build --tag "opendatacube/geobase:runner" ./base/runner
 }
 
 [ "${1-:}" == "sandbox" ] && {

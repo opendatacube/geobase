@@ -1,6 +1,6 @@
 ARG py_env_path=/env
 
-FROM kkodc/geobase:wheels as builder
+FROM opendatacube/geobase:wheels as builder
 ARG py_env_path
 
 RUN mkdir -p /wk \
@@ -62,7 +62,7 @@ RUN echo "Adding odc-dependencies" \
   && echo "====================================================="
 
 
-FROM kkodc/geobase:runner
+FROM opendatacube/geobase:runner
 ARG py_env_path
 
 # Install Tini
