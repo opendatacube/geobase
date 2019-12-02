@@ -1,6 +1,11 @@
 name: Docker Image CI
 
-on: [push]
+on:
+  push:
+    paths:
+      - 'base/**'
+      - 'local/**'
+
 
 env:
   ORG: opendatacube
@@ -55,25 +60,10 @@ jobs:
         docker run --rm geobase:local gdal-config --formats
 
     - name: DockerHub Push
-      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/sandbox'
+      if: github.ref == 'refs/heads/master'
       run: |
         echo "Login to DockerHub as ${DOCKER_USER}"
         echo "${{ secrets.DockerPassword }}" | docker login -u "${DOCKER_USER}" --password-stdin 
         docker push ${ORG}/${IMAGE}:builder
         docker push ${ORG}/${IMAGE}:runner
         docker push ${ORG}/${IMAGE}:wheels
-
-    # TODO: delete this
-    - name: Build and publish sandbox (only on sandbox branch)
-      if: github.ref == 'refs/heads/sandbox'
-      run: |
-        docker pull $build_base || true
-        docker pull $base       || true
-
-        docker build --target builder --cache-from $build_base --tag $build_base sandbox
-        docker build --cache-from $base --cache-from $build_base --tag $base sandbox
-        docker push $build_base
-        docker push $base
-      env:
-        build_base: 'kkodc/sandbox:builder'
-        base: 'kkodc/sandbox:latest'
