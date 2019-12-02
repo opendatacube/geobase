@@ -17,7 +17,7 @@ Basic idea is to use multi-stage builds to minimize output docker image size and
 
 Each step is described in more detail below. Overall structure is as following
 
-1. Build C/C++ libs for PROJ,GEOS,GDAL in `base/builder`, package GEOS and GDAL in `.deb`
+1. Build C/C++ libs for PROJ,GEOS,GDAL in `base/builder`, package those in `.deb`
 2. Download and build python wheels against compiled GDAL/GEOS/PROJ in `base/wheels`
 3. Include run-time libs needed by libs/wheels built in stages 1 and 2 in `base/runner`
 4. Use multi-stage building technique to construct docker image with customized python environment that suits your needs:
