@@ -130,3 +130,5 @@ RUN echo "Building scientific stack: image processing" \
   Pillow \
   scikit-image \
   && echo done
+
+COPY env-build-tool /usr/local/bin/
