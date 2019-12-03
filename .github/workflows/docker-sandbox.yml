@@ -25,9 +25,9 @@ jobs:
         docker pull ${ORG}/${IMAGE}:latest         || true
         docker pull ${ORG}/${IMAGE}:${BUILDER_TAG} || true
 
-        # build and cache first stage (builder)
+        # build and cache first stage (env_builder)
         docker build \
-          --target builder \
+          --target env_builder \
           --cache-from ${ORG}/${IMAGE}:${BUILDER_TAG} \
           --tag        ${ORG}/${IMAGE}:${BUILDER_TAG} \
           ./sandbox/

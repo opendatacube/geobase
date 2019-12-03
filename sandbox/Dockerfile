@@ -1,7 +1,11 @@
 ARG py_env_path=/env
 
-FROM opendatacube/geobase:wheels as builder
+FROM opendatacube/geobase:wheels as env_builder
 ARG py_env_path
+
+# we need a better place for this thing, maybe even package it properly
+RUN curl -s -L https://raw.githubusercontent.com/opendatacube/geobase/51649f75d5250bd3bba08c6a283da0269f10c3b9/odc-dev/dc_config_render.py > /bin/dc_config_render.py \
+  && chmod 755 /bin/dc_config_render.py
 
 RUN mkdir -p /conf
 
@@ -38,15 +42,15 @@ COPY requirements-odc.txt /conf/
 RUN echo "Adding odc-dependencies" \
   && env-build-tool extend /conf/requirements-odc.txt /wheels ${py_env_path}
 
-
 FROM opendatacube/geobase:runner
-ARG py_env_path
 
 # Install Tini
-COPY --from=builder /bin/tini /bin/tini
+COPY --from=env_builder /bin/tini /bin/tini
+COPY --from=env_builder /bin/dc_config_render.py /bin/
 
 # Copy python env
-COPY --from=builder $py_env_path $py_env_path
+ARG py_env_path
+COPY --from=env_builder $py_env_path $py_env_path
 
 ENV LC_ALL=C.UTF-8
 ENV PATH=${py_env_path}/bin:$PATH
@@ -78,8 +82,8 @@ RUN curl -s -L https://www.johnvansickle.com/ffmpeg/old-releases/ffmpeg-4.1.4-am
   && mv /tmp/ffmpeg /usr/local/bin/ffmpeg \
   && rm -rf /tmp/* ffmpeg.tar.xz
 
-COPY docker-entrypoint.sh /usr/local/bin/
-ENTRYPOINT ["/bin/tini", "-s", "--", "docker-entrypoint.sh"]
+COPY with_bootstrap /usr/local/bin/
+ENTRYPOINT ["/bin/tini", "-s", "--", "with_bootstrap"]
 
 ARG nb_user=jovyan
 ARG nb_uid=1000
