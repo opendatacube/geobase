@@ -18,8 +18,9 @@ ARG py_env_path
 RUN env-build-tool new /conf/requirements.txt /wheels ${py_env_path}
 
 #--------------------------------------------------------------------------------
-# Runner stage might need changing if extra Ubuntu packages are needed for different purposes
-#--------------------------------------------------------------------------------
+# Runner stage might need changing if extra Ubuntu packages are needed for
+# different purposes
+# --------------------------------------------------------------------------------
 FROM opendatacube/geobase:runner
 ARG py_env_path
 
