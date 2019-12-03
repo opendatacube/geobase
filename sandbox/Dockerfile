@@ -67,6 +67,7 @@ RUN apt-get update -y \
   git \
   xz-utils \
   openssh-client \
+  graphviz \
   sudo \
 && rm -rf /var/lib/apt/lists/*
 
