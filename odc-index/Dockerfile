@@ -1,42 +1,26 @@
 ARG py_env_path=/env
 
 # Basically env_builder stage should not need to change from service to service
+#   only change content of requirement.txt
+#  1. Copy requirements.txt
+#  2. Download/compile/re-use all the wheels
+#  3. Build environment from wheels
 FROM opendatacube/geobase:wheels as env_builder
 ARG py_env_path
 
-RUN mkdir -p /conf \
-&& find /wheels -type f -name "*whl" > /conf/bins.txt
-
+RUN mkdir -p /conf
 COPY requirements.txt /conf/
-RUN echo "Fetching wheels" \
-  # get all the wheels from requirements.txt, making sure pre-compiled wheels are used
-  && pip wheel \
-  --no-cache-dir \
-  --find-links=/wheels \
-  -c /conf/bins.txt \
-  -r /conf/requirements.txt \
-  -w /wheels \
-  && ls -lh /wheels \
-  && echo "====================================================="
-
-RUN echo "Building python environment" \
-  && mkdir -p ${py_env_path} \
-  && python3 -m venv ${py_env_path} \
-  && ${py_env_path}/bin/pip install --upgrade pip \
-  && ${py_env_path}/bin/pip install \
-  --find-links=/wheels \
-  --no-cache-dir \
-  --no-index \
-  -c /conf/bins.txt \
-  -r /conf/requirements.txt \
-  && echo "====================================================="
+RUN env-build-tool wheels /conf/requirements.txt /wheels
+RUN env-build-tool new /conf/requirements.txt /wheels ${py_env_path}
 
 # we need a better place for this thing, maybe even package it properly
 RUN curl -s -L https://raw.githubusercontent.com/opendatacube/geobase/51649f75d5250bd3bba08c6a283da0269f10c3b9/odc-dev/dc_config_render.py > /bin/dc_config_render.py \
 && chmod 755 /bin/dc_config_render.py
 
 
+#--------------------------------------------------------------------------------
 # Runner stage might need changing if extra Ubuntu packages are needed for different purposes
+#--------------------------------------------------------------------------------
 FROM opendatacube/geobase:runner
 ARG py_env_path
 
