@@ -3,33 +3,15 @@ ARG py_env_path=/env
 FROM opendatacube/geobase:wheels as builder
 ARG py_env_path
 
-RUN mkdir -p /wk \
-&& find /wheels -type f -name "*whl" > /wk/bins.txt
+RUN mkdir -p /conf
 
-COPY requirements.txt /wk/
+COPY requirements.txt /conf/
 RUN echo "Fetching wheels" \
-  && mkdir -p /wk/wheels \
   # get all the wheels from requirements.txt, making sure pre-compiled wheels are used
-  && pip wheel \
-  --no-cache-dir \
-  --find-links=/wheels \
-  -c /wk/bins.txt \
-  -r /wk/requirements.txt \
-  -w /wk/wheels \
-  && ls -lh /wk/wheels \
-  && echo "====================================================="
+  && env-build-tool wheels /conf/requirements.txt /wheels
 
 RUN echo "Building python environment" \
-  && mkdir -p ${py_env_path} \
-  && python3 -m venv ${py_env_path} \
-  && ${py_env_path}/bin/pip install --upgrade pip setuptools \
-  && ${py_env_path}/bin/pip install \
-  --find-links=/wk/wheels \
-  --no-cache-dir \
-  --no-index \
-  -c /wk/bins.txt \
-  -r /wk/requirements.txt \
-  && echo "====================================================="
+  && env-build-tool new /conf/requirements.txt /wheels ${py_env_path}
 
 ENV PATH=${py_env_path}/bin:$PATH
 
@@ -51,15 +33,10 @@ RUN echo "Adding jupyter lab extensions" \
   && jupyter labextension list \
   && echo "...done"
 
-COPY requirements-odc.txt /wk/
+COPY requirements-odc.txt /conf/
 
 RUN echo "Adding odc-dependencies" \
-  && ${py_env_path}/bin/pip install \
-  --find-links=/wk/wheels \
-  --no-cache-dir \
-  -c /wk/bins.txt \
-  -r /wk/requirements-odc.txt \
-  && echo "====================================================="
+  && env-build-tool extend /conf/requirements-odc.txt /wheels ${py_env_path}
 
 
 FROM opendatacube/geobase:runner
