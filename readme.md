@@ -10,6 +10,33 @@ Set of docker images to build recent versions of geospatial libraries and python
 - GEOS 3.7.2
 - GDAL 3.0.2
 
+Quick Start
+===========
+
+1. Create `requirements.txt`
+
+```
+rasterio[s3]
+pyproj
+```
+
+2. Create `Dockerfile`
+
+```docker
+FROM opendatacube/geobase:wheels as env_builder
+COPY requirements.txt /
+RUN env-build-tool wheels /requirements.txt /wheels
+RUN env-build-tool new /requirements.txt /wheels /env
+
+
+FROM opendatacube/geobase:runner
+COPY --from=env_builder /env /env
+ENV LC_ALL=C.UTF-8
+ENV PATH="/env/bin:${PATH}"
+```
+
+See [sample](sample/) directory for more information.
+
 Overview
 ========
 
