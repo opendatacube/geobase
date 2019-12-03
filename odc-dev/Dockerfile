@@ -41,20 +41,7 @@ RUN mkdir -p /conf \
 #   this will just download/build/re-use existing wheels
 #   /wheels/ should contain all the wheels needed to construct base environment
 COPY requirements.txt /conf/
-RUN echo "Fetching wheels" \
-&& mkdir -p /tmp/wheels \
-# get all the wheels from requirements.txt, making sure pre-compiled wheels are used
-&& pip wheel \
-  --no-cache-dir \
-  --find-links=/wheels \
-  -c /conf/bins.txt \
-  -r /conf/requirements.txt \
-  -w /tmp/wheels \
-&& mv /tmp/wheels/* /wheels/ \
-&& rmdir /tmp/wheels \
-&& find /wheels -type f -name "*whl" > /conf/bins.txt \
-&& ls -lh /wheels \
-&& echo "====================================================="
+RUN env-build-tool wheels /conf/requirements.txt
 
 # this will be used by integration tests
 COPY datacube_integration.conf /conf/
