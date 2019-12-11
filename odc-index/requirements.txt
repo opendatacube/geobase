@@ -6,3 +6,8 @@ python-dateutil==2.8.0
 datacube[performance,distributed]
 odc-apps-cloud[GCP,THREDDS]
 odc-apps-dc-tools
+git+https://github.com/opendatacube/datacube-ows.git
+
+# used by update_ranges.py (remove when setup.py is fixed in datacube-ows)
+colour
+timezonefinderL
