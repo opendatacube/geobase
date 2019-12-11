@@ -21,6 +21,12 @@ for volume in ${home_volume} ${env_volume}; do
     }
 done
 
+# only port forward if running lab
+port_forwards=""
+if [ "$1" == "lab" ] || [ "$1" == "notebook" ] ; then
+    port_forwards="-p ${nb_port}:${nb_port}"
+fi
+
 exec docker run \
        -ti --rm \
        --hostname "odc-dev-dkr" \
@@ -29,5 +35,5 @@ exec docker run \
        -v ${env_volume}:"/env" \
        -v ${home_volume}:"/home/${USER}" \
        -v /run/postgresql:/run/postgresql \
-       -p ${nb_port}:${nb_port} \
+       $port_forwards \
        "${image_name}" $@
