@@ -1,22 +1,23 @@
 #!/bin/bash
 
+activate_env () {
+    if [ -e "${PYENV}/bin/activate" ]; then
+        [ -n "${VIRTUAL_ENV}" ] || {
+            echo "Activating python env"
+            source "${PYENV}/bin/activate"
+        }
+    else
+        echo "No Python environment found, bootstrapping"
+        build_env.sh
+        source "${PYENV}/bin/activate"
+    fi
+}
+
 [ -n "$GDAL_DATA" ] || {
     export GDAL_DATA=$(gdal-config --datadir)
 }
 
 dc_config_render.py auto
-
-if [ -e "${PYENV}/bin/activate" ]; then
-    [ -n "${VIRTUAL_ENV}" ] || {
-        echo "Activating python env"
-        source "${PYENV}/bin/activate"
-    }
-else
-    echo "No Python environment found, bootstrapping"
-    build_env.sh
-    source "${PYENV}/bin/activate"
-fi
-
 
 [ -e "$HOME/.datacube_integration.conf" ] || {
     cp /conf/datacube_integration.conf "$HOME/.datacube_integration.conf"
@@ -28,6 +29,7 @@ case "${1:-}" in
         [ -z "$SHELL" ] || {
             export SHELL="$(which bash)"
         }
+        activate_env
         exec jupyter "${1}" --ip=0.0.0.0 --port="${NB_PORT}" --no-browser
     ;;
 
@@ -41,6 +43,7 @@ case "${1:-}" in
     ;;
 
     check-code)
+        activate_env
         cd /src/datacube-core
         exec ./check-code.sh integration_tests
         ;;
@@ -56,6 +59,7 @@ case "${1:-}" in
         echo "  rebuild-env -- rebuild python environment"
         ;;
     *)
+        activate_env
         exec $@
         ;;
 esac
