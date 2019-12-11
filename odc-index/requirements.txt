@@ -1,6 +1,7 @@
 # s3/boto, let aiobotocore decide botocore/boto3/awscli versions
 aiobotocore[boto3,awscli]==0.11.0
 python-dateutil==2.8.0
+thredds_crawler
 
 --extra-index-url="https://packages.dea.ga.gov.au"
 datacube[performance,distributed]
