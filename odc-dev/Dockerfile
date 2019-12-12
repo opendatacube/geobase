@@ -40,21 +40,21 @@ RUN mkdir -p /conf \
 # First process base requirements
 #   this will just download/build/re-use existing wheels
 #   /wheels/ should contain all the wheels needed to construct base environment
-COPY requirements.txt /conf/
+COPY conf/requirements.txt /conf/
 RUN env-build-tool wheels /conf/requirements.txt
 
 # this will be used by integration tests
-COPY datacube_integration.conf /conf/
+COPY assets/datacube_integration.conf /conf/
 
 # install scripts
-COPY dc_config_render.py /bin/
-COPY with_bootstrap      /bin/
-COPY build_env.sh        /bin/
+COPY assets/dc_config_render.py /bin/
+COPY assets/with_bootstrap      /bin/
+COPY assets/build_env.sh        /bin/
 
 # copy over further environment configs
-COPY requirements-odc.txt      /conf/
-COPY lab-extensions.txt        /conf/
-COPY lab-server-extensions.txt /conf/
+COPY conf/requirements-odc.txt      /conf/
+COPY conf/lab-extensions.txt        /conf/
+COPY conf/lab-server-extensions.txt /conf/
 
 USER $nb_user
 

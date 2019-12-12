@@ -55,7 +55,7 @@ Entry point behaviour is defined in `with_bootstrap` bash script. It does the fo
 
 ### Python Environment
 
-Following files fully define python environment, they can be customized by developer to include more dependencies, or add more libraries in edit mode.
+Following files in `./conf/` directory fully define python environment, they can be customized by the developer to include more dependencies, or add more libraries in edit mode.
 
 
 | Files                        | Description                                                     |
