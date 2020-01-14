@@ -44,11 +44,6 @@ Entry point behaviour is defined in `with_bootstrap` bash script. It does the fo
 - Setup some environment variables (`GDAL_DATA` for example)
 - Build python environment if not present
 - Activate python environment
-- Possibly generate datacube configuration file from environment variables (see `dc_config_render.py`)
-  - Compatible with current `datacube-core` docker environment variables `DB_HOSTNAME,DB_USERNAME,...`
-  - Supports new style `DATACUBE_DB_URL="postgresql://user:password@host:port/database"`
-  - Will write to file pointed by `DATACUBE_CONFIG_PATH` or to `~/.datacube.conf`
-  - Will not overwrite existing file
 - Generate `~/.datacube_integration.conf` (if doesn't exist already), for running integration tests
 - Run one of the named commands `lab,notebook,rebuild-env,check-code,help` or run arbitrary program available within the docker image
 
