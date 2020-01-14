@@ -68,6 +68,10 @@ RUN apt-get update -y \
   openssh-client \
   graphviz \
   sudo \
+  iproute2 \
+  iputils-ping \
+  net-tools \
+  simpleproxy \
 && rm -rf /var/lib/apt/lists/*
 
 #Install ffmpeg static binary
