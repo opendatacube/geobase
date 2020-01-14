@@ -3,10 +3,6 @@ ARG py_env_path=/env
 FROM opendatacube/geobase:wheels as env_builder
 ARG py_env_path
 
-# we need a better place for this thing, maybe even package it properly
-RUN curl -s -L https://raw.githubusercontent.com/opendatacube/geobase/51649f75d5250bd3bba08c6a283da0269f10c3b9/odc-dev/dc_config_render.py > /bin/dc_config_render.py \
-  && chmod 755 /bin/dc_config_render.py
-
 RUN mkdir -p /conf
 
 COPY requirements.txt /conf/
@@ -46,7 +42,6 @@ FROM opendatacube/geobase:runner
 
 # Install Tini
 COPY --from=env_builder /bin/tini /bin/tini
-COPY --from=env_builder /bin/dc_config_render.py /bin/
 
 # Copy python env
 ARG py_env_path

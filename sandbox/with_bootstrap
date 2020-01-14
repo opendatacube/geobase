@@ -4,8 +4,6 @@
     export GDAL_DATA=$(gdal-config --datadir)
 }
 
-dc_config_render.py auto
-
 [ $# -eq 0 ] || {
   exec "$@"
 }
