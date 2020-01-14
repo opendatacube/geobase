@@ -95,6 +95,7 @@ RUN useradd -m -s /bin/bash -N -g $nb_gid -u $nb_uid $nb_user \
 RUN install --owner "${nb_user}" -D -d /conf
 
 USER $nb_user
+ENV SHELL=bash
 
 VOLUME ["/home/$nb_user"]
 VOLUME ['/run/postgresql']
