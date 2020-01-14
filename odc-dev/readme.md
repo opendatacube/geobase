@@ -80,7 +80,7 @@ One can configure datacube to access whatever external database via usual mechan
 
 ```
 # install database server and client
-sudo apt install postgresql-10 postgresql-client-10
+sudo apt install postgresql postgresql-10 postgresql-client-10
 
 # add yourself as admin db user
 sudo -u postgres createuser --superuser $USER
