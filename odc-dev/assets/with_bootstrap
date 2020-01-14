@@ -17,8 +17,6 @@ activate_env () {
     export GDAL_DATA=$(gdal-config --datadir)
 }
 
-dc_config_render.py auto
-
 [ -e "$HOME/.datacube_integration.conf" ] || {
     cp /conf/datacube_integration.conf "$HOME/.datacube_integration.conf"
 }

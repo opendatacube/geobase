@@ -7,10 +7,6 @@ ARG py_env_path=/env
 #  3. Build environment from wheels
 FROM opendatacube/geobase:wheels as env_builder
 
-# we need a better place for this thing, maybe even package it properly
-RUN curl -s -L https://raw.githubusercontent.com/opendatacube/geobase/51649f75d5250bd3bba08c6a283da0269f10c3b9/odc-dev/dc_config_render.py > /bin/dc_config_render.py \
-&& chmod 755 /bin/dc_config_render.py
-
 RUN mkdir -p /conf
 COPY requirements.txt /conf/
 RUN env-build-tool wheels /conf/requirements.txt /wheels
@@ -24,10 +20,9 @@ RUN env-build-tool new /conf/requirements.txt /wheels ${py_env_path}
 FROM opendatacube/geobase:runner
 ARG py_env_path
 
-# Copy python env, tini and dc_config_render.py
+# Copy python env, tini
 COPY --from=env_builder $py_env_path $py_env_path
 COPY --from=env_builder /bin/tini /bin/tini
-COPY --from=env_builder /bin/dc_config_render.py /bin/
 
 # This step might require customization
 RUN apt-get update -y \

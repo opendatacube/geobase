@@ -47,7 +47,6 @@ RUN env-build-tool wheels /conf/requirements.txt
 COPY assets/datacube_integration.conf /conf/
 
 # install scripts
-COPY assets/dc_config_render.py /bin/
 COPY assets/with_bootstrap      /bin/
 COPY assets/build_env.sh        /bin/
 
