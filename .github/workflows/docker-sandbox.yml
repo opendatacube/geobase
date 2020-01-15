@@ -1,6 +1,7 @@
 name: Sandbox Docker
 
 on:
+  pull_request:
   push:
     paths:
       - 'sandbox/**'
@@ -40,7 +41,12 @@ jobs:
           ./sandbox/
 
     - name: DockerHub Push
-      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/sandbox'
+      if: |
+        github.event_name == 'push' && (
+        github.ref == 'refs/heads/master'
+        || github.ref == 'refs/heads/sandbox'
+        )
+
       run: |
         echo "Login to DockerHub as ${DOCKER_USER}"
         echo "${{ secrets.DockerPassword }}" | docker login -u "${DOCKER_USER}" --password-stdin 
