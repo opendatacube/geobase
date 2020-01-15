@@ -1,6 +1,7 @@
 name: Docker Image CI
 
 on:
+  pull_request:
   push:
     paths:
       - 'base/**'
@@ -61,7 +62,11 @@ jobs:
         docker run --rm geobase:local gdal-config --formats
 
     - name: DockerHub Push
-      if: github.ref == 'refs/heads/master'
+      if: |
+        github.event_name == 'push' && (
+        github.ref == 'refs/heads/master'
+        )
+
       run: |
         echo "Login to DockerHub as ${DOCKER_USER}"
         echo "${{ secrets.DockerPassword }}" | docker login -u "${DOCKER_USER}" --password-stdin 
