@@ -23,16 +23,9 @@ RUN curl -s -L -O https://github.com/krallin/tini/releases/download/v0.18.0/tini
 
 
 # numpy and cython are often needed
-RUN pip wheel --no-cache-dir \
-  --no-binary=:all: \
-  numpy \
-  Cython
-
 RUN pip install \
   --no-cache-dir \
-  --find-links . \
-  --only-binary=numpy,cython \
-  numpy cython
+  numpy Cython
 
 RUN echo "GDAL==$(gdal-config --version)" > /tmp/constraints.txt \
   && pip wheel \
@@ -106,29 +99,5 @@ RUN echo "Building jupyter related libs" \
   aiohttp \
   MarkupSafe \
   && true
-
-RUN echo "Building scientific stack" \
-  && pip wheel \
-  --no-cache-dir \
-  --no-binary=:all:  \
-  --no-build-isolation \
-  --no-deps \
-  scipy \
-  pandas \
-  matplotlib \
-  scikit-learn \
-  numexpr \
-  numexpr3 \
-  && echo done
-
-RUN echo "Building scientific stack: image processing" \
-  && pip wheel \
-  --no-cache-dir \
-  --no-binary=:all:  \
-  --no-build-isolation \
-  --no-deps \
-  Pillow \
-  scikit-image \
-  && echo done
 
 COPY env-build-tool /usr/local/bin/
