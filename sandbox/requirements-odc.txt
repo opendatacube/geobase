@@ -18,3 +18,7 @@ hdstats>=0.1.3
 eodatasets3
 odc-apps-dc-tools
 odc-apps-cloud
+
+# misc extras: move them to main req files later
+tqdm
+ipyfilechooser
