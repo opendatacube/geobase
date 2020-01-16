@@ -70,34 +70,4 @@ RUN pip wheel \
   netcdf4 \
   && true
 
-RUN pip wheel \
-  --no-cache-dir \
-  --no-binary=:all:  \
-  --no-build-isolation \
-  --no-deps \
-  pyyaml \
-  ruamel.yaml \
-  ruamel.yaml.clib \
-  pyrsistent \
-  cffi \
-  cftime \
-  ciso8601 \
-  psycopg2 \
-  && true
-
-RUN echo "Building jupyter related libs" \
-  && pip wheel \
-  --no-cache-dir \
-  --no-binary=:all:  \
-  --no-build-isolation \
-  --no-deps \
-  pyzmq \
-  msgpack \
-  tornado \
-  yarl \
-  multidict \
-  aiohttp \
-  MarkupSafe \
-  && true
-
 COPY env-build-tool /usr/local/bin/
