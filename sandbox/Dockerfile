@@ -40,16 +40,6 @@ RUN echo "Adding odc-dependencies" \
 
 FROM opendatacube/geobase:runner
 
-# Install Tini
-COPY --from=env_builder /bin/tini /bin/tini
-
-# Copy python env
-ARG py_env_path
-COPY --from=env_builder $py_env_path $py_env_path
-
-ENV LC_ALL=C.UTF-8
-ENV PATH=${py_env_path}/bin:$PATH
-
 RUN apt-get update -y \
 && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
   # developer convenience
@@ -80,6 +70,16 @@ RUN curl -s -L https://www.johnvansickle.com/ffmpeg/old-releases/ffmpeg-4.1.4-am
   && tar xvJ --strip-components=1 -C /tmp < ffmpeg.tar.xz \
   && mv /tmp/ffmpeg /usr/local/bin/ffmpeg \
   && rm -rf /tmp/* ffmpeg.tar.xz
+
+# Install Tini
+COPY --from=env_builder /bin/tini /bin/tini
+
+# Copy python env
+ARG py_env_path
+COPY --from=env_builder $py_env_path $py_env_path
+
+ENV LC_ALL=C.UTF-8
+ENV PATH=${py_env_path}/bin:$PATH
 
 COPY with_bootstrap /usr/local/bin/
 ENTRYPOINT ["/bin/tini", "-s", "--", "with_bootstrap"]
