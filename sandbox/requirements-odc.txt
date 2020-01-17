@@ -22,3 +22,4 @@ odc-apps-cloud
 # misc extras: move them to main req files later
 tqdm
 ipyfilechooser
+pydotplus
