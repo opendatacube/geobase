@@ -2,6 +2,10 @@ name: Sandbox Docker
 
 on:
   pull_request:
+    paths:
+      - 'sandbox/**'
+      - '.github/workflows/docker-sandbox.yml'
+
   push:
     paths:
       - 'sandbox/**'
@@ -21,11 +25,13 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - name: Build Sandbox Docker
+    - name: Pull Cache 
       run: |
         docker pull ${ORG}/${IMAGE}:latest         || true
         docker pull ${ORG}/${IMAGE}:${BUILDER_TAG} || true
 
+    - name: Build Sandbox Docker
+      run: |
         # build and cache first stage (env_builder)
         docker build \
           --target env_builder \
