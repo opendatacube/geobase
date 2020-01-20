@@ -1,5 +1,4 @@
 # ODC/DEA
-#  bump 20-jan-2020
 --extra-index-url="https://packages.dea.ga.gov.au"
 --no-binary=fc,hdstats
 datacube[performance]
@@ -19,8 +18,3 @@ hdstats>=0.1.3
 eodatasets3
 odc-apps-dc-tools
 odc-apps-cloud
-
-# misc extras: move them to main req files later
-tqdm
-ipyfilechooser
-pydotplus
