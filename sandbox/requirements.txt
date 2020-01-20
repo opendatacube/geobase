@@ -12,6 +12,7 @@ psycopg2
 param
 dill
 ffmpeg-python
+tqdm
 
 # Scientific Stack
 numpy
@@ -86,3 +87,5 @@ geoviews
 holoviews
 cartopy
 seaborn
+ipyfilechooser
+pydotplus
