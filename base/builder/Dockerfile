@@ -54,7 +54,7 @@ RUN echo "Downloading libs" \
   && mkdir -p /dl \
   && builder.sh proj-6.2.0 /dl :download: \
   && builder.sh geos-3.7.2 /dl :download: \
-  && builder.sh gdal-3.0.3 /dl :download: \
+  && builder.sh gdal-3.0.4 /dl :download: \
   && echo "done"
 
 COPY ./build_openjpeg.sh /usr/local/bin/
