@@ -1,24 +1,21 @@
 #!/bin/bash
 
-set -euo pipefail
+set -o errexit
+set -o noclobber
+set -o pipefail
+set -o nounset
 
 versions='
-openjpeg 2.3.1 https://github.com/uclouvain/openjpeg/archive/v{{version}}.tar.gz
-geos     3.7.2 https://github.com/libgeos/geos/archive/{{version}}.tar.gz
-proj     6.2.0 https://github.com/OSGeo/proj/releases/download/{{version}}/proj-{{version}}.tar.gz
-gdal     3.0.4 https://download.osgeo.org/gdal/{{version}}/gdal-{{version}}.tar.gz
+openjpeg  https://github.com/uclouvain/openjpeg/archive/v{{version}}.tar.gz
+geos      https://github.com/libgeos/geos/archive/{{version}}.tar.gz
+proj      https://github.com/OSGeo/proj/releases/download/{{version}}/proj-{{version}}.tar.gz
+gdal      https://download.osgeo.org/gdal/{{version}}/gdal-{{version}}.tar.gz
 '
-
-
-get_version () {
-    local lib="${1}"
-    echo "${versions}" | awk "/^${lib} /"'{print $2}'
-}
 
 get_url () {
     local lib="${1}"
-    local v=${2:-$(get_version "${lib}")}
-    local uu=$(echo "${versions}" | awk "/^${lib} /"'{print $3}')
+    local v="${2}"
+    local uu=$(echo "${versions}" | awk "/^${lib} /"'{print $2}')
     echo $uu | sed "s/{{version}}/${v}/g"
 }
 
@@ -28,7 +25,7 @@ all_libs () {
 
 download () {
     local lib="${1}"
-    local v=${2:-$(get_version "${lib}")}
+    local v="${2}"
     local dl="${3}"
     local u=$(get_url "${lib}" "${v}")
     local dst="${dl}/${lib}-${v}.tar.gz"
@@ -43,7 +40,7 @@ download () {
 
 unpack () {
     local lib="${1}"
-    local v=${2:-$(get_version "${lib}")}
+    local v="${2}"
     local dl="${3}"
     local src="${dl}/${lib}-${v}.tar.gz"
     local dst="${4:-.}/${lib}-${v}"
@@ -64,8 +61,6 @@ build_lib () {
     local bdir="${3:-./}"
     local prefix="${4:-/usr}"
     local build_script="build_${lib}.sh"
-
-    v=${v:=$(get_version $lib)}
 
     [ -d "${dl}" ] || mkdir -p "${dl}"
     [ -d "${bdir}" ] || mkdir -p "${bdir}"

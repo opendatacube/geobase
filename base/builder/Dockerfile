@@ -50,33 +50,34 @@ RUN pip3 install --no-cache --upgrade pip \
 
 COPY ./builder.sh /usr/local/bin/
 
-RUN echo "Downloading libs" \
-  && mkdir -p /dl \
-  && builder.sh proj-6.2.0 /dl :download: \
-  && builder.sh geos-3.7.2 /dl :download: \
-  && builder.sh gdal-3.0.4 /dl :download: \
-  && echo "done"
-
+RUN mkdir -p /dl
 COPY ./build_openjpeg.sh /usr/local/bin/
 
 COPY ./build_proj.sh /usr/local/bin/
+ARG V_PROJ=6.2.0
+RUN builder.sh proj-${V_PROJ} /dl :download: \
 RUN echo "Building proj 6" \
-  && builder.sh proj-6.2.0 /dl/ /tmp/build \
+  && builder.sh proj-${V_PROJ} /dl/ /tmp/build \
   && dpkg -i /tmp/build/libproj_*deb \
   && mv /tmp/build/*deb /opt/ \
   && rm -rf /tmp/build
 
+ARG V_GEOS=3.7.2
 COPY ./build_geos.sh /usr/local/bin/
+RUN builder.sh geos-${V_GEOS} /dl :download:
 RUN echo "Building geos" \
-  && builder.sh geos /dl /tmp/build \
+  && builder.sh geos-${V_GEOS} /dl /tmp/build \
   && dpkg -i /tmp/build/libgeos_*deb \
   && mv /tmp/build/*deb /opt/ \
   && rm -rf /tmp/build
 
 COPY ./build_gdal.sh /usr/local/bin/
 COPY ./gdal.opts /opt/
+
+ARG V_GDAL=3.0.4
+RUN builder.sh gdal-${V_GDAL} /dl :download: \
 RUN echo "Building gdal" \
-&& FEATURES="$(cat /opt/gdal.opts)" builder.sh gdal-3.0.3 /dl /tmp/build /usr \
+&& FEATURES="$(cat /opt/gdal.opts)" builder.sh gdal-${V_GDAL} /dl /tmp/build /usr \
 && dpkg -i /tmp/build/libgdal_*deb \
 && mv /tmp/build/*deb /opt/ \
 && rm -rf /tmp/build
