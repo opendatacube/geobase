@@ -74,14 +74,18 @@ Folder structure:
 
 ## base/wheels
 
-Next layer up from `builder`. Downloads and builds a collection of geospatial/numeric and related python wheels:
+Next layer up from `builder`.
+
+1. Common python config
+2. Includes common binaries like `tini`
+3. Some scripts for bootstrapping python environments easily
+
+Downloads and builds a collection of geospatial/numeric and related python wheels:
 
 - GEO: GDAL, shapely, pyproj, rasterio, fiona, cartopy
-- Numeric: scipy, pandas, scikit-image, numexpr, matplotlib
-- IO: h5py, netcdf4, pyzmq, tornado, aiohttp
-- MISC, covers categories like: yaml, time, db, serialization, jupyter related libs
+- IO: h5py, netcdf4
 
-This layer is used a `builder` base in the multi-stage build.
+This layer is used as a `env_builder` base in the multi-stage build.
 
 
 ## base/runner

@@ -67,7 +67,6 @@ RUN pip wheel \
   --no-build-isolation \
   --no-deps \
   h5py \
-  netcdf4 \
-  && true
+  netcdf4
 
 COPY env-build-tool /usr/local/bin/
