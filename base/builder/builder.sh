@@ -34,7 +34,7 @@ download () {
         echo "Fetching $lib $v"
         echo "  $dst <= $u"
 
-        wget -O "${dst}" "${u}"
+        wget --quiet -O "${dst}" "${u}"
     fi
 }
 
