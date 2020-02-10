@@ -94,8 +94,8 @@ ENTRYPOINT ["/bin/tini", "-s", "--", "with_bootstrap"]
 
 USER $nb_user
 
-VOLUME ["/home/$nb_user"]
-VOLUME ['/run/postgresql']
+VOLUME ["/home/$nb_user", "/run/postgresql"]
+
 WORKDIR "/home/$nb_user"
 
 EXPOSE 9988
