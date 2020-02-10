@@ -79,6 +79,7 @@ ARG py_env_path
 COPY --from=env_builder $py_env_path $py_env_path
 
 ENV LC_ALL=C.UTF-8
+ENV SHELL=bash
 ENV PATH=${py_env_path}/bin:$PATH
 
 COPY with_bootstrap /usr/local/bin/
@@ -88,18 +89,20 @@ ARG nb_user=jovyan
 ARG nb_uid=1000
 ARG nb_gid=100
 
-RUN useradd -m -s /bin/bash -N -g $nb_gid -u $nb_uid $nb_user \
-&& adduser ${nb_user} sudo \
-&& echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN useradd -m -s /bin/bash -N -g $nb_gid -u $nb_uid $nb_user
 
-RUN install --owner "${nb_user}" -D -d /conf
+ARG WITH_SUDO=0
+RUN if [ "$WITH_SUDO" = "1" ]; then \
+  adduser ${nb_user} sudo \
+  && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+;fi
 
 USER $nb_user
-ENV SHELL=bash
 
 VOLUME ["/home/$nb_user"]
 VOLUME ['/run/postgresql']
 WORKDIR "/home/$nb_user"
+
 EXPOSE 9988
 
 CMD ["jupyter", "lab", \
