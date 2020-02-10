@@ -1,4 +1,4 @@
-name: Sandbox Docker
+name: sandbox
 
 on:
   pull_request:

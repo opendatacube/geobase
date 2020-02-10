@@ -1,7 +1,7 @@
 opendatacube/geobase
 ====================
 
-[![Actions Status](https://github.com/opendatacube/geobase/workflows/Docker%20Image%20CI/badge.svg)](https://github.com/opendatacube/geobase/actions)
+[![Actions Status](https://github.com/opendatacube/geobase/workflows/build/badge.svg)](https://github.com/opendatacube/geobase/actions)
 
 
 Set of docker images to build recent versions of geospatial libraries and python environments that use them.
