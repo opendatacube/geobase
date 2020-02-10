@@ -43,7 +43,15 @@ RUN pip3 wheel \
   --no-binary=:all:  \
   --no-build-isolation \
   --no-deps \
+  netcdf4 \
+  && rm -rf ~/.cache/pip
+
+RUN pip3 wheel \
+  --no-cache-dir \
+  --no-binary=:all:  \
+  --no-build-isolation \
+  --no-deps \
   h5py \
-  netcdf4
+  && rm -rf ~/.cache/pip
 
 COPY env-build-tool /usr/local/bin/

@@ -63,7 +63,6 @@ build_lib () {
     local build_script="build_${lib}.sh"
 
     [ -d "${dl}" ] || mkdir -p "${dl}"
-    [ -d "${bdir}" ] || mkdir -p "${bdir}"
     echo "Building: ${lib}::<${v}>   paths: dl:$dl build:$bdir prefix:$prefix"
 
     download "${lib}" "${v}" "${dl}"
@@ -72,6 +71,7 @@ build_lib () {
         return 0
     fi
 
+    [ -d "${bdir}" ] || mkdir -p "${bdir}"
     unpack "${lib}" "${v}" "${dl}" "${bdir}"
     (cd "${bdir}" \
          && "${build_script}" "${lib}-${v}" "${v}" "${prefix}")
