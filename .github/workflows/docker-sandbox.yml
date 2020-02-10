@@ -2,11 +2,15 @@ name: Sandbox Docker
 
 on:
   pull_request:
+    branches:
+      - sandbox
     paths:
       - 'sandbox/**'
       - '.github/workflows/docker-sandbox.yml'
 
   push:
+    branches:
+      - sandbox
     paths:
       - 'sandbox/**'
       - '.github/workflows/docker-sandbox.yml'
