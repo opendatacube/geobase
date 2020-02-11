@@ -81,12 +81,6 @@ ARG nb_gid=100
 
 RUN useradd -m -s /bin/bash -N -g $nb_gid -u $nb_uid $nb_user
 
-ARG WITH_SUDO=0
-RUN if [ "$WITH_SUDO" = "1" ]; then \
-  adduser ${nb_user} sudo \
-  && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
-;fi
-
 # Copy python env
 ARG py_env_path
 COPY --chown=1000:100 --from=env_builder $py_env_path $py_env_path
@@ -98,8 +92,6 @@ ENV PATH=${py_env_path}/bin:$PATH
 COPY with_bootstrap /usr/local/bin/
 ENTRYPOINT ["/bin/tini", "-s", "--", "with_bootstrap"]
 
-USER $nb_user
-
 VOLUME ["/home/$nb_user", "/run/postgresql"]
 
 WORKDIR "/home/$nb_user"
@@ -110,3 +102,11 @@ CMD ["jupyter", "lab", \
 "--ip=0.0.0.0", \
 "--port=9988", \
 "--no-browser"]
+
+ARG WITH_SUDO=0
+RUN if [ "$WITH_SUDO" = "1" ]; then \
+  adduser ${nb_user} sudo \
+  && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+;fi
+
+USER $nb_user
