@@ -28,8 +28,6 @@ Pillow
 dask[complete]==2.8.1
 distributed==2.8.1
 xarray
-tensorflow
-tensorflow-gpu
 
 # Geo stack
 geopy
