@@ -95,6 +95,7 @@ cmd_extend () {
     $pip install --upgrade pip setuptools
     $pip install \
          --find-links="${wheels}" \
+         --constraint="${bins}" \
          --no-cache-dir \
          --requirement="${requirements}"
 
