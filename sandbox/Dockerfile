@@ -89,7 +89,7 @@ RUN if [ "$WITH_SUDO" = "1" ]; then \
 
 # Copy python env
 ARG py_env_path
-COPY --chown=$nb_uid:$nb_gid --from=env_builder $py_env_path $py_env_path
+COPY --chown=1000:100 --from=env_builder $py_env_path $py_env_path
 
 ENV LC_ALL=C.UTF-8
 ENV SHELL=bash
