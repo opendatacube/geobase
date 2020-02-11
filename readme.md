@@ -26,7 +26,7 @@ pyproj
 FROM opendatacube/geobase:wheels as env_builder
 COPY requirements.txt /
 RUN env-build-tool wheels /requirements.txt /wheels
-RUN env-build-tool new /requirements.txt /wheels /env
+RUN env-build-tool new /requirements.txt /env /wheels
 
 
 FROM opendatacube/geobase:runner

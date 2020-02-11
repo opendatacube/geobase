@@ -11,7 +11,7 @@ RUN mkdir -p /conf
 COPY requirements.txt /conf/
 RUN env-build-tool wheels /conf/requirements.txt /wheels
 ARG py_env_path
-RUN env-build-tool new /conf/requirements.txt /wheels ${py_env_path}
+RUN env-build-tool new /conf/requirements.txt ${py_env_path} /wheels
 
 #--------------------------------------------------------------------------------
 # Runner stage might need changing if extra Ubuntu packages are needed for

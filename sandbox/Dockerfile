@@ -6,12 +6,8 @@ ARG py_env_path
 RUN mkdir -p /conf
 
 COPY requirements.txt /conf/
-RUN echo "Fetching wheels" \
-  # get all the wheels from requirements.txt, making sure pre-compiled wheels are used
-  && env-build-tool wheels /conf/requirements.txt /wheels
-
 RUN echo "Building python environment" \
-  && env-build-tool new /conf/requirements.txt /wheels ${py_env_path}
+  && env-build-tool new /conf/requirements.txt ${py_env_path}
 
 ENV PATH=${py_env_path}/bin:$PATH
 
@@ -34,9 +30,8 @@ RUN echo "Adding jupyter lab extensions" \
   && echo "...done"
 
 COPY requirements-odc.txt /conf/
-
 RUN echo "Adding odc-dependencies" \
-  && env-build-tool extend /conf/requirements-odc.txt /wheels ${py_env_path}
+  && env-build-tool extend /conf/requirements-odc.txt ${py_env_path}
 
 FROM opendatacube/geobase:runner
 
@@ -74,17 +69,6 @@ RUN curl -s -L https://www.johnvansickle.com/ffmpeg/old-releases/ffmpeg-4.1.4-am
 # Install Tini
 COPY --from=env_builder /bin/tini /bin/tini
 
-# Copy python env
-ARG py_env_path
-COPY --from=env_builder $py_env_path $py_env_path
-
-ENV LC_ALL=C.UTF-8
-ENV SHELL=bash
-ENV PATH=${py_env_path}/bin:$PATH
-
-COPY with_bootstrap /usr/local/bin/
-ENTRYPOINT ["/bin/tini", "-s", "--", "with_bootstrap"]
-
 ARG nb_user=jovyan
 ARG nb_uid=1000
 ARG nb_gid=100
@@ -96,6 +80,17 @@ RUN if [ "$WITH_SUDO" = "1" ]; then \
   adduser ${nb_user} sudo \
   && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
 ;fi
+
+# Copy python env
+ARG py_env_path
+COPY --from=env_builder $py_env_path $py_env_path
+
+ENV LC_ALL=C.UTF-8
+ENV SHELL=bash
+ENV PATH=${py_env_path}/bin:$PATH
+
+COPY with_bootstrap /usr/local/bin/
+ENTRYPOINT ["/bin/tini", "-s", "--", "with_bootstrap"]
 
 USER $nb_user
 

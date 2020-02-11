@@ -8,8 +8,8 @@ pip="${env_dir}/bin/pip"
 jupyter="${env_dir}/bin/jupyter"
 cc="/conf"
 
-env-build-tool new "${cc}/requirements.txt" /wheels "${env_dir}"
-env-build-tool extend "${cc}/requirements-odc.txt" /wheels "${env_dir}"
+env-build-tool new "${cc}/requirements.txt" "${env_dir}" /wheels
+env-build-tool extend "${cc}/requirements-odc.txt" "${env_dir}" /wheels
 
 while read line; do
     $jupyter labextension install --no-build $line
