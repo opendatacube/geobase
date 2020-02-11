@@ -5,9 +5,15 @@ ARG py_env_path
 
 RUN mkdir -p /conf
 
+# Some libs assume presence of Cython and numpy in the environment, so build
+# minimal env with those first, then extend further
+COPY requirements0.txt /conf/
+RUN echo "Building python environment: stage 1" \
+  && env-build-tool new /conf/requirements0.txt ${py_env_path}
+
 COPY requirements.txt /conf/
-RUN echo "Building python environment" \
-  && env-build-tool new /conf/requirements.txt ${py_env_path}
+RUN echo "Building python environment: stage 2" \
+  && env-build-tool extend /conf/requirements.txt ${py_env_path}
 
 ENV PATH=${py_env_path}/bin:$PATH
 
