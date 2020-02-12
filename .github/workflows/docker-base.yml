@@ -2,7 +2,11 @@ name: build
 
 on:
   pull_request:
+    branches-ignore:
+      - sandbox
   push:
+    branches-ignore:
+      - sandbox
     paths:
       - 'base/**'
       - 'local/**'
