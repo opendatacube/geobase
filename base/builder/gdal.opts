@@ -19,6 +19,7 @@ lerc
 netcdf
 hdf4
 hdf5
+kea=/usr/bin/kea-config
 qhull=internal
 libkml
 pam

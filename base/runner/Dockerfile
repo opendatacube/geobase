@@ -45,6 +45,7 @@ RUN apt-get update -y \
 #  C. Use experimental docker features: `RUN --mount=type=cache,ro,from=builder,source=/opt,target=/opt ...`
 COPY --from=builder /opt/*deb /opt/
 RUN echo "Installing geo libs" \
+  && dpkg -i /opt/libkea*deb \
   && dpkg -i /opt/libgeos*deb \
   && dpkg -i /opt/libproj*deb \
   && dpkg -i /opt/libgdal*deb \

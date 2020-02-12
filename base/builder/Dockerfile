@@ -92,6 +92,15 @@ RUN echo "Building geos" \
   && mv /tmp/build/*deb /opt/ \
   && rm -rf /tmp/build
 
+ARG V_KEA=1.4.12
+COPY ./build_kea.sh /usr/local/bin/
+RUN builder.sh kea-${V_KEA} /dl :download:
+RUN echo "Building KEA" \
+  && builder.sh kea-${V_KEA} /dl /tmp/build \
+  && dpkg -i /tmp/build/libkea_*deb \
+  && mv /tmp/build/*deb /opt/ \
+  && rm -rf /tmp/build
+
 COPY ./build_gdal.sh /usr/local/bin/
 COPY ./gdal.opts /opt/
 ARG V_GDAL=3.0.4
