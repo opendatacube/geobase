@@ -83,7 +83,7 @@ RUN echo "Building proj 6" \
   && mv /tmp/build/*deb /opt/ \
   && rm -rf /tmp/build
 
-ARG V_GEOS=3.8.0
+ARG V_GEOS=3.7.2
 COPY ./build_geos.sh /usr/local/bin/
 RUN builder.sh geos-${V_GEOS} /dl :download:
 RUN echo "Building geos" \
