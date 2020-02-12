@@ -13,6 +13,8 @@ param
 dill
 ffmpeg-python
 tqdm
+voluptuous
+pydash
 
 # Scientific Stack
 numpy
