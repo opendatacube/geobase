@@ -1,4 +1,5 @@
-FROM opendatacube/geobase:builder as builder
+ARG base=opendatacube/geobase:builder
+FROM ${base} as builder
 
 FROM ubuntu:18.04
 
