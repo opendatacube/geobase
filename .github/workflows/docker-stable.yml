@@ -1,0 +1,44 @@
+name: release
+
+on:
+  push:
+    branches:
+      - 'stable-**'
+    paths:
+      - 'base/**'
+      - '.github/**'
+      - '.github/workflows/docker-stable.yml'
+
+env:
+  ORG: opendatacube
+  IMAGE: geobase
+  DOCKER_USER: gadockersvc
+  V: 3.0.4
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Base Image (builder)
+      run: |
+        docker build --tag ${ORG}/${IMAGE}:builder-${V} ./base/builder
+
+    - name: Base Image (wheels)
+      run: |
+        docker build --tag ${ORG}/${IMAGE}:wheels-${V} ./base/wheels
+
+    - name: Base Image (runner)
+      run: |
+        docker build --tag ${ORG}/${IMAGE}:runner-${V} ./base/runner
+
+    - name: DockerHub Push
+      run: |
+        echo "Login to DockerHub as ${DOCKER_USER}"
+        echo "${{ secrets.DockerPassword }}" | docker login -u "${DOCKER_USER}" --password-stdin 
+        docker push ${ORG}/${IMAGE}:builder-${V}
+        docker push ${ORG}/${IMAGE}:runner-${V}
+        docker push ${ORG}/${IMAGE}:wheels-${V}
