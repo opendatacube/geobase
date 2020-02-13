@@ -74,6 +74,8 @@ yapf
 isort
 mypy
 line_profiler
+nbformat
+nbval
 
 # jupyter + matplotlib
 matplotlib
