@@ -29,11 +29,15 @@ jobs:
 
     - name: Base Image (wheels)
       run: |
-        docker build --tag ${ORG}/${IMAGE}:wheels-${V} ./base/wheels
+        docker build \
+          --build-arg base=${ORG}/${IMAGE}:builder-${V} \
+          --tag ${ORG}/${IMAGE}:wheels-${V} ./base/wheels
 
     - name: Base Image (runner)
       run: |
-        docker build --tag ${ORG}/${IMAGE}:runner-${V} ./base/runner
+        docker build \
+          --build-arg base=${ORG}/${IMAGE}:builder-${V} \
+          --tag ${ORG}/${IMAGE}:runner-${V} ./base/runner
 
     - name: DockerHub Push
       run: |
