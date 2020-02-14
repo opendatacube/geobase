@@ -1,6 +1,7 @@
+ARG V_BASE=-3.0.4
 ARG py_env_path=/env
 
-FROM opendatacube/geobase:wheels as env_builder
+FROM opendatacube/geobase:wheels${V_BASE} as env_builder
 ARG py_env_path
 
 RUN mkdir -p /conf
@@ -39,7 +40,7 @@ COPY requirements-odc.txt /conf/
 RUN echo "Adding odc-dependencies" \
   && env-build-tool extend /conf/requirements-odc.txt ${py_env_path}
 
-FROM opendatacube/geobase:runner
+FROM opendatacube/geobase:runner${V_BASE}
 
 RUN apt-get update -y \
 && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
