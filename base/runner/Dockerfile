@@ -16,6 +16,7 @@ RUN apt-get update -y \
   liblzma5 \
   libcurl4 \
   libssl1.1 \
+  libssl1.0.0 \
   libpq5 \
   libxml2 libexpat1 libxerces-c3.2 \
   libnetcdf-c++4 netcdf-bin \
@@ -50,4 +51,13 @@ RUN echo "Installing geo libs" \
   && dpkg -i /opt/libgeos*deb \
   && dpkg -i /opt/libproj*deb \
   && dpkg -i /opt/libgdal*deb \
+  && echo "Done"
+
+RUN echo "Run smoke test" \
+  && gdal-config --version \
+  && gdal-config --formats \
+  && geos-config --version \
+  && kea-config --version \
+  && projinfo "epsg:4326" \
+  && projinfo "epsg:3577" \
   && echo "Done"
