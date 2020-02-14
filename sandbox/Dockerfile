@@ -105,7 +105,7 @@ CMD ["jupyter", "lab", \
 "--no-browser"]
 
 ARG WITH_SUDO=0
-RUN if [ "$WITH_SUDO" = "1" ]; then \
+RUN if [ "$WITH_SUDO" = "yes" ]; then \
   adduser ${nb_user} sudo \
   && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
 ;fi
