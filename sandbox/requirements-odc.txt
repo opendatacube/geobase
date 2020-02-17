@@ -20,3 +20,7 @@ odc-apps-dc-tools
 odc-apps-cloud
 datacube-stats
 hdmedians --no-binary=hdmedians
+
+# rsgislib is conda only, but was manually packaged as a binary wheel compatible
+# with geobase docker images
+rsgislib

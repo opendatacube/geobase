@@ -64,6 +64,13 @@ RUN apt-get update -y \
   iputils-ping \
   net-tools \
   simpleproxy \
+# rgsislib dependencies
+  libcgal13 \
+  libmuparser2v5 \
+  libgsl23 \
+  libboost-system1.65.1 \
+  libboost-filesystem1.65.1 \
+  libboost-date-time1.65.1 \
 && rm -rf /var/lib/apt/lists/*
 
 #Install ffmpeg static binary
