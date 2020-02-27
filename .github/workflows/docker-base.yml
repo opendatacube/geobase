@@ -1,12 +1,8 @@
 name: build
 
 on:
-  pull_request:
-    branches-ignore:
-      - sandbox
   push:
     branches-ignore:
-      - sandbox
       - 'stable-**'
     paths:
       - 'base/**'
@@ -29,37 +25,41 @@ jobs:
 
     - name: Base Image (builder)
       run: |
-        docker pull ${ORG}/${IMAGE}:${tt} || true
+        source .github/workflows/ci-helpers.sh
+        pull_docker_cache ${ORG}/${IMAGE}:${BUILDER_TAG} \
+                          ${ORG}/${IMAGE}:builder
         docker build \
-              --cache-from ${ORG}/${IMAGE}:${tt} \
-              --tag        ${ORG}/${IMAGE}:${tt} \
-              ./base/${tt}
-      env:
-        tt: builder
+              --cache-from ${ORG}/${IMAGE}:${BUILDER_TAG} \
+              --tag        ${ORG}/${IMAGE}:${BUILDER_TAG} \
+              ./base/builder
 
     - name: Base Image (wheels)
       run: |
-        docker pull ${ORG}/${IMAGE}:${tt} || true
+        source .github/workflows/ci-helpers.sh
+        pull_docker_cache ${ORG}/${IMAGE}:${WHEELS_TAG} \
+                          ${ORG}/${IMAGE}:wheels
         docker build \
-              --cache-from ${ORG}/${IMAGE}:${tt} \
-              --tag        ${ORG}/${IMAGE}:${tt} \
-              ./base/${tt}
-      env:
-        tt: wheels
+              --build-arg base=${ORG}/${IMAGE}:${BUILDER_TAG} \
+              --cache-from ${ORG}/${IMAGE}:${WHEELS_TAG} \
+              --tag        ${ORG}/${IMAGE}:${WHEELS_TAG} \
+              ./base/wheels
 
     - name: Base Image (runner)
       run: |
-        docker pull ${ORG}/${IMAGE}:${tt} || true
+        source .github/workflows/ci-helpers.sh
+        pull_docker_cache ${ORG}/${IMAGE}:${RUNNER_TAG} \
+                          ${ORG}/${IMAGE}:runner
         docker build \
-              --cache-from ${ORG}/${IMAGE}:${tt} \
-              --tag        ${ORG}/${IMAGE}:${tt} \
-              ./base/${tt}
-      env:
-        tt: runner
+              --build-arg base=${ORG}/${IMAGE}:${BUILDER_TAG} \
+              --cache-from ${ORG}/${IMAGE}:${RUNNER_TAG} \
+              --tag        ${ORG}/${IMAGE}:${RUNNER_TAG} \
+              ./base/runner
 
     - name: Test Image (local)
       run: |
+        source .github/workflows/ci-helpers.sh
         docker build \
+          --build-arg base=${ORG}/${IMAGE}:${WHEELS_TAG} \
           --build-arg USER_NAME=$USER \
           --build-arg UID=$UID \
           --tag geobase:local ./local
@@ -67,14 +67,11 @@ jobs:
         docker run --rm geobase:local gdal-config --formats
 
     - name: DockerHub Push
-      if: |
-        github.event_name == 'push' && (
-        github.ref == 'refs/heads/master'
-        )
-
+      if: github.event_name == 'push'
       run: |
+        source .github/workflows/ci-helpers.sh
         echo "Login to DockerHub as ${DOCKER_USER}"
         echo "${{ secrets.DockerPassword }}" | docker login -u "${DOCKER_USER}" --password-stdin 
-        docker push ${ORG}/${IMAGE}:builder
-        docker push ${ORG}/${IMAGE}:runner
-        docker push ${ORG}/${IMAGE}:wheels
+        docker push ${ORG}/${IMAGE}:${BUILDER_TAG}
+        docker push ${ORG}/${IMAGE}:${WHEELS_TAG}
+        docker push ${ORG}/${IMAGE}:${RUNNER_TAG}
