@@ -23,6 +23,13 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
+    - name: DockerHub Login
+      if: github.event_name == 'push'
+      run: |
+        source .github/workflows/ci-helpers.sh
+        echo "Login to DockerHub as ${DOCKER_USER}"
+        echo "${{ secrets.DockerPassword }}" | docker login -u "${DOCKER_USER}" --password-stdin 
+
     - name: Base Image (builder)
       run: |
         source .github/workflows/ci-helpers.sh
@@ -32,6 +39,12 @@ jobs:
               --cache-from ${ORG}/${IMAGE}:${BUILDER_TAG} \
               --tag        ${ORG}/${IMAGE}:${BUILDER_TAG} \
               ./base/builder
+
+    - name: DockerHub Push (builder)
+      if: github.event_name == 'push'
+      run: |
+        source .github/workflows/ci-helpers.sh
+        docker push ${ORG}/${IMAGE}:${BUILDER_TAG}
 
     - name: Base Image (wheels)
       run: |
@@ -44,6 +57,12 @@ jobs:
               --tag        ${ORG}/${IMAGE}:${WHEELS_TAG} \
               ./base/wheels
 
+    - name: DockerHub Push (wheels)
+      if: github.event_name == 'push'
+      run: |
+        source .github/workflows/ci-helpers.sh
+        docker push ${ORG}/${IMAGE}:${WHEELS_TAG}
+
     - name: Base Image (runner)
       run: |
         source .github/workflows/ci-helpers.sh
@@ -55,6 +74,12 @@ jobs:
               --tag        ${ORG}/${IMAGE}:${RUNNER_TAG} \
               ./base/runner
 
+    - name: DockerHub Push (runner)
+      if: github.event_name == 'push'
+      run: |
+        source .github/workflows/ci-helpers.sh
+        docker push ${ORG}/${IMAGE}:${RUNNER_TAG}
+
     - name: Test Image (local)
       run: |
         source .github/workflows/ci-helpers.sh
@@ -65,13 +90,3 @@ jobs:
           --tag geobase:local ./local
         docker run --rm geobase:local gdal-config --version
         docker run --rm geobase:local gdal-config --formats
-
-    - name: DockerHub Push
-      if: github.event_name == 'push'
-      run: |
-        source .github/workflows/ci-helpers.sh
-        echo "Login to DockerHub as ${DOCKER_USER}"
-        echo "${{ secrets.DockerPassword }}" | docker login -u "${DOCKER_USER}" --password-stdin 
-        docker push ${ORG}/${IMAGE}:${BUILDER_TAG}
-        docker push ${ORG}/${IMAGE}:${WHEELS_TAG}
-        docker push ${ORG}/${IMAGE}:${RUNNER_TAG}
