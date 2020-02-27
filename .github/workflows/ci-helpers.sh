@@ -4,7 +4,7 @@
 
 branch="${GITHUB_REF/refs\/heads\//}"
 
-if [ branch = "master" ]; then
+if [ "${branch}" = "master" ]; then
     BUILDER_TAG="builder"
     WHEELS_TAG="wheels"
     RUNNER_TAG="runner"
