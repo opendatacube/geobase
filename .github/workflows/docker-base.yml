@@ -8,6 +8,7 @@ on:
       - 'base/**'
       - 'local/**'
       - '.github/workflows/docker-base.yml'
+      - '.github/workflows/*sh'
 
 
 env:
