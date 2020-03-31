@@ -10,7 +10,7 @@ openjpeg  https://github.com/uclouvain/openjpeg/archive/v{{version}}.tar.gz
 geos      https://github.com/libgeos/geos/archive/{{version}}.tar.gz
 proj      https://github.com/OSGeo/proj/releases/download/{{version}}/proj-{{version}}.tar.gz
 gdal      https://download.osgeo.org/gdal/{{version}}/gdal-{{version}}.tar.gz
-kea       https://bitbucket.org/chchrsc/kealib/downloads/kealib-{{version}}.tar.gz
+kea       https://github.com/ubarsc/kealib/releases/download/kealib-{{version}}/kealib-{{version}}.tar.gz
 '
 
 get_url () {
