@@ -8,16 +8,9 @@ RUN curl -s -L -O https://github.com/krallin/tini/releases/download/v0.18.0/tini
   && echo "12d20136605531b09a2c2dac02ccee85e1b874eb322ef6baf7561cd93f93c855 *tini" | sha256sum -c - \
   && install -m 755 tini /bin/tini \
   && rm tini
-
-# Install newer node the nodejs package includes npm
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
-
-# for jupyter lab builds we need npm, there is some weird issue with libssl-dev install that this works around
-RUN apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
-  libssl1.0-dev \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
-  libssl-dev \
+ 
+# Install newer node the nodejs package includes npm. This runs apt-get update, but doesn't install
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
   nodejs \
   && rm -rf /var/lib/apt/lists/*
