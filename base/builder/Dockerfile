@@ -15,7 +15,7 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 # for jupyter lab builds we need npm, there is some weird issue with libssl-dev install that this works around
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
-  libssl1.0-dev nodejs-dev \
+  libssl1.0-dev \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
   libssl-dev \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
