@@ -10,7 +10,7 @@ RUN curl -s -L -O https://github.com/krallin/tini/releases/download/v0.18.0/tini
   && rm tini
 
 # Install newer node the nodejs package includes npm
-RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+RUN curl -sL https://deb.nodesource.com/setup_12.x | -E bash -
 
 # for jupyter lab builds we need npm, there is some weird issue with libssl-dev install that this works around
 RUN apt-get update \
