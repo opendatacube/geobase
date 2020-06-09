@@ -81,6 +81,33 @@ jobs:
         source .github/workflows/ci-helpers.sh
         docker push ${ORG}/${IMAGE}:${RUNNER_TAG}
 
+    - name: Run vulnerability scanner (builder)
+      if: github.event_name == 'push'
+      uses: aquasecurity/trivy-action@0.0.6
+      with:
+        image-ref: ${ORG}/${IMAGE}:${BUILDER_TAG}
+        format: "table"
+        exit-code: "1"
+        severity: "CRITICAL,HIGH"
+
+    - name: Run vulnerability scanner (runner)
+      if: github.event_name == 'push'
+      uses: aquasecurity/trivy-action@0.0.6
+      with:
+        image-ref: ${ORG}/${IMAGE}:${RUNNER_TAG}
+        format: "table"
+        exit-code: "1"
+        severity: "CRITICAL,HIGH"
+
+    - name: Run vulnerability scanner (wheels)
+      if: github.event_name == 'push'
+      uses: aquasecurity/trivy-action@0.0.6
+      with:
+        image-ref: ${ORG}/${IMAGE}:${WHEELS_TAG}
+        format: "table"
+        exit-code: "1"
+        severity: "CRITICAL,HIGH"
+
     - name: Test Image (local)
       run: |
         source .github/workflows/ci-helpers.sh
