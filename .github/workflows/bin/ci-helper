@@ -47,7 +47,7 @@ export_cfg () {
             vv=$(git describe --tags)
 
             im_main=${ORG}/${IMAGE}:MMM  # MMM is one of builder|runner|wheels
-            im_extra=${ORG}/{IMAGE_DEV}:MMM-${vv}
+            im_extra=${ORG}/${IMAGE_DEV}:MMM-${vv}
             ;;
         "refs/heads/"*)
             BRANCH="${ref#refs/heads/}"
