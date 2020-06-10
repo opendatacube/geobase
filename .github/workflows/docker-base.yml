@@ -48,6 +48,7 @@ jobs:
         echo im_main: ${im_main}
         echo im_extra: ${im_extra}
         echo im_fallback: ${im_fallback}
+        echo images: ${im_builder} ${im_wheels} ${im_runner}
         echo build_info: ${build_info}
         echo push_image: cfg:${{ steps.cfg.outputs.push_image }} env:$push_image
         echo push_cache: cfg:${{ steps.cfg.outputs.push_cache }} env:$push_cache
@@ -66,13 +67,13 @@ jobs:
     - name: Pull Cache (builder)
       if: steps.cfg.outputs.pull_cache == 'yes'
       run: |
-        ci-helper pull_docker_cache ${im_main/MMM/builder} ${im_fallback/MMM/builder}
+        ci-helper pull_docker_cache ${im_builder} ${im_fallback/MMM/builder}
 
     - name: Base Image (builder)
       run: |
         docker build \
-              --cache-from ${im_main/MMM/builder} \
-              --tag        ${im_main/MMM/builder} \
+              --cache-from ${im_builder} \
+              --tag        ${im_builder} \
               ./base/builder
 
     - name: DockerHub Push (builder)
@@ -86,20 +87,20 @@ jobs:
     - name: Pull Cache (wheels)
       if: steps.cfg.outputs.pull_cache == 'yes'
       run: |
-        ci-helper pull_docker_cache ${im_main/MMM/wheels} ${im_fallback/MMM/wheels}
+        ci-helper pull_docker_cache ${im_wheels} ${im_fallback/MMM/wheels}
 
     - name: Base Image (wheels)
       run: |
         docker build \
-              --build-arg base=${im_main/MMM/builder} \
-              --cache-from ${im_main/MMM/wheels} \
-              --tag        ${im_main/MMM/wheels} \
+              --build-arg base=${im_builder} \
+              --cache-from ${im_wheels} \
+              --tag        ${im_wheels} \
               ./base/wheels
 
     - name: DockerHub Push (wheels)
       if: steps.cfg.outputs.push_image == 'yes'
       run: |
-        docker push ${im_main/MMM/wheels}
+        docker push ${im_wheels}
 
 
     ###########################################
@@ -108,20 +109,20 @@ jobs:
     - name: Pull Cache (runner)
       if: steps.cfg.outputs.pull_cache == 'yes'
       run: |
-        ci-helper pull_docker_cache ${im_main/MMM/runner} ${im_fallback/MMM/runner}
+        ci-helper pull_docker_cache ${im_runner} ${im_fallback/MMM/runner}
 
     - name: Base Image (runner)
       run: |
         docker build \
-              --build-arg base=${im_main/MMM/builder} \
-              --cache-from ${im_main/MMM/runner} \
-              --tag        ${im_main/MMM/runner} \
+              --build-arg base=${im_builder} \
+              --cache-from ${im_runner} \
+              --tag        ${im_runner} \
               ./base/runner
 
     - name: DockerHub Push (runner)
       if: steps.cfg.outputs.push_image == 'yes'
       run: |
-        docker push ${im_main/MMM/runner}
+        docker push ${im_runner}
 
     #############################################
     # local
@@ -129,7 +130,7 @@ jobs:
     - name: Test Image (local)
       run: |
         docker build \
-          --build-arg base=${im_main/MMM/wheels} \
+          --build-arg base=${im_wheels} \
           --build-arg USER_NAME=$USER \
           --build-arg UID=$UID \
           --tag geobase:local ./local
@@ -139,10 +140,34 @@ jobs:
     - name: Push Extra tags (master branch only)
       if: steps.cfg.outputs.im_extra != '' && steps.cfg.outputs.push_image == 'yes'
       run: |
-        docker tag ${im_main/MMM/builder} ${im_extra/MMM/builder}
-        docker tag ${im_main/MMM/wheels} ${im_extra/MMM/wheels}
-        docker tag ${im_main/MMM/runner} ${im_extra/MMM/runner}
+        docker tag ${im_builder} ${im_extra/MMM/builder}
+        docker tag ${im_wheels} ${im_extra/MMM/wheels}
+        docker tag ${im_runner} ${im_extra/MMM/runner}
 
         docker push ${im_extra/MMM/builder}
         docker push ${im_extra/MMM/wheels}
         docker push ${im_extra/MMM/runner}
+
+    - name: Run vulnerability scanner (builder)
+      uses: aquasecurity/trivy-action@0.0.6
+      with:
+        image-ref: ${{steps.cfg.outputs.im_builder}}
+        format: "table"
+        exit-code: "1"
+        severity: "CRITICAL,HIGH"
+
+    - name: Run vulnerability scanner (wheels)
+      uses: aquasecurity/trivy-action@0.0.6
+      with:
+        image-ref: ${{steps.cfg.outputs.im_wheels}}
+        format: "table"
+        exit-code: "1"
+        severity: "CRITICAL,HIGH"
+
+    - name: Run vulnerability scanner (runner)
+      uses: aquasecurity/trivy-action@0.0.6
+      with:
+        image-ref: ${{steps.cfg.outputs.im_runner}}
+        format: "table"
+        exit-code: "1"
+        severity: "CRITICAL,HIGH"
