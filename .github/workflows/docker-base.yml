@@ -153,7 +153,7 @@ jobs:
       with:
         image-ref: ${{steps.cfg.outputs.im_builder}}
         format: "table"
-        exit-code: "1"
+        exit-code: "0"
         severity: "CRITICAL,HIGH"
 
     - name: Run vulnerability scanner (wheels)
@@ -161,7 +161,7 @@ jobs:
       with:
         image-ref: ${{steps.cfg.outputs.im_wheels}}
         format: "table"
-        exit-code: "1"
+        exit-code: "0"
         severity: "CRITICAL,HIGH"
 
     - name: Run vulnerability scanner (runner)
