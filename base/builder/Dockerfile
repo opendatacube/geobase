@@ -26,6 +26,8 @@ RUN wget https://github.com/Kitware/CMake/releases/download/v3.16.0/cmake-3.16.0
 # Install common base python things
 RUN apt-get update -y \
     && apt-get install -y --fix-missing --no-install-recommends \
+    # upgrade linux-libc-dev to address CVEs
+    linux-libc-dev \
     python3-dev python3-pip python3-venv \
     fakeroot checkinstall \
     && rm -rf /var/lib/apt/lists/*
