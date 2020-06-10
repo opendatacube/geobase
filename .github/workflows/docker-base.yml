@@ -150,18 +150,20 @@ jobs:
 
     - name: Run vulnerability scanner (builder)
       uses: aquasecurity/trivy-action@0.0.6
+      continue-on-error: true
       with:
         image-ref: ${{steps.cfg.outputs.im_builder}}
         format: "table"
-        exit-code: "0"
+        exit-code: "1"
         severity: "CRITICAL,HIGH"
 
     - name: Run vulnerability scanner (wheels)
       uses: aquasecurity/trivy-action@0.0.6
+      continue-on-error: true
       with:
         image-ref: ${{steps.cfg.outputs.im_wheels}}
         format: "table"
-        exit-code: "0"
+        exit-code: "1"
         severity: "CRITICAL,HIGH"
 
     - name: Run vulnerability scanner (runner)
