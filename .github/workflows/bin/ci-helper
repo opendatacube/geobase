@@ -65,7 +65,7 @@ export_cfg () {
             push_cache="no"
             push_image="no"
             BRANCH="${GITHUB_HEAD_REF}"
-            im_main=${ORG}/${IMAGE_DEV}:MMM-${BRANCH}
+            im_main=${ORG}/${IMAGE_DEV}:${BRANCH}-MMM
             ;;
         *)
             return 1
