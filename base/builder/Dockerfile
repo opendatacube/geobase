@@ -1,6 +1,7 @@
 FROM buildpack-deps:bionic
 
 ENV LC_ALL C.UTF-8
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Install Tini
 # tini is useful inside runners, it's easier to copy it from builder than download (which requires curl or wget)
@@ -11,7 +12,7 @@ RUN curl -s -L -O https://github.com/krallin/tini/releases/download/v0.18.0/tini
 
 # Install newer node the nodejs package includes npm. This runs apt-get update, but doesn't install
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
+  && apt-get install -y --fix-missing --no-install-recommends \
   nodejs \
   && rm -rf /var/lib/apt/lists/*
 
@@ -24,7 +25,7 @@ RUN wget https://github.com/Kitware/CMake/releases/download/v3.16.0/cmake-3.16.0
 
 # Install common base python things
 RUN apt-get update -y \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
+    && apt-get install -y --fix-missing --no-install-recommends \
     python3-dev python3-pip python3-venv \
     fakeroot checkinstall \
     && rm -rf /var/lib/apt/lists/*
@@ -36,7 +37,7 @@ RUN pip3 install --no-cache-dir --upgrade pip \
 
 
 RUN apt-get update -y \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
+    && apt-get install -y --fix-missing --no-install-recommends \
     sqlite3 \
     libjpeg-dev \
     libexpat-dev \
@@ -56,7 +57,7 @@ RUN apt-get update -y \
 
 # dev conveniences
 RUN apt-get update -y \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
+    && apt-get install -y --fix-missing --no-install-recommends \
     htop \
     tmux \
     sudo \
