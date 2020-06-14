@@ -4,6 +4,8 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
+DEV_BRANCH="develop"
+
 branch_name () {
     local ref="${1:-${GITHUB_REF:-}}"
     case "${ref}" in
@@ -34,20 +36,20 @@ export_cfg () {
     push_cache="yes"  # not from PR, not from Release
     push_image="yes"  # not from PR
 
-    im_extra=""       # only set on master
+    im_extra=""       # only set on DEV_BRANCH (develop)
     im_fallback=${ORG}/${IMAGE}:MMM
 
     build_info="$(TZ=Australia/Sydney date -Im) $sha"
 
     case "${ref}" in
-        "refs/heads/master")
-            BRANCH="master"
+        "refs/heads/"${DEV_BRANCH})
+            BRANCH=${DEV_BRANCH}
             im_main=${ORG}/${IMAGE}:MMM
 
             # figure out extra tag
-            # git fetch --prune --unshallow 2> /dev/null || true
-            # vv=$(git describe --tags)
-            #im_extra=${ORG}/${IMAGE_DEV}:MMM-${vv}
+            git fetch --prune --unshallow 2> /dev/null || true
+            vv=$(git describe --tags || echo "${sha}")  # describe --tags can fail if there no tags
+            im_extra=${ORG}/${IMAGE_DEV}:MMM-${vv}
             ;;
         "refs/heads/"*)
             BRANCH="${ref#refs/heads/}"
