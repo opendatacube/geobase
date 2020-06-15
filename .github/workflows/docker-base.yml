@@ -137,7 +137,7 @@ jobs:
         docker run --rm geobase:local gdal-config --version
         docker run --rm geobase:local gdal-config --formats
 
-    - name: Push Extra tags (master branch only)
+    - name: Push Extra tags (develop branch only)
       if: steps.cfg.outputs.im_extra != '' && steps.cfg.outputs.push_image == 'yes'
       run: |
         docker tag ${im_builder} ${im_extra/MMM/builder}
