@@ -7,9 +7,9 @@ opendatacube/geobase
 
 Set of docker images to build recent versions of geospatial libraries and python environments that use them.
 
-- PROJ 6.3.0
+- PROJ 7.1.1
 - GEOS 3.7.2
-- GDAL 3.0.4
+- GDAL 3.1.3
 
 Quick Start
 ===========

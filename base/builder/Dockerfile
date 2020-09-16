@@ -73,7 +73,7 @@ RUN mkdir -p /dl
 COPY ./build_openjpeg.sh /usr/local/bin/
 
 COPY ./build_proj.sh /usr/local/bin/
-ARG V_PROJ=6.3.0
+ARG V_PROJ=7.1.1
 RUN builder.sh proj-${V_PROJ} /dl :download:
 RUN echo "Building proj 6" \
   && builder.sh proj-${V_PROJ} /dl/ /tmp/build \
@@ -101,7 +101,7 @@ RUN echo "Building KEA" \
 
 COPY ./build_gdal.sh /usr/local/bin/
 COPY ./gdal.opts /opt/
-ARG V_GDAL=3.0.4
+ARG V_GDAL=3.1.3
 RUN builder.sh gdal-${V_GDAL} /dl :download:
 RUN echo "Building gdal" \
   && FEATURES="$(cat /opt/gdal.opts)" builder.sh gdal-${V_GDAL} /dl /tmp/build /usr \
