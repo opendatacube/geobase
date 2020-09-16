@@ -72,7 +72,7 @@ RUN pip3 wheel \
   --no-binary=:all: \
   --no-build-isolation \
   --no-deps \
-  rasterio==1.1.6
+  rasterio==1.1.8
 
 
 COPY env-build-tool /usr/local/bin/

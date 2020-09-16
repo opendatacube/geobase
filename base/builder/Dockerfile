@@ -1,4 +1,4 @@
-FROM buildpack-deps:bionic
+FROM buildpack-deps:focal
 
 ENV LC_ALL C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
@@ -45,7 +45,7 @@ RUN apt-get update -y \
     libexpat-dev \
     libxerces-c-dev \
     libwebp-dev \
-    libzstd1-dev \
+    libzstd-dev \
     libnetcdf-dev \
     libhdf4-alt-dev \
     libhdf5-serial-dev \
@@ -55,6 +55,8 @@ RUN apt-get update -y \
     gfortran \
     libspatialindex-dev \
     libudunits2-dev \
+    libgeos-dev \
+    libgeos++-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # dev conveniences
@@ -70,25 +72,6 @@ RUN apt-get update -y \
 COPY ./builder.sh /usr/local/bin/
 
 RUN mkdir -p /dl
-COPY ./build_openjpeg.sh /usr/local/bin/
-
-COPY ./build_proj.sh /usr/local/bin/
-ARG V_PROJ=7.1.1
-RUN builder.sh proj-${V_PROJ} /dl :download:
-RUN echo "Building proj 6" \
-  && builder.sh proj-${V_PROJ} /dl/ /tmp/build \
-  && dpkg -i /tmp/build/libproj_*deb \
-  && mv /tmp/build/*deb /opt/ \
-  && rm -rf /tmp/build
-
-ARG V_GEOS=3.7.2
-COPY ./build_geos.sh /usr/local/bin/
-RUN builder.sh geos-${V_GEOS} /dl :download:
-RUN echo "Building geos" \
-  && builder.sh geos-${V_GEOS} /dl /tmp/build \
-  && dpkg -i /tmp/build/libgeos_*deb \
-  && mv /tmp/build/*deb /opt/ \
-  && rm -rf /tmp/build
 
 ARG V_KEA=1.4.12
 COPY ./build_kea.sh /usr/local/bin/
@@ -99,12 +82,22 @@ RUN echo "Building KEA" \
   && mv /tmp/build/*deb /opt/ \
   && rm -rf /tmp/build
 
+COPY ./build_proj.sh /usr/local/bin/
+ARG V_PROJ=7.2.0
+RUN builder.sh proj-${V_PROJ} /dl :download:
+RUN echo "Building proj" \
+  && builder.sh proj-${V_PROJ} /dl/ /tmp/build \
+  && dpkg -i /tmp/build/libproj_*deb \
+  && mv /tmp/build/*deb /opt/ \
+  && rm -rf /tmp/build
+
 COPY ./build_gdal.sh /usr/local/bin/
 COPY ./gdal.opts /opt/
 ARG V_GDAL=3.1.3
 RUN builder.sh gdal-${V_GDAL} /dl :download:
 RUN echo "Building gdal" \
-  && FEATURES="$(cat /opt/gdal.opts)" builder.sh gdal-${V_GDAL} /dl /tmp/build /usr \
+  && FEATURES="$(cat /opt/gdal.opts)" builder.sh gdal-${V_GDAL} /dl /tmp/build /usr/local \
   && dpkg -i /tmp/build/libgdal_*deb \
   && mv /tmp/build/*deb /opt/ \
+  && ldconfig \
   && rm -rf /tmp/build
