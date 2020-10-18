@@ -1,0 +1,60 @@
+---
+name: Scan
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+env:
+  RUNNER_IMAGE_NAME: opendatacube/geobase:runner
+  BUILDER_IMAGE_NAME: opendatacube/geobase:builder
+  WHEELS_IMAGE_NAME: opendatacube/geobase:wheels
+jobs:
+  cve-scanner:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: pull the images
+        run: |
+          docker pull "${{ env.RUNNER_IMAGE_NAME }}"
+          docker pull "${{ env.BUILDER_IMAGE_NAME }}"
+          docker pull "${{ env.WHEELS_IMAGE_NAME }}"
+
+      - name: Run vulnerability scanner
+        if: github.event_name != 'release'
+        uses: aquasecurity/trivy-action@0.0.7
+        with:
+          image-ref: "${{ env.RUNNER_IMAGE_NAME }}"
+          format: "table"
+          exit-code: "1"
+          severity: "CRITICAL,HIGH"
+
+      - name: Run vulnerability scanner
+        if: github.event_name != 'release'
+        uses: aquasecurity/trivy-action@0.0.7
+        with:
+          image-ref: "${{ env.BUILDER_IMAGE_NAME }}"
+          format: "table"
+          exit-code: "1"
+          severity: "CRITICAL,HIGH"
+
+      - name: Run vulnerability scanner
+        if: github.event_name != 'release'
+        uses: aquasecurity/trivy-action@0.0.7
+        with:
+          image-ref: "${{ env.WHEELS_IMAGE_NAME }}"
+          format: "table"
+          exit-code: "1"
+          severity: "CRITICAL,HIGH"
+
+      - name: Notify Slack for Failures
+        uses: rtCamp/action-slack-notify@v2.1.0
+        if: failure()
+        env:
+          SLACK_CHANNEL: ga-wms-ops
+          SLACK_ICON: "https://github.com/docker.png?size=48"
+          SLACK_COLOR: "#482de1"
+          SLACK_MESSAGE: ""
+          SLACK_TITLE: CVE Scan alert
+          SLACK_USERNAME: GEOBASE Scanner
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
