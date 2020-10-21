@@ -1,4 +1,3 @@
----
 name: Scan
 
 on:
@@ -12,7 +11,6 @@ env:
 jobs:
   cve-scanner:
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - name: pull the images
         run: |
@@ -23,6 +21,8 @@ jobs:
       - name: Run vulnerability scanner
         if: github.event_name != 'release'
         uses: aquasecurity/trivy-action@0.0.7
+        continue-on-error: true
+        id: runner
         with:
           image-ref: "${{ env.RUNNER_IMAGE_NAME }}"
           format: "table"
@@ -32,6 +32,8 @@ jobs:
       - name: Run vulnerability scanner
         if: github.event_name != 'release'
         uses: aquasecurity/trivy-action@0.0.7
+        continue-on-error: true
+        id: builder
         with:
           image-ref: "${{ env.BUILDER_IMAGE_NAME }}"
           format: "table"
@@ -41,6 +43,8 @@ jobs:
       - name: Run vulnerability scanner
         if: github.event_name != 'release'
         uses: aquasecurity/trivy-action@0.0.7
+        continue-on-error: true
+        id: wheels
         with:
           image-ref: "${{ env.WHEELS_IMAGE_NAME }}"
           format: "table"
@@ -58,3 +62,7 @@ jobs:
           SLACK_TITLE: CVE Scan alert
           SLACK_USERNAME: GEOBASE Scanner
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Check on failures
+        if: job.steps.runner.status == failure() || job.steps.builder.status == failure() || job.steps.wheels.status == failure()
+        run: exit 1
