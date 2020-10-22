@@ -103,30 +103,36 @@ cmd_extend () {
 }
 
 cmd_help () {
-    echo 'env-build-tool <wheels|new|help> ARGS
+    echo 'env-build-tool <wheels|new|new_no_index|extend|help> ARGS
 
-Given requirements.txt assemble all the wheels:
+Download or compile the required wheels into `wheel_dir`
   > env-build-tool wheels <requirements.txt> <wheel_dir:/wheels>
 
-Given requirements.txt and wheels folder make python environment
+Make a new python environment from the requirements and wheels_dir
   > env-build-tool new <requirements.txt> <env:/env> <wheel_dir:/wheels>
 
-Given requirements.txt and wheels folder add packages to python environment
+Make a new python environment from the requirements and wheels_dir (No Downloads)
+  > env-build-tool new_no_index <requirements.txt <env:/env> <wheel_dir:/wheels>
+
+Add packages to an existing python environment
   > env-build-tool extend <requirements.txt> <env:/env> <wheel_dir:/wheels>
+
 '
 }
 
 
 cmd_main () {
    local cmd="${1:-help}"
-   shift
+   shift || true # Always succeed, so that we display help text on no args
 
    case "${cmd}" in
        wheels|extend|new|new_no_index|help)
            "cmd_${cmd}" $@
            ;;
        *)
-           echo "Run $0 help"
+           echo "ERROR: No such command \"${cmd}\""
+           echo
+           cmd_help
            exit 1
            ;;
    esac
