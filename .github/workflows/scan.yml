@@ -6,8 +6,6 @@ on:
 
 env:
   RUNNER_IMAGE_NAME: opendatacube/geobase:runner
-  BUILDER_IMAGE_NAME: opendatacube/geobase:builder
-  WHEELS_IMAGE_NAME: opendatacube/geobase:wheels
 jobs:
   cve-scanner:
     runs-on: ubuntu-latest
@@ -15,8 +13,6 @@ jobs:
       - name: pull the images
         run: |
           docker pull "${{ env.RUNNER_IMAGE_NAME }}"
-          docker pull "${{ env.BUILDER_IMAGE_NAME }}"
-          docker pull "${{ env.WHEELS_IMAGE_NAME }}"
 
       - name: Run vulnerability scanner
         if: github.event_name != 'release'
@@ -29,31 +25,9 @@ jobs:
           exit-code: "1"
           severity: "CRITICAL,HIGH"
 
-      - name: Run vulnerability scanner
-        if: github.event_name != 'release'
-        uses: aquasecurity/trivy-action@0.0.7
-        continue-on-error: true
-        id: builder
-        with:
-          image-ref: "${{ env.BUILDER_IMAGE_NAME }}"
-          format: "table"
-          exit-code: "1"
-          severity: "CRITICAL,HIGH"
-
-      - name: Run vulnerability scanner
-        if: github.event_name != 'release'
-        uses: aquasecurity/trivy-action@0.0.7
-        continue-on-error: true
-        id: wheels
-        with:
-          image-ref: "${{ env.WHEELS_IMAGE_NAME }}"
-          format: "table"
-          exit-code: "1"
-          severity: "CRITICAL,HIGH"
-
       - name: Notify Slack for Failures
         uses: rtCamp/action-slack-notify@v2.1.0
-        if: job.steps.runner.status == failure() || job.steps.builder.status == failure() || job.steps.wheels.status == failure()
+        if: job.steps.runner.status == failure()
         env:
           SLACK_CHANNEL: ga-wms-ops
           SLACK_ICON: "https://github.com/docker.png?size=48"
@@ -64,5 +38,5 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
       - name: Check on failures
-        if: job.steps.runner.status == failure() || job.steps.builder.status == failure() || job.steps.wheels.status == failure()
+        if: job.steps.runner.status == failure()
         run: exit 1
