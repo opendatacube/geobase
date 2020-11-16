@@ -22,7 +22,6 @@ jobs:
         with:
           image-ref: "${{ env.RUNNER_IMAGE_NAME }}"
           format: "table"
-          exit-code: "1"
           severity: "CRITICAL,HIGH"
 
       - name: Notify Slack for Failures
