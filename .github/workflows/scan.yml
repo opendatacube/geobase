@@ -11,31 +11,47 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: pull the images
+        id: docker_pull
         run: |
           docker pull "${{ env.RUNNER_IMAGE_NAME }}"
 
       - name: Run vulnerability scanner
         if: github.event_name != 'release'
-        uses: aquasecurity/trivy-action@0.0.7
+        uses: aquasecurity/trivy-action@0.0.8
         continue-on-error: true
         id: runner
         with:
           image-ref: "${{ env.RUNNER_IMAGE_NAME }}"
-          format: "table"
+          format: "template"
+          template: '@/contrib/gitlab.tpl'
+          output: 'trivy-results.json'
           severity: "CRITICAL,HIGH"
+
+      - name: Read trivy-results
+        id: package
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./trivy-results.json
 
       - name: Notify Slack for Failures
         uses: rtCamp/action-slack-notify@v2.1.0
-        if: job.steps.runner.status == failure()
+        if: steps.runner.success == false
+        id: slack
         env:
           SLACK_CHANNEL: ga-wms-ops
           SLACK_ICON: "https://github.com/docker.png?size=48"
           SLACK_COLOR: "#482de1"
-          SLACK_MESSAGE: ""
+          SLACK_MESSAGE: ${{join(steps.package.outputs.content, '\n')}}
           SLACK_TITLE: CVE Scan alert
           SLACK_USERNAME: GEOBASE Scanner
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
+      - name: steps
+        id: steps_id
+        env:
+          STEPS_CONTEXT: ${{ toJson(steps) }}
+        run: echo "$STEPS_CONTEXT"
+
       - name: Check on failures
-        if: job.steps.runner.status == failure()
+        if: steps.runner.success == false
         run: exit 1
