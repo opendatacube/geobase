@@ -35,7 +35,7 @@ jobs:
 
       - name: Notify Slack for Failures
         uses: rtCamp/action-slack-notify@v2.1.0
-        if: steps.runner.success == false
+        if: steps.runner.outcome != "success"
         id: slack
         env:
           SLACK_CHANNEL: ga-wms-ops
@@ -53,5 +53,5 @@ jobs:
         run: echo "$STEPS_CONTEXT"
 
       - name: Check on failures
-        if: steps.runner.success == false
+        if: steps.runner.outcome != "success"
         run: exit 1
