@@ -7,9 +7,9 @@ opendatacube/geobase
 
 Set of docker images to build recent versions of geospatial libraries and python environments that use them.
 
-- PROJ 7.1.1
-- GEOS 3.7.2
-- GDAL 3.1.3
+- GEOS 3.8.0 (system)
+- PROJ 7.2.0 (compiled)
+- GDAL 3.1.3 (compiled)
 
 Quick Start
 ===========
@@ -44,8 +44,8 @@ Basic idea is to use multi-stage builds to minimize output docker image size and
 
 Each step is described in more detail below. Overall structure is as following
 
-1. Build C/C++ libs for PROJ,GEOS,GDAL in `base/builder`, package those in `.deb`
-2. Download and build python wheels against compiled GDAL/GEOS/PROJ in `base/wheels`
+1. Build C/C++ libs for PROJ,GDAL in `base/builder`, package those in `.deb`
+2. Download and build python wheels against compiled GDAL/PROJ in `base/wheels`
 3. Include run-time libs needed by libs/wheels built in stages 1 and 2 in `base/runner`
 4. Use multi-stage building technique to construct docker image with customized python environment that suits your needs:
    - Base `builder` stage on `opendatacube/geobase:wheels`
@@ -58,7 +58,7 @@ Each step is described in more detail below. Overall structure is as following
 
 ## base/builder
 
-- Based on `buildack-deps:bionic`
+- Based on `buildack-deps:focal`
 - Builds PROJ, GEOS and GDAL from source
 - Contains lots of dev libs to enable compilation of common python modules that call out to C/C++
 - least changing layer
@@ -90,7 +90,7 @@ This layer is used as a `env_builder` base in the multi-stage build.
 
 ## base/runner
 
-Derives from `ubuntu:18.04`, has all the necessary C/C++/Fortran libs installed in non-dev mode to run python wheels from `base/wheels`.
+Derives from `ubuntu:20.04`, has all the necessary C/C++/Fortran libs installed in non-dev mode to run python wheels from `base/wheels`.
 
 It is used as base for "runner dockers" that use multi-stage building technique: builder stage constructs a python environment using pre-compiled wheels + whatever extra downloaded from pypi.
 
