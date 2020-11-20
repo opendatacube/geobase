@@ -29,6 +29,8 @@ RUN apt-get update -y \
   libsqlite3-0 \
   libspatialindex-c6 \
   libspatialindex6 \
+  libilmbase24 \
+  libopenexr24 \
   libudunits2-0 \
   # GEO
   libgeos-3.8.0 \
@@ -58,6 +60,7 @@ RUN echo "Installing geo libs" \
 RUN echo "Run smoke test" \
   && gdal-config --version \
   && gdal-config --formats \
+  && gdalinfo --version \
   && kea-config --version \
   && projinfo "epsg:4326" \
   && projinfo "epsg:3577" \
