@@ -8,7 +8,7 @@ opendatacube/geobase
 Set of docker images to build recent versions of geospatial libraries and python environments that use them.
 
 - GEOS 3.8.0 (system)
-- PROJ 7.2.0 (compiled)
+- PROJ 6.3.1 (system)
 - GDAL 3.1.3 (compiled)
 
 Quick Start
@@ -18,7 +18,7 @@ Quick Start
 
 ```
 rasterio[s3]
-pyproj
+pyproj<3
 ```
 
 2. Create `Dockerfile`
@@ -44,8 +44,8 @@ Basic idea is to use multi-stage builds to minimize output docker image size and
 
 Each step is described in more detail below. Overall structure is as following
 
-1. Build C/C++ libs for PROJ,GDAL in `base/builder`, package those in `.deb`
-2. Download and build python wheels against compiled GDAL/PROJ in `base/wheels`
+1. Build GDAL in `base/builder`, package those in `.deb`
+2. Download and build python wheels against compiled GDAL in `base/wheels`
 3. Include run-time libs needed by libs/wheels built in stages 1 and 2 in `base/runner`
 4. Use multi-stage building technique to construct docker image with customized python environment that suits your needs:
    - Base `builder` stage on `opendatacube/geobase:wheels`

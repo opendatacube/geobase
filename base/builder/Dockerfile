@@ -57,6 +57,9 @@ RUN apt-get update -y \
     libudunits2-dev \
     libgeos-dev \
     libgeos++-dev \
+    libproj-dev \
+    proj-bin \
+    proj-data \
     && rm -rf /var/lib/apt/lists/*
 
 # dev conveniences
@@ -79,15 +82,6 @@ RUN builder.sh kea-${V_KEA} /dl :download:
 RUN echo "Building KEA" \
   && builder.sh kea-${V_KEA} /dl /tmp/build \
   && dpkg -i /tmp/build/libkea_*deb \
-  && mv /tmp/build/*deb /opt/ \
-  && rm -rf /tmp/build
-
-COPY ./build_proj.sh /usr/local/bin/
-ARG V_PROJ=7.2.0
-RUN builder.sh proj-${V_PROJ} /dl :download:
-RUN echo "Building proj" \
-  && builder.sh proj-${V_PROJ} /dl/ /tmp/build \
-  && dpkg -i /tmp/build/libproj_*deb \
   && mv /tmp/build/*deb /opt/ \
   && rm -rf /tmp/build
 

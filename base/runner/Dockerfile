@@ -35,6 +35,9 @@ RUN apt-get update -y \
   # GEO
   libgeos-3.8.0 \
   libgeos-c1v5 \
+  proj-bin \
+  proj-data \
+  libproj15 \
   # PIL
   libtiff5 \
   libpng16-16 \
@@ -51,7 +54,6 @@ RUN apt-get update -y \
 #  C. Use experimental docker features: `RUN --mount=type=cache,ro,from=builder,source=/opt,target=/opt ...`
 COPY --from=builder /opt/*deb /opt/
 RUN echo "Installing geo libs" \
-  && dpkg -i /opt/libproj*deb \
   && dpkg -i /opt/libkea*deb \
   && dpkg -i /opt/libgdal*deb \
   && ldconfig \
