@@ -24,8 +24,7 @@ RUN pip3 wheel \
 
 RUN pip3 wheel \
   --no-cache-dir \
-  --no-binary=:all:  \
-  --no-build-isolation \
+  --no-binary=h5py  \
   --no-deps \
   h5py \
   && rm -rf ~/.cache/pip
