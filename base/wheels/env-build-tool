@@ -5,6 +5,9 @@ set -o noclobber
 set -o pipefail
 set -o nounset
 
+# see issue #45 regarding fixed pip
+env_bootstrap_libs="pip==20.2.4 setuptools wheel"
+
 # TODO: be smarter about pinned pre-compiled dependencies
 #  Problem:
 #    1. We pre-compile some geo libs like rasterio,fiona...
@@ -46,7 +49,7 @@ cmd_new_no_index () {
     mkdir -p "${env}"
     python3 -m venv "${env}"
     local pip="${env}/bin/pip"
-    $pip install --upgrade pip setuptools wheel
+    $pip install --upgrade ${env_bootstrap_libs}
     $pip install \
          --find-links="${wheels}" \
          --no-cache-dir \
@@ -69,7 +72,7 @@ cmd_new () {
     mkdir -p "${env}"
     python3 -m venv "${env}"
     local pip="${env}/bin/pip"
-    $pip install --upgrade pip setuptools wheel
+    $pip install --upgrade ${env_bootstrap_libs}
 
     $pip install \
         --no-cache-dir \
@@ -92,7 +95,7 @@ cmd_extend () {
     mkdir -p "${env}"
     python3 -m venv "${env}"
     local pip="${env}/bin/pip"
-    $pip install --upgrade pip setuptools
+    $pip install --upgrade ${env_bootstrap_libs}
     $pip install \
          --find-links="${wheels}" \
          --constraint="${bins}" \
