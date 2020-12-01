@@ -64,7 +64,7 @@ RUN pip3 wheel \
   --no-binary=:all: \
   --no-build-isolation \
   --no-deps \
-  pyproj
+  'pyproj==2.6.*'
 
 RUN pip3 wheel \
   --no-cache-dir \
