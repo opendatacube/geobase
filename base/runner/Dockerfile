@@ -61,6 +61,7 @@ RUN apt-get update -y \
 RUN echo "Run smoke test" \
   && gdal-config --version \
   && gdal-config --formats \
+  && gdalinfo --version \
   && geos-config --version \
   && kea-config --version \
   && projinfo "epsg:4326" \
