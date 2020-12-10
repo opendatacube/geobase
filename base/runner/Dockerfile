@@ -16,7 +16,6 @@ RUN apt-get update -y \
   liblzma5 \
   libcurl4 \
   libssl1.1 \
-  libssl1.0.0 \
   libpq5 \
   libxml2 libexpat1 libxerces-c3.2 \
   libnetcdf-c++4 netcdf-bin \
