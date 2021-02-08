@@ -2,7 +2,9 @@ opendatacube/geobase
 ====================
 
 [![Actions Status](https://github.com/opendatacube/geobase/workflows/build/badge.svg)](https://github.com/opendatacube/geobase/actions)
-[![Scan](https://github.com/opendatacube/geobase/workflows/Scan/badge.svg)](https://github.com/opendatacube/geobase/actions)
+[![Builder Scan](https://github.com/opendatacube/geobase/workflows/Builder%20Scan/badge.svg)](https://github.com/opendatacube/geobase/actions)
+[![Runner Scan](https://github.com/opendatacube/geobase/workflows/Runner%20Scan/badge.svg)](https://github.com/opendatacube/geobase/actions)
+[![Wheels Scan](https://github.com/opendatacube/geobase/workflows/Wheels%20Scan/badge.svg)](https://github.com/opendatacube/geobase/actions)
 
 
 Set of docker images to build recent versions of geospatial libraries and python environments that use them.
