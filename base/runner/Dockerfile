@@ -59,6 +59,12 @@ RUN echo "Installing geo libs" \
   && ldconfig \
   && echo "Done"
 
+# bump openssl because CVE
+RUN apt-get update -y \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
+  openssl \
+  && rm -rf /var/lib/apt/lists/*
+
 RUN echo "Run smoke test" \
   && gdal-config --version \
   && gdal-config --formats \
