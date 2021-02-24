@@ -1,5 +1,10 @@
 name: build
 
+# Edit line below to force a rebuild (will still use cache though, unless base
+# image changed)
+#
+# Bump: 25-Feb-2021
+
 on:
   push:
     branches-ignore:
