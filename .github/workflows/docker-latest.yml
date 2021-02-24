@@ -1,0 +1,39 @@
+name: docker-latest
+on: [workflow_dispatch]
+
+env:
+  ORG: opendatacube
+  IMAGE: geobase
+  DOCKER_USER: gadockersvc
+
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Base Image (builder)
+      run: |
+        docker build --tag ${ORG}/${IMAGE}:builder ./base/builder
+
+    - name: Base Image (wheels)
+      run: |
+        docker build \
+          --build-arg base=${ORG}/${IMAGE}:builder \
+          --tag ${ORG}/${IMAGE}:wheels ./base/wheels
+
+    - name: Base Image (runner)
+      run: |
+        docker build \
+          --build-arg base=${ORG}/${IMAGE}:builder \
+          --tag ${ORG}/${IMAGE}:runner ./base/runner
+
+    # - name: DockerHub Push
+    #   run: |
+    #     echo "Login to DockerHub as ${DOCKER_USER}"
+    #     echo "${{ secrets.DockerPassword }}" | docker login -u "${DOCKER_USER}" --password-stdin
+    #     docker push ${ORG}/${IMAGE}:builder
+    #     docker push ${ORG}/${IMAGE}:runner
+    #     docker push ${ORG}/${IMAGE}:wheels
