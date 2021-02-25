@@ -1,16 +1,18 @@
 ARG base=opendatacube/geobase:builder
 FROM ${base} as builder
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -y \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
+  && apt-get install -y --fix-missing --no-install-recommends \
   python3 python3-dev python3-pip python3-venv \
   && rm -rf /var/lib/apt/lists/*
 
 # GDAL/GEOS/PROJ dependencies
 RUN apt-get update -y \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
+  && apt-get install -y --fix-missing --no-install-recommends \
   libopenjp2-7 \
   libzstd1 \
   liblzma5 \
@@ -19,7 +21,7 @@ RUN apt-get update -y \
   libpq5 \
   libxml2 libexpat1 libxerces-c3.2 \
   libnetcdf-c++4 netcdf-bin \
-  libhdf4-0-alt libhdf5-100 libhdf5-cpp-100 libwebp6 \
+  libhdf4-0-alt libhdf5-103 libhdf5-cpp-103 libwebp6 \
   libpcre3 \
   libkmlbase1 libkmlconvenience1 libkmldom1 libkmlengine1 libkmlregionator1 libkmlxsd1 \
   libyaml-0-2 \
@@ -27,9 +29,17 @@ RUN apt-get update -y \
   libgfortran4 \
   libgomp1 \
   libsqlite3-0 \
-  libspatialindex-c4v5 \
-  libspatialindex4v5 \
+  libspatialindex-c6 \
+  libspatialindex6 \
+  libilmbase24 \
+  libopenexr24 \
   libudunits2-0 \
+  # GEO
+  libgeos-3.8.0 \
+  libgeos-c1v5 \
+  proj-bin \
+  proj-data \
+  libproj15 \
   # PIL
   libtiff5 \
   libpng16-16 \
@@ -47,22 +57,14 @@ RUN apt-get update -y \
 COPY --from=builder /opt/*deb /opt/
 RUN echo "Installing geo libs" \
   && dpkg -i /opt/libkea*deb \
-  && dpkg -i /opt/libgeos*deb \
-  && dpkg -i /opt/libproj*deb \
   && dpkg -i /opt/libgdal*deb \
+  && ldconfig \
   && echo "Done"
-
-# bump openssl because CVE
-RUN apt-get update -y \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
-  openssl \
-  && rm -rf /var/lib/apt/lists/*
 
 RUN echo "Run smoke test" \
   && gdal-config --version \
   && gdal-config --formats \
   && gdalinfo --version \
-  && geos-config --version \
   && kea-config --version \
   && projinfo "epsg:4326" \
   && projinfo "epsg:3577" \
