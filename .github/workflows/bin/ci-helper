@@ -79,7 +79,6 @@ export_cfg () {
             ;;
     esac
     im_builder=${im_main/MMM/builder}
-    im_wheels=${im_main/MMM/wheels}
     im_runner=${im_main/MMM/runner}
 
     all_envs='BRANCH
@@ -91,7 +90,6 @@ export_cfg () {
       im_fallback
       im_builder
       im_runner
-      im_wheels
       build_info'
 
     for x in $all_envs; do
