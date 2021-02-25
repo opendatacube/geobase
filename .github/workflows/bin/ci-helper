@@ -28,6 +28,11 @@ branch_name () {
     esac
 }
 
+safe_tag_name () {
+    # / -> _
+    echo ${1//\//_}
+}
+
 export_cfg () {
     local ref="${1:-${GITHUB_REF:-}}"
     local sha="${2:-${GITHUB_SHA:-missing_sha}}"
@@ -37,7 +42,7 @@ export_cfg () {
     push_image="yes"  # not from PR
 
     im_extra=""       # only set on DEV_BRANCH (develop)
-    im_fallback=${ORG}/${IMAGE}:MMM
+    im_fallback=${ORG}/${IMAGE}:MMM  # MMM will be replaced with {builder,wheels,runner}
 
     build_info="$(TZ=Australia/Sydney date -Im) $sha"
 
@@ -48,18 +53,16 @@ export_cfg () {
 
             # figure out extra tag
             git fetch --prune --unshallow 2> /dev/null || true
-            vv=$(git describe --tags || echo "${sha}")  # describe --tags can fail if there no tags
+            vv=$(git describe --tags || echo "${sha}")  # describe --tags can fail if there are no tags
             im_extra=${ORG}/${IMAGE_DEV}:MMM-${vv}
             ;;
         "refs/heads/"*)
-            BRANCH="${ref#refs/heads/}"
-            BRANCH="${BRANCH/\//_}"
+            BRANCH=$(safe_tag_name "${ref#refs/heads/}")
             im_main=${ORG}/${IMAGE_DEV}:${BRANCH}-MMM
             ;;
         "refs/tags/"*)
             push_cache="no"
-            BRANCH="${ref#refs/tags/}"
-            BRANCH="${BRANCH/\//_}"
+            BRANCH=$(safe_tag_name "${ref#refs/tags/}")
             im_main=${ORG}/${IMAGE}:MMM-${BRANCH}
             ;;
         "refs/pull/"*)
@@ -68,8 +71,7 @@ export_cfg () {
             fi
             push_cache="no"
             push_image="no"
-            BRANCH="${GITHUB_HEAD_REF}"
-            BRANCH="${BRANCH/\//_}"
+            BRANCH=$(safe_tag_name "${GITHUB_HEAD_REF}")
             im_main=${ORG}/${IMAGE_DEV}:${BRANCH}-MMM
             ;;
         *)
