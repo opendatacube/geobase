@@ -1,4 +1,4 @@
-ARG base=opendatacube/geobase:wheels
+ARG base=opendatacube/geobase:builder
 FROM ${base}
 
 VOLUME ["/build"]
