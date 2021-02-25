@@ -60,7 +60,7 @@ build_lib () {
     local v=$(echo "${1}" | awk -F - '{print $2}')
     local dl="${2:-/dl}"
     local bdir="${3:-./}"
-    local prefix="${4:-/usr}"
+    local prefix="${4:-/usr/local}"
     local build_script="build_${lib}.sh"
 
     [ -d "${dl}" ] || mkdir -p "${dl}"
