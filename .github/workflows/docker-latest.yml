@@ -30,10 +30,36 @@ jobs:
           --build-arg base=${ORG}/${IMAGE}:builder \
           --tag ${ORG}/${IMAGE}:runner ./base/runner
 
-    # - name: DockerHub Push
-    #   run: |
-    #     echo "Login to DockerHub as ${DOCKER_USER}"
-    #     echo "${{ secrets.DockerPassword }}" | docker login -u "${DOCKER_USER}" --password-stdin
-    #     docker push ${ORG}/${IMAGE}:builder
-    #     docker push ${ORG}/${IMAGE}:runner
-    #     docker push ${ORG}/${IMAGE}:wheels
+    - name: DockerHub Push
+      run: |
+        echo "Login to DockerHub as ${DOCKER_USER}"
+        echo "${{ secrets.DockerPassword }}" | docker login -u "${DOCKER_USER}" --password-stdin
+        docker push ${ORG}/${IMAGE}:builder
+        docker push ${ORG}/${IMAGE}:runner
+        docker push ${ORG}/${IMAGE}:wheels
+
+    - name: Run vulnerability scanner (builder)
+      uses: aquasecurity/trivy-action@0.0.6
+      continue-on-error: true
+      with:
+        image-ref: $${ORG}/${IMAGE}:builder
+        format: "table"
+        exit-code: "1"
+        severity: "CRITICAL,HIGH"
+
+    - name: Run vulnerability scanner (wheels)
+      uses: aquasecurity/trivy-action@0.0.6
+      continue-on-error: true
+      with:
+        image-ref: ${ORG}/${IMAGE}:wheels
+        format: "table"
+        exit-code: "1"
+        severity: "CRITICAL,HIGH"
+
+    - name: Run vulnerability scanner (runner)
+      uses: aquasecurity/trivy-action@0.0.6
+      with:
+        image-ref: ${ORG}/${IMAGE}:runner
+        format: "table"
+        exit-code: "1"
+        severity: "CRITICAL,HIGH"
