@@ -1,4 +1,4 @@
-FROM opendatacube/geobase:wheels as env_builder
+FROM opendatacube/geobase:builder as env_builder
 COPY requirements.txt /
 RUN env-build-tool new /requirements.txt /env
 

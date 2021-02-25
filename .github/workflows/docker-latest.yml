@@ -18,12 +18,6 @@ jobs:
       run: |
         docker build --tag ${ORG}/${IMAGE}:builder ./base/builder
 
-    - name: Base Image (wheels)
-      run: |
-        docker build \
-          --build-arg base=${ORG}/${IMAGE}:builder \
-          --tag ${ORG}/${IMAGE}:wheels ./base/wheels
-
     - name: Base Image (runner)
       run: |
         docker build \
@@ -36,22 +30,12 @@ jobs:
         echo "${{ secrets.DockerPassword }}" | docker login -u "${DOCKER_USER}" --password-stdin
         docker push ${ORG}/${IMAGE}:builder
         docker push ${ORG}/${IMAGE}:runner
-        docker push ${ORG}/${IMAGE}:wheels
 
     - name: Run vulnerability scanner (builder)
       uses: aquasecurity/trivy-action@0.0.6
       continue-on-error: true
       with:
         image-ref: $${ORG}/${IMAGE}:builder
-        format: "table"
-        exit-code: "1"
-        severity: "CRITICAL,HIGH"
-
-    - name: Run vulnerability scanner (wheels)
-      uses: aquasecurity/trivy-action@0.0.6
-      continue-on-error: true
-      with:
-        image-ref: ${ORG}/${IMAGE}:wheels
         format: "table"
         exit-code: "1"
         severity: "CRITICAL,HIGH"
