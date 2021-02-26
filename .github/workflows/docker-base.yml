@@ -113,7 +113,7 @@ jobs:
     - name: Test Image (local)
       run: |
         docker build \
-          --build-arg base=${im_wheels} \
+          --build-arg base=${im_builder} \
           --build-arg USER_NAME=$USER \
           --build-arg UID=$UID \
           --tag geobase:local ./local
