@@ -5,7 +5,9 @@ env:
   ORG: opendatacube
   IMAGE: geobase
   DOCKER_USER: gadockersvc
-
+  BUILDER_IMAGE_NAME: opendatacube/geobase:builder
+  WHEELS_IMAGE_NAME: opendatacube/geobase:wheels
+  RUNNER_IMAGE_NAME: opendatacube/geobase:runner
 
 jobs:
   release:
@@ -42,7 +44,7 @@ jobs:
       uses: aquasecurity/trivy-action@0.0.6
       continue-on-error: true
       with:
-        image-ref: $${ORG}/${IMAGE}:builder
+        image-ref: "${{ env.BUILDER_IMAGE_NAME }}"
         format: "table"
         exit-code: "1"
         severity: "CRITICAL,HIGH"
@@ -51,7 +53,7 @@ jobs:
       uses: aquasecurity/trivy-action@0.0.6
       continue-on-error: true
       with:
-        image-ref: ${ORG}/${IMAGE}:wheels
+        image-ref: "${{ env.WHEELS_IMAGE_NAME }}"
         format: "table"
         exit-code: "1"
         severity: "CRITICAL,HIGH"
@@ -59,7 +61,7 @@ jobs:
     - name: Run vulnerability scanner (runner)
       uses: aquasecurity/trivy-action@0.0.6
       with:
-        image-ref: ${ORG}/${IMAGE}:runner
+        image-ref: "${{ env.RUNNER_IMAGE_NAME }}"
         format: "table"
         exit-code: "1"
         severity: "CRITICAL,HIGH"
