@@ -12,7 +12,6 @@ on:
 env:
   ORG: opendatacube
   IMAGE: geobase
-  DOCKER_USER: gadockersvc
   V: 3.0.4
 
 
@@ -41,8 +40,8 @@ jobs:
 
     - name: DockerHub Push
       run: |
-        echo "Login to DockerHub as ${DOCKER_USER}"
-        echo "${{ secrets.DockerPassword }}" | docker login -u "${DOCKER_USER}" --password-stdin 
+        echo "Login to DockerHub"
+        echo "${{ secrets.DOCKERPASSWORD }}" | docker login -u "${{ secrets.DOCKERUSER }}" --password-stdin
         docker push ${ORG}/${IMAGE}:builder-${V}
         docker push ${ORG}/${IMAGE}:runner-${V}
         docker push ${ORG}/${IMAGE}:wheels-${V}

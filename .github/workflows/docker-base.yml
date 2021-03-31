@@ -28,7 +28,6 @@ env:
   ORG: opendatacube
   IMAGE: geobase
   IMAGE_DEV: geobase-dev
-  DOCKER_USER: gadockersvc
 
 
 jobs:
@@ -63,8 +62,8 @@ jobs:
     - name: DockerHub Login
       if: steps.cfg.outputs.push_cache == 'yes' || steps.cfg.outputs.push_image == 'yes'
       run: |
-        echo "Login to DockerHub as ${DOCKER_USER}"
-        echo "${{ secrets.DockerPassword }}" | docker login -u "${DOCKER_USER}" --password-stdin 
+        echo "Login to DockerHub"
+        echo "${{ secrets.DOCKERPASSWORD }}" | docker login -u "${{ secrets.DOCKERUSER }}" --password-stdin
 
     ###########################################
     # Builder

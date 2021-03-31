@@ -4,7 +4,6 @@ on: [workflow_dispatch]
 env:
   ORG: opendatacube
   IMAGE: geobase
-  DOCKER_USER: gadockersvc
   BUILDER_IMAGE_NAME: opendatacube/geobase:builder
   WHEELS_IMAGE_NAME: opendatacube/geobase:wheels
   RUNNER_IMAGE_NAME: opendatacube/geobase:runner
@@ -34,8 +33,8 @@ jobs:
 
     - name: DockerHub Push
       run: |
-        echo "Login to DockerHub as ${DOCKER_USER}"
-        echo "${{ secrets.DockerPassword }}" | docker login -u "${DOCKER_USER}" --password-stdin
+        echo "Login to DockerHub"
+        echo "${{ secrets.DOCKERPASSWORD }}" | docker login -u "${{ secrets.DOCKERUSER }}" --password-stdin
         docker push ${ORG}/${IMAGE}:builder
         docker push ${ORG}/${IMAGE}:runner
         docker push ${ORG}/${IMAGE}:wheels
