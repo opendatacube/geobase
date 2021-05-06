@@ -116,3 +116,13 @@ RUN echo "Building gdal" \
   && mv /tmp/build/*deb /opt/ \
   && ldconfig \
   && rm -rf /tmp/build
+
+# Python env building utilities
+COPY assets/requirements-base.txt /conf/requirements-base.txt
+COPY assets/env-build-tool /usr/local/bin/env-build-tool
+RUN echo "GDAL==$(gdal-config --version)" > /opt/constraints-gdal.txt \
+    && mkdir -p /wk \
+    && env-build-tool new /conf/requirements-base.txt /dev/null /opt/env0 \
+    && rm -rf /root/.cache
+
+VOLUME ["/wk"]

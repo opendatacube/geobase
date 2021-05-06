@@ -1,0 +1,10 @@
+# Bootstraps /opt/env0 from which `pip wheel` will run
+#
+# we include numpy and cython here as some libs (netcdf4) do not declare build
+# time dependencies right
+pip
+wheel
+setuptools
+setuptools_scm[toml]
+numpy
+cython
