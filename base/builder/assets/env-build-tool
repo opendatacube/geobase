@@ -1,0 +1,98 @@
+#!/bin/bash
+
+set -o errexit
+set -o noclobber
+set -o pipefail
+set -o nounset
+
+CC_GDAL=/opt/constraints-gdal.txt
+ENV0=/opt/env0
+
+env_bootstrap_libs="pip setuptools wheel"
+
+# download/compile wheels from requirements.txt
+#   wheels that are in /wheels will be copied through and not re-compiled
+cmd_wheels () {
+    local requirements="${1:-/conf/requirements.txt}"
+    local constraints="${2:-/conf/constraints.txt}"
+    local dst_wheels="${3:-/wheels}"
+
+    local pip="${ENV0}/bin/python -m pip"
+    $pip wheel \
+        --constraint="${CC_GDAL}" \
+        --constraint="${constraints}" \
+        --requirement="${requirements}" \
+        --wheel-dir="${dst_wheels}"
+}
+
+# Construct environment from /wheels folder only, no downloads
+#
+cmd_new_no_index () {
+    local requirements="${1:-/conf/requirements.txt}"
+    local env="${2:-/env}"
+    local wheels="${3:-/wheels}"
+
+    mkdir -p "${env}"
+    python3 -m venv "${env}"
+    local pip="${env}/bin/python -m pip"
+    $pip install --upgrade ${env_bootstrap_libs}
+    $pip install \
+         --constraint="${CC_GDAL}" \
+         --find-links="${wheels}" \
+         --no-index \
+         --requirement="${requirements}"
+}
+
+
+# Construct environment from requirements.txt and constraints.txt
+#
+cmd_new () {
+    local requirements="${1:-/conf/requirements.txt}"
+    local constraints="${2:-/conf/constraints.txt}"
+    local env="${3:-/env}"
+
+    mkdir -p "${env}"
+    python3 -m venv "${env}"
+    local pip="${env}/bin/python -m pip"
+
+    $pip install --upgrade $env_bootstrap_libs
+
+    $pip install \
+        --constraint="${CC_GDAL}" \
+        --constraint="${constraints}" \
+        --requirement="${requirements}"
+}
+
+cmd_help () {
+    echo 'env-build-tool <wheels|new|new_no_index|extend|help> ARGS
+
+Download or compile the required wheels into `wheel_dir`
+  > env-build-tool wheels <requirements.txt> <wheel_dir:/wheels>
+
+Make a new python environment from the requirements and wheels_dir
+  > env-build-tool new <requirements.txt> <constraints.txt> <env:/env>
+
+Make a new python environment from the requirements and wheels_dir (No Downloads)
+  > env-build-tool new_no_index <requirements.txt <env:/env> <wheel_dir:/wheels>
+'
+}
+
+
+cmd_main () {
+   local cmd="${1:-help}"
+   shift || true # Always succeed, so that we display help text on no args
+
+   case "${cmd}" in
+       wheels|new|new_no_index|help)
+           "cmd_${cmd}" $@
+           ;;
+       *)
+           echo "ERROR: No such command \"${cmd}\""
+           echo
+           cmd_help
+           exit 1
+           ;;
+   esac
+}
+
+cmd_main $@
