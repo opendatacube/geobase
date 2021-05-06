@@ -46,6 +46,10 @@ RUN apt-get update -y \
     libxerces-c-dev \
     libwebp-dev \
     libzstd-dev \
+    libtiff5-dev \
+    libpng-dev \
+    libgif-dev \
+    libdeflate-dev \
     libnetcdf-dev \
     libhdf4-alt-dev \
     libhdf5-serial-dev \
@@ -54,12 +58,10 @@ RUN apt-get update -y \
     libatlas-base-dev \
     gfortran \
     libspatialindex-dev \
+    libsfcgal-dev \
     libudunits2-dev \
     libgeos-dev \
     libgeos++-dev \
-    libproj-dev \
-    proj-bin \
-    proj-data \
     && rm -rf /var/lib/apt/lists/*
 
 # dev conveniences
@@ -76,8 +78,17 @@ COPY ./builder.sh /usr/local/bin/
 
 RUN mkdir -p /dl
 
-ARG V_KEA=1.4.12
+COPY ./build_lerc.sh /usr/local/bin/
+ARG V_LERC=2.2.1
+RUN builder.sh lerc-${V_LERC} /dl :download:
+RUN echo "Building LERC" \
+    && builder.sh lerc-${V_LERC} /dl /tmp/build \
+    && dpkg -i /tmp/build/liblerc_*deb \
+    && mv /tmp/build/*deb /opt/ \
+    && rm -rf /tmp/build
+
 COPY ./build_kea.sh /usr/local/bin/
+ARG V_KEA=1.4.14
 RUN builder.sh kea-${V_KEA} /dl :download:
 RUN echo "Building KEA" \
   && builder.sh kea-${V_KEA} /dl /tmp/build \
@@ -85,10 +96,20 @@ RUN echo "Building KEA" \
   && mv /tmp/build/*deb /opt/ \
   && rm -rf /tmp/build
 
+COPY ./build_proj.sh /usr/local/bin/
+ARG V_PROJ=7.2.1
+RUN builder.sh proj-${V_PROJ} /dl :download:
+RUN echo "Building PROJ" \
+  && builder.sh proj-${V_PROJ} /dl /tmp/build \
+  && dpkg -i /tmp/build/libproj_*deb \
+  && ldconfig \
+  && mv /tmp/build/*deb /opt/ \
+  && rm -rf /tmp/build
+
 COPY ./build_gdal.sh /usr/local/bin/
-COPY ./gdal.opts /opt/
-ARG V_GDAL=3.2.1
+ARG V_GDAL=3.3.0
 RUN builder.sh gdal-${V_GDAL} /dl :download:
+COPY ./gdal.opts /opt/
 RUN echo "Building gdal" \
   && FEATURES="$(cat /opt/gdal.opts)" builder.sh gdal-${V_GDAL} /dl /tmp/build /usr/local \
   && dpkg -i /tmp/build/libgdal_*deb \

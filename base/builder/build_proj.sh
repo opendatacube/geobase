@@ -14,8 +14,8 @@ build_proj_shared () {
     (cd "${b}" \
      && cmake "${src_absolute}" \
               -DLIBDIR="${prefix}/lib" \
-              -DPROJ_TESTS=OFF \
-              -DENABLE_LTO=YES \
+              -DBUILD_TESTING=OFF \
+              -DENABLE_IPO=YES \
               -DCMAKE_BUILD_TYPE=Release \
               -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
               -DCMAKE_INSTALL_PREFIX="${prefix}" \
@@ -47,9 +47,9 @@ build_proj_static () {
     (cd "${b}" \
          && cmake "${src_absolute}" \
                   -DLIBDIR="${prefix}/lib" \
-                  -DPROJ_TESTS=OFF \
+                  -DBUILD_TESTING=OFF \
                   -DBUILD_LIBPROJ_SHARED=OFF \
-                  -DENABLE_LTO=YES \
+                  -DENABLE_IPO=YES \
                   -DCMAKE_BUILD_TYPE=Release \
                   -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
                   -DCMAKE_INSTALL_PREFIX="${prefix}" \

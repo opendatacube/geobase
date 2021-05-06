@@ -15,37 +15,38 @@ RUN apt-get update -y \
   && apt-get install -y --fix-missing --no-install-recommends \
   libopenjp2-7 \
   libzstd1 \
+  libdeflate0 \
   liblzma5 \
   libcurl4 \
   libssl1.1 \
   libpq5 \
   libxml2 libexpat1 libxerces-c3.2 \
   libnetcdf-c++4 netcdf-bin \
-  libhdf4-0-alt libhdf5-103 libhdf5-cpp-103 libwebp6 \
+  libhdf4-0-alt libhdf5-103 libhdf5-cpp-103 \
   libpcre3 \
   libkmlbase1 libkmlconvenience1 libkmldom1 libkmlengine1 libkmlregionator1 libkmlxsd1 \
   libyaml-0-2 \
   libatlas3-base \
   libgfortran4 \
   libgomp1 \
+  libgmpxx4ldbl \
   libsqlite3-0 \
   libspatialindex-c6 \
   libspatialindex6 \
   libilmbase24 \
   libopenexr24 \
   libudunits2-0 \
+  libtiff5 \
+  libjpeg-turbo8 \
+  libpng16-16 \
+  libgif7 \
+  libwebp6 \
   # GEO
   libgeos-3.8.0 \
   libgeos-c1v5 \
-  proj-bin \
-  proj-data \
-  libproj15 \
+  libsfcgal1 \
   # PIL
-  libtiff5 \
-  libpng16-16 \
   liblcms2-2 \
-  libwebpmux3 \
-  libwebpdemux2 \
   # matplotlib
   libfreetype6 \
   && rm -rf /var/lib/apt/lists/*
@@ -57,6 +58,8 @@ RUN apt-get update -y \
 COPY --from=builder /opt/*deb /opt/
 RUN echo "Installing geo libs" \
   && dpkg -i /opt/libkea*deb \
+  && dpkg -i /opt/liblerc*deb \
+  && dpkg -i /opt/libproj*deb \
   && dpkg -i /opt/libgdal*deb \
   && ldconfig \
   && echo "Done"
