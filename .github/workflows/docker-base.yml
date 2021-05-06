@@ -116,8 +116,9 @@ jobs:
           --build-arg USER_NAME=$USER \
           --build-arg UID=$UID \
           --tag geobase:local ./local
-        docker run --rm geobase:local gdal-config --version
+        docker run --rm geobase:local gdalinfo --version
         docker run --rm geobase:local gdal-config --formats
+        docker run --rm geobase:local env-build-tool
 
     - name: Push Extra tags (develop branch only)
       if: steps.cfg.outputs.im_extra != '' && steps.cfg.outputs.push_image == 'yes'

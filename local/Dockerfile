@@ -1,9 +1,5 @@
-ARG base=opendatacube/geobase:builder
+ARG base=opendatacube/geobase-builder:latest
 FROM ${base}
-
-VOLUME ["/build"]
-VOLUME ["/dl"]
-VOLUME ["/envs"]
 
 ARG USER_NAME=ubuntu
 ARG UID=1000
@@ -13,6 +9,6 @@ RUN adduser --disabled-password --gecos '' -u ${UID} ${USER_NAME} \
 && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 USER ${USER_NAME}
-WORKDIR /build
+WORKDIR /wk
 
 CMD ["/bin/bash"]
