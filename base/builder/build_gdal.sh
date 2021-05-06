@@ -37,11 +37,11 @@ threads
 
 gdal_configure_libs () {
     local enabled_libs=$@
-    local gdal_features="armadillo bsb cfitsio charls crypto cryptopp curl dds ecw epsilon expat fgdb fme freexl\
- geos geotiff gif gnm grass grib gta hdf4 hdf5 hdfs idb ingres jasper java jp2lura jp2mrsid jpeg jpeg12 kakadu\
- kea lerc libgrass libjson-c libkml liblzma libtiff libtool libz mdb mongocxx mrf mrsid mrsid-lidar msg mysql\
+    local gdal_features="armadillo cfitsio charls crypto cryptopp curl dds ecw expat fgdb fme freexl\
+ geos geotiff gif gnm grass gta hdf4 hdf5 hdfs idb ingres jasper java jp2lura jp2mrsid jpeg jpeg12 kakadu\
+ kea lerc libgrass libjson-c libkml liblzma libtiff libtool libz mdb mongocxx mrsid mrsid-lidar msg mysql\
  netcdf null oci odbc ogdi opencl openjpeg pam pcidsk pcraster pcre pdfium perl pg png podofo poppler python qhull\
- rasdaman rasterlite2 sde sfcgal sosi spatialite sqlite3 teigha teigha-plt threads webp xerces xml2 zstd"
+ rasdaman rasterlite2 sfcgal sosi spatialite sqlite3 teigha teigha-plt threads webp xerces xml2 zstd"
 
     for f in $enabled_libs ; do
         echo "--with-${f}"

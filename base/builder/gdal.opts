@@ -7,11 +7,11 @@ crypto
 libz=internal
 liblzma
 zstd
-libtiff=internal
-geotiff=internal
-jpeg=internal
-png=internal
-gif=internal
+libtiff
+geotiff
+jpeg
+png
+gif
 jpeg12
 openjpeg
 webp
@@ -29,3 +29,4 @@ xerces
 xml2
 expat
 pg
+sfcgal

@@ -11,6 +11,7 @@ geos      https://github.com/libgeos/geos/archive/{{version}}.tar.gz
 proj      https://github.com/OSGeo/proj/releases/download/{{version}}/proj-{{version}}.tar.gz
 gdal      https://download.osgeo.org/gdal/{{version}}/gdal-{{version}}.tar.gz
 kea       https://github.com/ubarsc/kealib/releases/download/kealib-{{version}}/kealib-{{version}}.tar.gz
+lerc      https://github.com/Esri/lerc/archive/refs/tags/v{{version}}.tar.gz
 '
 
 get_url () {

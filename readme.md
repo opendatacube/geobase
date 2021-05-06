@@ -4,14 +4,15 @@ opendatacube/geobase
 [![Actions Status](https://github.com/opendatacube/geobase/workflows/build/badge.svg)](https://github.com/opendatacube/geobase/actions)
 [![Builder Scan](https://github.com/opendatacube/geobase/workflows/Builder%20Scan/badge.svg)](https://github.com/opendatacube/geobase/actions)
 [![Runner Scan](https://github.com/opendatacube/geobase/workflows/Runner%20Scan/badge.svg)](https://github.com/opendatacube/geobase/actions)
-[![Wheels Scan](https://github.com/opendatacube/geobase/workflows/Wheels%20Scan/badge.svg)](https://github.com/opendatacube/geobase/actions)
 
 
 Set of docker images to build recent versions of geospatial libraries and python environments that use them.
 
-- PROJ 6.3.0
-- GEOS 3.7.2
-- GDAL 3.0.4
+- GEOS 3.8.0 (from apt)
+- PROJ 7.2.1 (compiled)
+- KEA 1.4.14 (compiled)
+- LERC 2.2.1 (compiled)
+- GDAL 3.3.0 (compiled)
 
 Quick Start
 ===========
@@ -46,11 +47,10 @@ Basic idea is to use multi-stage builds to minimize output docker image size and
 
 Each step is described in more detail below. Overall structure is as following
 
-1. Build C/C++ libs for PROJ,GEOS,GDAL in `base/builder`, package those in `.deb`
-2. Download and build python wheels against compiled GDAL/GEOS/PROJ in `base/wheels`
-3. Include run-time libs needed by libs/wheels built in stages 1 and 2 in `base/runner`
+1. Build C/C++ libs for PROJ,LERC,KEA,GDAL in `base/builder`, package those in `.deb`
+3. Include run-time libs needed by libs built in stages 1 and 2 in `base/runner`
 4. Use multi-stage building technique to construct docker image with customized python environment that suits your needs:
-   - Base `builder` stage on `opendatacube/geobase:wheels`
+   - Base `builder` stage on `opendatacube/geobase:builder`
    - Install any extra missing dev libs you need via `apt-get`
    - Construct python environment taking care to use pre-compiled wheels where possible
    - Base runner stage on `opendatacube/geobase:runner`
@@ -60,10 +60,10 @@ Each step is described in more detail below. Overall structure is as following
 
 ## base/builder
 
-- Based on `buildack-deps:bionic`
-- Builds PROJ, GEOS and GDAL from source
+- Based on `buildack-deps:focal` (Ubuntu 20.04)
+- Builds LERC, KEA and GDAL from source
 - Contains lots of dev libs to enable compilation of common python modules that call out to C/C++
-- least changing layer
+- Least changing layer
 
 
 Folder structure:
@@ -74,25 +74,9 @@ Folder structure:
 - `base/builder/gdal.opts` feature selection for compiled GDAL, removing features should be easy, adding might require installing extra build dependencies with `apt-get`, might also need to add those extra libs to `base/runner/Dockerfile`.
 
 
-## base/wheels
-
-Next layer up from `builder`.
-
-1. Common python config
-2. Includes common binaries like `tini`
-3. Some scripts for bootstrapping python environments easily
-
-Downloads and builds a collection of geospatial/numeric and related python wheels:
-
-- GEO: GDAL, shapely, pyproj, rasterio, fiona, cartopy
-- IO: h5py, netcdf4
-
-This layer is used as a `env_builder` base in the multi-stage build.
-
-
 ## base/runner
 
-Derives from `ubuntu:18.04`, has all the necessary C/C++/Fortran libs installed in non-dev mode to run python wheels from `base/wheels`.
+Derives from `ubuntu:20.04`, has all the necessary C/C++/Fortran libs installed in non-dev mode to run python wheels compiled in `base/builder`.
 
 It is used as base for "runner dockers" that use multi-stage building technique: builder stage constructs a python environment using pre-compiled wheels + whatever extra downloaded from pypi.
 
