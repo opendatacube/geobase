@@ -5,6 +5,9 @@ set -o pipefail
 set -o nounset
 
 DEV_BRANCH="develop"
+ORG="${ORG:-opendatacube}"
+IMAGE="${IMAGE:-geobase}"
+IMAGE_DEV="${IMAGE_DEV:-${IMAGE}-dev}"
 
 branch_name () {
     local ref="${1:-${GITHUB_REF:-}}"
@@ -49,12 +52,18 @@ export_cfg () {
     case "${ref}" in
         "refs/heads/"${DEV_BRANCH})
             BRANCH=${DEV_BRANCH}
-            im_main=${ORG}/${IMAGE}:MMM
+            im_main=${ORG}/${IMAGE}-MMM:latest
 
             # figure out extra tag
             git fetch --prune --unshallow 2> /dev/null || true
             vv=$(git describe --tags || echo "${sha}")  # describe --tags can fail if there are no tags
             im_extra=${ORG}/${IMAGE_DEV}:MMM-${vv}
+            ;;
+        "refs/heads/gdal-"*)
+            BRANCH=$(safe_tag_name "${ref#refs/heads/}")
+            V=${BRANCH#gdal-}
+            im_main=${ORG}/${IMAGE}-MMM:${V}
+            im_fallback=${im_main}
             ;;
         "refs/heads/"*)
             BRANCH=$(safe_tag_name "${ref#refs/heads/}")
@@ -63,7 +72,7 @@ export_cfg () {
         "refs/tags/"*)
             push_cache="no"
             BRANCH=$(safe_tag_name "${ref#refs/tags/}")
-            im_main=${ORG}/${IMAGE}:MMM-${BRANCH}
+            im_main=${ORG}/${IMAGE}-MMM:${BRANCH}
             ;;
         "refs/pull/"*)
             if [ -z "${GITHUB_HEAD_REF:-}" ] ; then
