@@ -9,6 +9,7 @@ RUN adduser --disabled-password --gecos '' -u ${UID} ${USER_NAME} \
 && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 USER ${USER_NAME}
+ENV PIP_CACHE_DIR=/wk/.cache/pip
 WORKDIR /wk
 
 CMD ["/bin/bash"]
