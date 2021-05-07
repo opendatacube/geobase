@@ -63,14 +63,32 @@ cmd_new () {
         --requirement="${requirements}"
 }
 
+# Add more libraries to an existing python env
+#
+cmd_extend () {
+    local requirements="${1:-/conf/requirements.txt}"
+    local constraints="${2:-/conf/constraints.txt}"
+    local env="${3:-/env}"
+
+    local pip="${env}/bin/python -m pip"
+
+    $pip install \
+         --constraint="${CC_GDAL}" \
+         --constraint="${constraints}" \
+         --requirement="${requirements}"
+}
+
 cmd_help () {
     echo 'env-build-tool <wheels|new|new_no_index|extend|help> ARGS
 
 Download or compile the required wheels into `wheel_dir`
-  > env-build-tool wheels <requirements.txt> <wheel_dir:/wheels>
+  > env-build-tool wheels <requirements.txt> <constraints.txt> <wheel_dir:/wheels>
 
-Make a new python environment from the requirements and wheels_dir
+Make a new python environment from the requirements and constraints
   > env-build-tool new <requirements.txt> <constraints.txt> <env:/env>
+
+Extend existing python environment using requirements and constraints
+  > env-build-tool extend <requirements.txt> <constraints.txt> <env:/env>
 
 Make a new python environment from the requirements and wheels_dir (No Downloads)
   > env-build-tool new_no_index <requirements.txt <env:/env> <wheel_dir:/wheels>
