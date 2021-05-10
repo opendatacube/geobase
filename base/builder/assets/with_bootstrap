@@ -1,0 +1,32 @@
+#!/bin/bash
+
+
+# If current work directory is not owned by root
+#   1. Update odc user/group to have same UID,GID as work directory
+#   2. Relaunch this script as odc user
+[[ $UID -ne 0 ]] || {
+    target_uid=$(stat -c '%u' .)
+    target_gid=$(stat -c '%g' .)
+
+    [[ $target_uid -eq 0 ]] || {
+        groupmod --gid "${target_gid}" odc
+        usermod --gid "${target_gid}" --uid "${target_uid}" odc
+        chown -R odc:odc /home/odc/
+        exec sudo -u odc -E -H bash "$0" "$@"
+    }
+}
+
+[[ $UID -ne 0 ]] || echo "WARNING: Running as root"
+
+case "${1:-help}" in
+    wheels|new|extend|pkg-recompile|new_no_index|list-manylinux-wheels|help)
+        exec env-build-tool $@
+        ;;
+    python)
+        source /opt/env0/bin/activate
+        exec "$@"
+        ;;
+    *)
+        exec "$@"
+        ;;
+esac

@@ -117,6 +117,22 @@ RUN echo "Building gdal" \
   && ldconfig \
   && rm -rf /tmp/build
 
+RUN groupadd --gid 1000 odc \
+    && useradd --gid 1000 \
+    --uid 1000 \
+    --create-home \
+    --shell /bin/bash -N odc \
+    && adduser odc users \
+    && adduser odc sudo \
+    && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+    && true
+
+VOLUME ["/wk"]
+WORKDIR /wk
+COPY assets/with_bootstrap /usr/local/bin/
+ENTRYPOINT ["/bin/tini", "-s", "--", "/usr/local/bin/with_bootstrap"]
+
+
 # Python env building utilities
 COPY assets/requirements-base.txt /conf/requirements-base.txt
 COPY assets/nobinary.txt /conf/nobinary.txt
@@ -126,4 +142,3 @@ RUN echo "GDAL==$(gdal-config --version)" > /opt/constraints-gdal.txt \
     && env-build-tool new /conf/requirements-base.txt /dev/null /opt/env0 \
     && rm -rf /root/.cache
 
-VOLUME ["/wk"]
