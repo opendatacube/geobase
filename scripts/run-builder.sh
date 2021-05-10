@@ -2,13 +2,12 @@
 
 set -eu
 
+IMG=${IMG:-opendatacube/geobase-builder:3.3.0}
+
 mkdir -p run
 cd run
-mkdir -p build dl envs
 
 docker run \
-       -v $(pwd)/dl:/dl \
-       -v $(pwd)/build:/build \
-       -v $(pwd)/envs:/envs \
+       -v $(pwd):/wk \
        -ti --rm \
-       geobase:local $@
+       ${IMG} $@
