@@ -2,11 +2,8 @@ name: docker-latest
 on: [workflow_dispatch]
 
 env:
-  ORG: opendatacube
-  IMAGE: geobase
-  BUILDER_IMAGE_NAME: opendatacube/geobase:builder
-  WHEELS_IMAGE_NAME: opendatacube/geobase:wheels
-  RUNNER_IMAGE_NAME: opendatacube/geobase:runner
+  BUILDER_IMAGE: opendatacube/geobase-builder:latest
+  RUNNER_IMAGE: opendatacube/geobase-runner:latest
 
 jobs:
   release:
@@ -17,26 +14,26 @@ jobs:
 
     - name: Base Image (builder)
       run: |
-        docker build --tag ${ORG}/${IMAGE}:builder ./base/builder
+        docker build --tag ${BUILDER_IMAGE} ./base/builder
 
     - name: Base Image (runner)
       run: |
         docker build \
-          --build-arg base=${ORG}/${IMAGE}:builder \
-          --tag ${ORG}/${IMAGE}:runner ./base/runner
+          --build-arg base=${BUILDER_IMAGE} \
+          --tag ${RUNNER_IMAGE} ./base/runner
 
     - name: DockerHub Push
       run: |
         echo "Login to DockerHub"
         echo "${{ secrets.DOCKERPASSWORD }}" | docker login -u "${{ secrets.DOCKERUSER }}" --password-stdin
-        docker push ${ORG}/${IMAGE}:builder
-        docker push ${ORG}/${IMAGE}:runner
+        docker push ${BUILDER_IMAGE}
+        docker push ${RUNNER_IMAGE}
 
     - name: Run vulnerability scanner (builder)
       uses: aquasecurity/trivy-action@0.0.6
       continue-on-error: true
       with:
-        image-ref: "${{ env.BUILDER_IMAGE_NAME }}"
+        image-ref: "${{ env.BUILDER_IMAGE }}"
         format: "table"
         exit-code: "1"
         severity: "CRITICAL,HIGH"
@@ -44,7 +41,7 @@ jobs:
     - name: Run vulnerability scanner (runner)
       uses: aquasecurity/trivy-action@0.0.6
       with:
-        image-ref: "${{ env.RUNNER_IMAGE_NAME }}"
+        image-ref: "${{ env.RUNNER_IMAGE }}"
         format: "table"
         exit-code: "1"
         severity: "CRITICAL,HIGH"
