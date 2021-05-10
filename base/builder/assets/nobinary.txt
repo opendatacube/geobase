@@ -1,0 +1,12 @@
+# Packages that should be compiled locally by default
+# /conf/nobinary.txt
+# User can override with NOBINARY environment variable
+
+# these all use PROJ,GEOS,GDAL or dependencies of GDAL
+rasterio
+shapely
+fiona
+pyproj
+netcdf4
+h5py
+tables

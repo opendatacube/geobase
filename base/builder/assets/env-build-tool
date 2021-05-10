@@ -10,6 +10,42 @@ ENV0=/opt/env0
 
 env_bootstrap_libs="pip setuptools wheel"
 
+# remove comments (#) and empty lines and trailing/leading whitespaces
+uncomment () {
+    awk '!/^[[:blank:]]*#/ && \
+         !/^[[:blank:]]*$/\
+    {gsub(/^[[:blank:]]*/, ""); \
+    gsub(/[[:blank:]]*$/, "");\
+    gsub(/#.*$/, "");\
+    print $0}'
+}
+
+#
+# 1. NOBINARY pointing to a file
+# 2. NOBINARY with embedded content
+# 3. /conf/nobinary.txt
+get_nobinary () {
+    if [ -n "${NOBINARY:-}" ]; then
+        if [ -f "${NOBINARY}" ]; then
+            uncomment < "${NOBINARY}"
+        else
+            echo "${NOBINARY}" | uncomment
+        fi
+    else
+        if [ -f /conf/nobinary.txt ]; then
+            uncomment < /conf/nobinary.txt
+        fi
+    fi
+}
+
+# construct and print --no-binary=lib,lib2, option, or "" if not set
+get_nobinary_cmdline () {
+    local nobin=$(get_nobinary)
+    if [ -n "${nobin}" ]; then
+        echo "${nobin}" | awk 'BEGIN {ORS=""; print "--no-binary="; ORS=","}{print $1}'
+    fi
+}
+
 # download/compile wheels from requirements.txt
 #   wheels that are in /wheels will be copied through and not re-compiled
 cmd_wheels () {
@@ -23,7 +59,45 @@ cmd_wheels () {
         --constraint="${constraints}" \
         --requirement="${requirements}" \
         --wheel-dir="${dst_wheels}"
+
+    local nobinary_libs=$(get_nobinary)
+    if [ -n "${nobinary_libs}" ]; then
+        echo "Recompiling a set of libs locally"
+        for wheel in $(cmd_list-manylinux-wheels "${dst_wheels}" ${nobinary_libs}); do
+            echo "Processing: $wheel"
+            cmd_pkg-recompile $wheel
+            mv "${wheel}" "${wheel}.bk"
+        done
+    fi
 }
+
+# Given path to manylinux wheel build local lib instead
+#  1. download source package for this lib from pypi
+#  2. compile it to a wheel
+cmd_pkg-recompile () {
+    local src="$1"
+    local dst="${2:-$(dirname $src)}"
+    local pip="${ENV0}/bin/python -m pip"
+
+    echo $(basename "${src}") | awk -F - '{print $1, $2}'| (
+        read lib version
+        echo "Processing ${lib}==$version in ${dst}"
+        $pip download -d "${dst}" --no-deps --no-build-isolation --no-binary=$lib $lib==$version
+
+        lib_src=$(find "${dst}" -name "${lib}-${version}"'.*' | head -1)
+        echo "Compiling ${lib_src}"
+        $pip wheel --no-deps -w "${dst}" "${lib_src}"
+    )
+}
+
+cmd_list-manylinux-wheels() {
+    local wheels="${1}"
+    shift
+    for lib in $@; do
+        find "${wheels}" -iname "${lib}-"'*manylinux*.whl'
+    done
+}
+
 
 # Construct environment from /wheels folder only, no downloads
 #
@@ -59,6 +133,7 @@ cmd_new () {
 
     $pip install \
         --constraint="${CC_GDAL}" \
+        $(get_nobinary_cmdline) \
         --constraint="${constraints}" \
         --requirement="${requirements}"
 }
@@ -92,6 +167,12 @@ Extend existing python environment using requirements and constraints
 
 Make a new python environment from the requirements and wheels_dir (No Downloads)
   > env-build-tool new_no_index <requirements.txt <env:/env> <wheel_dir:/wheels>
+
+Recompile manylinux wheel
+  > env-build-tool pkg-recompile <path-to-wheel-file> [<dst_dir>]
+
+List manylinux wheels in a folder
+  > env-build-tool list-manylinux-wheels
 '
 }
 
@@ -101,7 +182,7 @@ cmd_main () {
    shift || true # Always succeed, so that we display help text on no args
 
    case "${cmd}" in
-       wheels|new|new_no_index|help)
+       wheels|new|extend|pkg-recompile|new_no_index|list-manylinux-wheels|help)
            "cmd_${cmd}" $@
            ;;
        *)
