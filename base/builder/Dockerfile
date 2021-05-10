@@ -119,6 +119,7 @@ RUN echo "Building gdal" \
 
 # Python env building utilities
 COPY assets/requirements-base.txt /conf/requirements-base.txt
+COPY assets/nobinary.txt /conf/nobinary.txt
 COPY assets/env-build-tool /usr/local/bin/env-build-tool
 RUN echo "GDAL==$(gdal-config --version)" > /opt/constraints-gdal.txt \
     && mkdir -p /wk \
