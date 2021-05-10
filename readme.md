@@ -17,7 +17,7 @@ Set of docker images to build recent versions of geospatial libraries and python
 Quick Start
 ===========
 
-1. Create `requirements.txt`
+1. Create `requirements.txt` and `constraints.txt` (could be empty)
 
 ```
 rasterio[s3]
@@ -27,12 +27,13 @@ pyproj
 2. Create `Dockerfile`
 
 ```docker
-FROM opendatacube/geobase:wheels as env_builder
+FROM opendatacube/geobase-builder as env_builder
 COPY requirements.txt /
-RUN env-build-tool new /requirements.txt /env /wheels
+COPY constraints.txt /
+RUN env-build-tool new /requirements.txt /constraints.txt /env
 
 
-FROM opendatacube/geobase:runner
+FROM opendatacube/geobase-runner
 COPY --from=env_builder /env /env
 ENV LC_ALL=C.UTF-8
 ENV PATH="/env/bin:${PATH}"
@@ -50,10 +51,10 @@ Each step is described in more detail below. Overall structure is as following
 1. Build C/C++ libs for PROJ,LERC,KEA,GDAL in `base/builder`, package those in `.deb`
 3. Include run-time libs needed by libs built in stages 1 and 2 in `base/runner`
 4. Use multi-stage building technique to construct docker image with customized python environment that suits your needs:
-   - Base `builder` stage on `opendatacube/geobase:builder`
+   - Base `builder` stage on `opendatacube/geobase-builder:${V_BASE}`
    - Install any extra missing dev libs you need via `apt-get`
    - Construct python environment taking care to use pre-compiled wheels where possible
-   - Base runner stage on `opendatacube/geobase:runner`
+   - Base runner stage on `opendatacube/geobase-runner:${V_BASE}`
    - Install any extra C/C++ run time libs via `apt-get`
    - Copy the entire python environment across from `builder` stage
 
@@ -68,7 +69,7 @@ Each step is described in more detail below. Overall structure is as following
 
 Folder structure:
 
-- `base/builder/Dockerfile` base builder image: `docker pull opendatacube/geobase:builder`
+- `base/builder/Dockerfile` base builder image: `docker pull opendatacube/geobase-builder`
   - `/dl/` contains downloaded sources
   - `/opt/` contains built `.deb` for geos/gdal/proj6
 - `base/builder/gdal.opts` feature selection for compiled GDAL, removing features should be easy, adding might require installing extra build dependencies with `apt-get`, might also need to add those extra libs to `base/runner/Dockerfile`.
