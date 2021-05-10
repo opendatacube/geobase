@@ -18,6 +18,9 @@
 
 [[ $UID -ne 0 ]] || echo "WARNING: Running as root"
 
+# point pip cache to /wk volume
+export PIP_CACHE_DIR=/wk/.cache/pip
+
 case "${1:-help}" in
     wheels|new|extend|pkg-recompile|new_no_index|list-manylinux-wheels|help)
         exec env-build-tool $@
