@@ -1,4 +1,4 @@
-ARG base=opendatacube/geobase:builder
+ARG base=opendatacube/geobase-builder
 FROM ${base} as builder
 
 FROM ubuntu:20.04
