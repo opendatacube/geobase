@@ -12,7 +12,7 @@ on:
 env:
   ORG: opendatacube
   IMAGE: geobase
-  V: 3.0.4
+  V: 3.3.0
 
 
 jobs:
@@ -24,18 +24,17 @@ jobs:
 
     - name: Base Image (builder)
       run: |
-        docker build --tag ${ORG}/${IMAGE}:builder-${V} ./base/builder
+        docker build --tag ${ORG}/${IMAGE}-builder:${V} ./base/builder
 
     - name: Base Image (runner)
       run: |
         docker build \
-          --build-arg base=${ORG}/${IMAGE}:builder-${V} \
-          --tag ${ORG}/${IMAGE}:runner-${V} ./base/runner
+          --build-arg base=${ORG}/${IMAGE}-builder:${V} \
+          --tag ${ORG}/${IMAGE}-runner:${V} ./base/runner
 
     - name: DockerHub Push
       run: |
         echo "Login to DockerHub"
         echo "${{ secrets.DOCKERPASSWORD }}" | docker login -u "${{ secrets.DOCKERUSER }}" --password-stdin
-        docker push ${ORG}/${IMAGE}:builder-${V}
-        docker push ${ORG}/${IMAGE}:runner-${V}
-        docker push ${ORG}/${IMAGE}:wheels-${V}
+        docker push ${ORG}/${IMAGE}-builder:${V}
+        docker push ${ORG}/${IMAGE}-runner:${V}
