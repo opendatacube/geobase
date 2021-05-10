@@ -1,13 +1,7 @@
-# s3/boto, let aiobotocore decide botocore/boto3/awscli versions
-aiobotocore[boto3,awscli]==0.11.0
-python-dateutil==2.8.0
-
 --extra-index-url="https://packages.dea.ga.gov.au"
 datacube[performance,distributed]
 odc-apps-cloud[GCP,THREDDS]
 odc-apps-dc-tools
 git+https://github.com/opendatacube/datacube-ows.git
 
-# used by update_ranges.py (remove when setup.py is fixed in datacube-ows)
-colour
-timezonefinderL
+aiobotocore[boto3,awscli]

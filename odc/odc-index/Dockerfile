@@ -1,23 +1,24 @@
 ARG py_env_path=/env
+ARG V_BASE=3.3.0
 
 # Basically env_builder stage should not need to change from service to service
 #   only change content of requirement.txt
 #  1. Copy requirements.txt
 #  2. Download/compile/re-use all the wheels
 #  3. Build environment from wheels
-FROM opendatacube/geobase:wheels as env_builder
+FROM opendatacube/geobase-builder:${V_BASE} as env_builder
 
 RUN mkdir -p /conf
 COPY requirements.txt /conf/
-RUN env-build-tool wheels /conf/requirements.txt /wheels
+COPY constraints.txt /conf/
 ARG py_env_path
-RUN env-build-tool new /conf/requirements.txt ${py_env_path} /wheels
+RUN env-build-tool new /conf/requirements.txt /conf/constraints.txt ${py_env_path}
 
 #--------------------------------------------------------------------------------
 # Runner stage might need changing if extra Ubuntu packages are needed for
 # different purposes
 # --------------------------------------------------------------------------------
-FROM opendatacube/geobase:runner
+FROM opendatacube/geobase-runner:${V_BASE}
 ARG py_env_path
 
 # Copy python env, tini
@@ -28,7 +29,7 @@ COPY --from=env_builder /bin/tini /bin/tini
 RUN apt-get update -y \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
   # developer convenience
-  postgresql-client-10 \
+  postgresql-client-12 \
   less \
   vim \
   git \
