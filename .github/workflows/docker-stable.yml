@@ -1,6 +1,7 @@
 name: release
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - 'stable-**'
@@ -24,13 +25,20 @@ jobs:
 
     - name: Base Image (builder)
       run: |
-        docker build --tag ${ORG}/${IMAGE}-builder:${V} ./base/builder
+        docker pull ${ORG}/${IMAGE}-builder:latest
+        docker build \
+          --cache-from ${ORG}/${IMAGE}-builder:latest \
+          --tag ${ORG}/${IMAGE}-builder:${V} \
+          ./base/builder
 
     - name: Base Image (runner)
       run: |
+        docker pull ${ORG}/${IMAGE}-runner:latest
         docker build \
+          --cache-from ${ORG}/${IMAGE}-runner:latest \
+          --tag ${ORG}/${IMAGE}-runner:${V} \
           --build-arg base=${ORG}/${IMAGE}-builder:${V} \
-          --tag ${ORG}/${IMAGE}-runner:${V} ./base/runner
+          ./base/runner
 
     - name: DockerHub Push
       run: |
