@@ -1,10 +1,11 @@
-FROM opendatacube/geobase:builder
+ARG V_BASE=3.3.0
+FROM opendatacube/geobase-builder:${V_BASE}
 
 RUN apt-get update -y \
 && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
   # developer convenience
-  postgresql-client-10 \
-  postgresql-10 \
+  postgresql-client-12 \
+  postgresql-12 \
   less \
   wget \
   curl \
@@ -22,33 +23,25 @@ RUN apt-get update -y \
   && rm -rf /var/lib/apt/lists/*
 
 ARG py_env_path=/env
-ARG nb_user=ubuntu
-ARG nb_uid=1000
-ARG nb_gid=100
-
-RUN useradd -m -s /bin/bash -N -g $nb_gid -u $nb_uid $nb_user || true \
-&& adduser ${nb_user} sudo \
-&& echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+ENV nb_user=odc
 
 RUN install --owner "${nb_user}" -D -d /nb \
 &&  install --owner "${nb_user}" -D -d /src \
 &&  install --owner "${nb_user}" -D -d "${py_env_path}"
 
-RUN mkdir -p /conf \
-  && find /wheels -type f -name "*whl" > /conf/bins.txt
-
 # First process base requirements
-#   this will just download/build/re-use existing wheels
+#   this will just download/build
 #   /wheels/ should contain all the wheels needed to construct base environment
 COPY conf/requirements.txt /conf/
-RUN env-build-tool wheels /conf/requirements.txt
+COPY conf/constraints.txt /conf/
+RUN env-build-tool wheels /conf/requirements.txt /conf/constraints.txt /wheels
 
 # this will be used by integration tests
 COPY assets/datacube_integration.conf /conf/
 
 # install scripts
-COPY assets/with_bootstrap      /bin/
-COPY assets/build_env.sh        /bin/
+COPY assets/odc-entry-point  /bin/
+COPY assets/build_env.sh     /bin/
 
 # copy over further environment configs
 COPY conf/requirements-odc.txt      /conf/
@@ -83,6 +76,6 @@ ENV NB_PORT="${nb_port}"
 EXPOSE "${nb_port}"
 
 WORKDIR "${HOME}"
-ENTRYPOINT ["/bin/tini", "-s", "--", "with_bootstrap"]
+ENTRYPOINT ["/bin/tini", "-s", "--", "with_bootstrap", "odc-entry-point"]
 
 CMD ["bash"]

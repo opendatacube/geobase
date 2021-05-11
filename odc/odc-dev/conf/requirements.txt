@@ -1,10 +1,10 @@
 # s3/boto, let aiobotocore decide botocore/boto3/awscli versions
-aiobotocore[boto3,awscli]==0.11.0
-python-dateutil==2.8.0
-colorama==0.4.2
+aiobotocore[boto3,awscli]
+python-dateutil
+colorama
 
 # datacube[test]
-moto==1.3.14
+moto
 pylint==1.8.4
 compliance-checker
 hypothesis
@@ -56,8 +56,6 @@ Pillow
 dask[distributed]
 distributed
 xarray
-tensorflow
-tensorflow-gpu
 
 # Geo stack
 geopy
@@ -79,17 +77,17 @@ mapclassify
 urbanaccess
 
 # jupyter things
-jupyter==1.0.0
-jupyterlab==1.0.9
-jupyterhub==1.0.0
-ipyleaflet==0.11.1
-jupyter-server-proxy==1.1.0
-dask-labextension==1.0.3
-nbdime==1.1.0
-jupyterlab-code-formatter==0.5.0
-sidecar==0.3.0
-ipyevents==0.7.0
-ipycanvas==0.3.4
+jupyter
+jupyterlab
+jupyterhub
+ipyleaflet
+jupyter-server-proxy
+dask-labextension
+nbdime
+jupyterlab-code-formatter
+sidecar
+ipyevents
+ipycanvas
 jupyterlab-git
 jupyter-nbextensions-configurator
 jupyter-contrib-nbextensions
