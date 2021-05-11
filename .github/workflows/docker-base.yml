@@ -1,11 +1,7 @@
 name: build
 
-# Edit line below to force a rebuild (will still use cache though, unless base
-# image changed)
-#
-# Bump: 25-Feb-2021
-
 on:
+  workflow_dispatch:
   push:
     branches-ignore:
       - 'stable-**'
