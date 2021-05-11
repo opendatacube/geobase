@@ -45,7 +45,7 @@ export_cfg () {
     push_image="yes"  # not from PR
 
     im_extra=""       # only set on DEV_BRANCH (develop)
-    im_fallback=${ORG}/${IMAGE}:MMM  # MMM will be replaced with {builder,wheels,runner}
+    im_fallback=${ORG}/${IMAGE}-MMM:latest  # MMM will be replaced with {builder,runner}
 
     build_info="$(TZ=Australia/Sydney date -Im) $sha"
 
