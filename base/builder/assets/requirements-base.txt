@@ -8,3 +8,4 @@ setuptools
 setuptools_scm[toml]
 numpy
 cython
+pip-tools
