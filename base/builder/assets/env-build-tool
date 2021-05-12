@@ -46,6 +46,31 @@ get_nobinary_cmdline () {
     fi
 }
 
+# download wheels/sorces from requirements.txt and constraints
+#   wheels that are in /wheels will be copied through and not re-compiled
+cmd_download () {
+    local requirements="${1:-/conf/requirements.txt}"
+    local constraints="${2:-/conf/constraints.txt}"
+    local dst_wheels="${3:-/wheels}"
+
+    local pip="${ENV0}/bin/python -m pip"
+
+    if [[ $# < 3 ]]; then
+        shift $#
+    else
+        shift 3
+    fi
+
+    $pip download \
+         --constraint="${CC_GDAL}" \
+         --constraint="${constraints}" \
+         --requirement="${requirements}" \
+         --dest="${dst_wheels}" \
+         --no-build-isolation \
+         $(get_nobinary_cmdline) \
+         $@
+}
+
 # download/compile wheels from requirements.txt
 #   wheels that are in /wheels will be copied through and not re-compiled
 cmd_wheels () {
@@ -184,7 +209,7 @@ cmd_help () {
     echo 'env-build-tool <wheels|new|new_no_index|extend|help> ARGS
 
 Download or compile the required wheels into `wheel_dir`
-  > env-build-tool wheels <requirements.txt> <constraints.txt> <wheel_dir:/wheels> <other-args-for-pip>
+  > env-build-tool download|wheels <requirements.txt> <constraints.txt> <wheel_dir:/wheels> <other-args-for-pip>
 
 Make a new python environment from the requirements and constraints
   > env-build-tool new <requirements.txt> <constraints.txt> <env:/env> <other-args-for-pip>
@@ -209,7 +234,7 @@ cmd_main () {
    shift || true # Always succeed, so that we display help text on no args
 
    case "${cmd}" in
-       wheels|new|extend|pkg-recompile|new_no_index|list-manylinux-wheels|help)
+       wheels|download|new|extend|pkg-recompile|new_no_index|list-manylinux-wheels|help)
            "cmd_${cmd}" $@
            ;;
        *)
