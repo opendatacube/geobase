@@ -137,6 +137,7 @@ ENTRYPOINT ["/bin/tini", "-s", "--", "/usr/local/bin/with_bootstrap"]
 COPY assets/requirements-base.txt /conf/requirements-base.txt
 COPY assets/nobinary.txt /conf/nobinary.txt
 COPY assets/env-build-tool /usr/local/bin/env-build-tool
+COPY assets/compile-wheels.mk /opt/
 RUN echo "GDAL==$(gdal-config --version)" > /opt/constraints-gdal.txt \
     && mkdir -p /wk \
     && env-build-tool new /conf/requirements-base.txt /dev/null /opt/env0 \
