@@ -62,6 +62,8 @@ RUN apt-get update -y \
     libudunits2-dev \
     libgeos-dev \
     libgeos++-dev \
+    pybind11-dev \
+    libeigen3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # dev conveniences
