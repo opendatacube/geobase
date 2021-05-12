@@ -21,20 +21,24 @@ uncomment () {
     print $0}'
 }
 
+# if BINARY_ONLY=yes print nothing
 #
-# 1. NOBINARY pointing to a file
-# 2. NOBINARY with embedded content
-# 3. /conf/nobinary.txt
+# - /conf/nobinary.txt (if exists)
+# - $NOBINARY pointing to a file
+# - $NOBINARY with embedded content
 get_nobinary () {
-    if [ -n "${NOBINARY:-}" ]; then
-        if [ -f "${NOBINARY}" ]; then
-            uncomment < "${NOBINARY}"
+    local nobin="${NOBINARY:-}"
+    if [ "${BINARY_ONLY:-}" = "yes" ]; then
+        return 0
+    fi
+
+    [[ ! -e /conf/nobinary.txt ]] || uncomment < /conf/nobinary.txt
+
+    if [ -n "${nobin}" ]; then
+        if [ -f "${nobin}" ]; then
+            uncomment < "${nobin}"
         else
-            echo "${NOBINARY}" | uncomment
-        fi
-    else
-        if [ -f /conf/nobinary.txt ]; then
-            uncomment < /conf/nobinary.txt
+            echo "${nobin}" | uncomment
         fi
     fi
 }
@@ -153,7 +157,7 @@ cmd_new_no_index () {
         shift 4
     fi
 
-    NOBINARY=/dev/null cmd_new $requirements $constraints $env --find-links="${wheels}" --no-index
+    BINARY_ONLY=yes cmd_new $requirements $constraints $env --find-links="${wheels}" --no-index
 }
 
 
