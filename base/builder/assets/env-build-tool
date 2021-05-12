@@ -7,6 +7,7 @@ set -o nounset
 
 CC_GDAL=/opt/constraints-gdal.txt
 ENV0=/opt/env0
+MK=/opt/compile-wheels.mk
 
 env_bootstrap_libs="pip setuptools wheel"
 
@@ -47,11 +48,10 @@ get_nobinary_cmdline () {
 }
 
 # download wheels/sorces from requirements.txt and constraints
-#   wheels that are in /wheels will be copied through and not re-compiled
 cmd_download () {
     local requirements="${1:-/conf/requirements.txt}"
     local constraints="${2:-/conf/constraints.txt}"
-    local dst_wheels="${3:-/wheels}"
+    local dst_wheels="${3:-./}"
 
     local pip="${ENV0}/bin/python -m pip"
 
@@ -71,14 +71,22 @@ cmd_download () {
          $@
 }
 
-# download/compile wheels from requirements.txt
-#   wheels that are in /wheels will be copied through and not re-compiled
+# compile source files in a directory
+cmd_compile () {
+   local wheels="${1:-/.}"
+   if [[ $# > 0 ]]; then
+       shift 1
+   fi
+
+   make -f "${MK}" -C ${wheels} extra="$@" -j$(nproc)
+}
+
+# 1. download wheels/sources from requirements.txt
+# 2. compile source distributions into wheels
 cmd_wheels () {
     local requirements="${1:-/conf/requirements.txt}"
     local constraints="${2:-/conf/constraints.txt}"
-    local dst_wheels="${3:-/wheels}"
-
-    local pip="${ENV0}/bin/python -m pip"
+    local dst_wheels="${3:-./}"
 
     if [[ $# < 3 ]]; then
         shift $#
@@ -86,22 +94,10 @@ cmd_wheels () {
         shift 3
     fi
 
-    $pip wheel \
-        --constraint="${CC_GDAL}" \
-        --constraint="${constraints}" \
-        --requirement="${requirements}" \
-        --wheel-dir="${dst_wheels}" \
-        $@
-
-    local nobinary_libs=$(get_nobinary)
-    if [ -n "${nobinary_libs}" ]; then
-        echo "Recompiling a set of libs locally"
-        for wheel in $(cmd_list-manylinux-wheels "${dst_wheels}" ${nobinary_libs}); do
-            echo "Processing: $wheel"
-            cmd_pkg-recompile $wheel ${dst_wheels} $@
-            mv "${wheel}" "${wheel}.bk"
-        done
-    fi
+    echo "Downloading wheels/sources"
+    cmd_download "${requirements}" "${constraints}" "${dst_wheels}" $@
+    echo "Compiling sources on $(nproc) core[s]"
+    cmd_compile ${dst_wheels} $@
 }
 
 # Given path to manylinux wheel build local lib instead
@@ -131,11 +127,15 @@ cmd_pkg-recompile () {
 }
 
 cmd_list-manylinux-wheels() {
-    local wheels="${1}"
+    local wheels="${1:-./}"
     shift
-    for lib in $@; do
-        find "${wheels}" -iname "${lib}-"'*manylinux*.whl'
-    done
+    if [[ $# < 1 ]]; then
+        find "${wheels}" -iname "*-"'*manylinux*.whl'
+    else
+        for lib in $@; do
+            find "${wheels}" -iname "${lib}-"'*manylinux*.whl'
+        done
+    fi
 }
 
 
@@ -145,7 +145,7 @@ cmd_new_no_index () {
     local requirements="${1:-/conf/requirements.txt}"
     local constraints="${2:-/conf/constraints.txt}"
     local env="${3:-/env}"
-    local wheels="${4:-/wheels}"
+    local wheels="${4:-./}"
 
     if [[ $# < 4 ]]; then
         shift $#
@@ -209,7 +209,10 @@ cmd_help () {
     echo 'env-build-tool <wheels|new|new_no_index|extend|help> ARGS
 
 Download or compile the required wheels into `wheel_dir`
-  > env-build-tool download|wheels <requirements.txt> <constraints.txt> <wheel_dir:/wheels> <other-args-for-pip>
+  > env-build-tool download|wheels <requirements.txt> <constraints.txt> <wheel_dir:./> <other-args-for-pip>
+
+Compile source distributions in a directory
+  > env-build-tool compile <wheel_dir:./>
 
 Make a new python environment from the requirements and constraints
   > env-build-tool new <requirements.txt> <constraints.txt> <env:/env> <other-args-for-pip>
@@ -218,7 +221,7 @@ Extend existing python environment using requirements and constraints
   > env-build-tool extend <requirements.txt> <constraints.txt> <env:/env> <other-args-for-pip>
 
 Make a new python environment from the requirements and wheels_dir (No Downloads)
-  > env-build-tool new_no_index <requirements.txt> <constraints.txt> <env:/env> <wheel_dir:/wheels> <other-args-for-pip>
+  > env-build-tool new_no_index <requirements.txt> <constraints.txt> <env:/env> <wheel_dir:./> <other-args-for-pip>
 
 Recompile manylinux wheel
   > env-build-tool pkg-recompile <path-to-wheel-file> [<dst_dir>] <other-args-for-pip>
@@ -234,7 +237,7 @@ cmd_main () {
    shift || true # Always succeed, so that we display help text on no args
 
    case "${cmd}" in
-       wheels|download|new|extend|pkg-recompile|new_no_index|list-manylinux-wheels|help)
+       wheels|download|compile|new|extend|pkg-recompile|new_no_index|list-manylinux-wheels|help)
            "cmd_${cmd}" $@
            ;;
        *)
