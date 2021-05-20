@@ -8,6 +8,7 @@ set -o nounset
 CC_GDAL=/opt/constraints-gdal.txt
 ENV0=/opt/env0
 MK=/opt/compile-wheels.mk
+_NOBINARY_GEO=/conf/nobinary-geo.txt
 
 env_bootstrap_libs="pip setuptools wheel"
 
@@ -32,7 +33,7 @@ get_nobinary () {
         return 0
     fi
 
-    [[ ! -e /conf/nobinary.txt ]] || uncomment < /conf/nobinary.txt
+    [[ ! -e "${_NOBINARY_GEO}" ]] || uncomment < "${_NOBINARY_GEO}"
 
     if [ -n "${nobin}" ]; then
         if [ -f "${nobin}" ]; then
