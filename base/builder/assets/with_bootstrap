@@ -35,10 +35,6 @@ case "${1:-help}" in
     wheels|download|compile|new|extend|pkg-recompile|new_no_index|list-manylinux-wheels|help)
         exec env-build-tool $@
         ;;
-    python|python3)
-        source /opt/env0/bin/activate
-        exec "$@"
-        ;;
     *)
         exec "$@"
         ;;
