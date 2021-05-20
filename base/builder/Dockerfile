@@ -137,7 +137,7 @@ ENTRYPOINT ["/bin/tini", "-s", "--", "/usr/local/bin/with_bootstrap"]
 
 # Python env building utilities
 COPY assets/requirements-base.txt /conf/requirements-base.txt
-COPY assets/nobinary.txt /conf/nobinary.txt
+COPY assets/nobinary-geo.txt /conf/nobinary-geo.txt
 COPY assets/env-build-tool /usr/local/bin/env-build-tool
 COPY assets/compile-wheels.mk /opt/
 RUN echo "GDAL==$(gdal-config --version)" > /opt/constraints-gdal.txt \

@@ -1,6 +1,6 @@
 # Packages that should be compiled locally by default
-# /conf/nobinary.txt
-# User can override with NOBINARY environment variable
+# /conf/nobinary-geo.txt
+# User can add extra file/libs with NOBINARY environment variable
 
 # these all use PROJ,GEOS,GDAL or dependencies of GDAL
 rasterio
