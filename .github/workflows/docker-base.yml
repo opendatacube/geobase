@@ -111,6 +111,20 @@ jobs:
         docker push ${im_extra/MMM/builder}
         docker push ${im_extra/MMM/runner}
 
+    - name: Check that sample builds
+      run: |
+        docker tag ${im_builder} opendatacube/geobase-builder:local
+        docker tag ${im_runner} opendatacube/geobase-runner:local
+        cd sample
+        docker build --build-arg V_BASE=local -t sample-test .
+
+        docker run --rm sample-test \
+          rio --aws-no-sign-requests info --indent 2 \
+          's3://landsat-pds/c1/L8/106/070/LC08_L1TP_106070_20180417_20180501_01_T1/LC08_L1TP_106070_20180417_20180501_01_T1_B1.TIF'
+
+        docker run --rm sample-test python -m pyproj -v
+
+
     - name: Run vulnerability scanner (builder)
       uses: aquasecurity/trivy-action@0.0.6
       continue-on-error: true
