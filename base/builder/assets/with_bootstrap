@@ -9,9 +9,19 @@
     target_gid=$(stat -c '%g' .)
 
     [[ $target_uid -eq 0 ]] || {
-        groupmod --gid "${target_gid}" odc
-        usermod --gid "${target_gid}" --uid "${target_uid}" odc
-        chown -R odc:odc /home/odc/
+
+        # unless gid already matches update gid
+        [[ $(id -g odc) -eq ${target_gid} ]] || {
+            groupmod --gid ${target_gid} odc
+            usermod --gid ${target_gid} odc
+        }
+
+        # unless uid already matches: change it and update HOME
+        [[ $(id -u odc) -eq ${target_uid} ]] || {
+            usermod --uid ${target_uid} odc
+            chown -R odc:odc /home/odc/
+        }
+
         exec sudo -u odc -E -H bash "$0" "$@"
     }
 }
@@ -24,10 +34,6 @@ export PIP_CACHE_DIR=/wk/.cache/pip
 case "${1:-help}" in
     wheels|download|compile|new|extend|pkg-recompile|new_no_index|list-manylinux-wheels|help)
         exec env-build-tool $@
-        ;;
-    python|python3)
-        source /opt/env0/bin/activate
-        exec "$@"
         ;;
     *)
         exec "$@"

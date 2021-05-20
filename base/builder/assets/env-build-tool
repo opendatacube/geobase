@@ -6,8 +6,8 @@ set -o pipefail
 set -o nounset
 
 CC_GDAL=/opt/constraints-gdal.txt
-ENV0=/opt/env0
 MK=/opt/compile-wheels.mk
+_NOBINARY_GEO=/conf/nobinary-geo.txt
 
 env_bootstrap_libs="pip setuptools wheel"
 
@@ -32,7 +32,7 @@ get_nobinary () {
         return 0
     fi
 
-    [[ ! -e /conf/nobinary.txt ]] || uncomment < /conf/nobinary.txt
+    [[ ! -e "${_NOBINARY_GEO}" ]] || uncomment < "${_NOBINARY_GEO}"
 
     if [ -n "${nobin}" ]; then
         if [ -f "${nobin}" ]; then
@@ -57,7 +57,7 @@ cmd_download () {
     local constraints="${2:-/conf/constraints.txt}"
     local dst_wheels="${3:-./}"
 
-    local pip="${ENV0}/bin/python -m pip"
+    local pip="/bin/python3 -m pip"
 
     if [[ $# < 3 ]]; then
         shift $#
@@ -110,7 +110,7 @@ cmd_wheels () {
 cmd_pkg-recompile () {
     local src="$1"
     local dst="${2:-$(dirname $src)}"
-    local pip="${ENV0}/bin/python -m pip"
+    local pip="/bin/python3 -m pip"
 
     if [[ $# < 2 ]]; then
         shift $#
