@@ -2,7 +2,7 @@
 # - Finds any source distribution files in current directory
 # - Compiles each one into a wheel
 # - Generates `.done` file containing name of the wheel that was built
-pip ?= /opt/env0/bin/python -m pip
+pip ?= /bin/python3 -m pip
 srcs := $(wildcard *.zip *.tar.gz *.tar *.tar.Z *.tar.xz *.tar.bz2 *.tgz *.tbz)
 out := $(patsubst %, %.done, $(srcs))
 extra ?=
