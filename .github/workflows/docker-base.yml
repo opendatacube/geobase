@@ -24,6 +24,7 @@ env:
   ORG: opendatacube
   IMAGE: geobase
   IMAGE_DEV: geobase-dev
+  DOCKER_BUILDKIT: 1
 
 
 jobs:
