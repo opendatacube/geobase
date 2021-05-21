@@ -178,7 +178,6 @@ osmnet==0.1.6
 OWSLib==0.23.0
 packaging==20.9
 pamela==1.0.0
-pandana==0.6.1
 pandas==1.2.4
 pandocfilters==1.4.3
 panel==0.11.3
