@@ -1,6 +1,6 @@
 #syntax=docker/dockerfile:1.2
 ARG py_env_path=/env
-ARG V_BASE=3.3.0
+ARG V_BASE=latest
 
 # Basically env_builder stage should not need to change from service to service
 #   only change content of requirement.txt
@@ -31,6 +31,7 @@ RUN apt-get update -y \
   less \
   vim \
   git \
+  tmux \
   && rm -rf /var/lib/apt/lists/*
 
 COPY with_bootstrap /bin/
@@ -43,10 +44,8 @@ RUN install -d -o odc -g users ${py_env_path}
 
 # Copy python env, tini
 COPY --from=env_builder /bin/tini /bin/tini
-COPY --from=env_builder /opt/constraints-gdal.txt /opt/
-RUN --mount=type=bind,from=env_builder,target=/b,rw \
-   find /b/wheels \
-    && /b/usr/local/bin/env-build-tool new_no_index /b/conf/requirements.txt /b/conf/constraints.txt ${py_env_path} /b/wheels
+RUN --mount=type=bind,from=env_builder,target=/b \
+    env-build-tool new_no_index /b/conf/requirements.txt /b/conf/constraints.txt ${py_env_path} /b/wheels
 
 USER odc
 
