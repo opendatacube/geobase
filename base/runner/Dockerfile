@@ -1,3 +1,4 @@
+#syntax=docker/dockerfile:1.2
 ARG base=opendatacube/geobase-builder
 FROM ${base} as builder
 
@@ -51,17 +52,16 @@ RUN apt-get update -y \
   libfreetype6 \
   && rm -rf /var/lib/apt/lists/*
 
-# TODO: we don't really need .deb files polluting this docker image, but alternatives are annoying to use
-#  A. Run http server that would serve *deb packages and fetch from there
-#  B. Copy installed files instead of .deb (need to know which ones)
-#  C. Use experimental docker features: `RUN --mount=type=cache,ro,from=builder,source=/opt,target=/opt ...`
-COPY --from=builder /opt/*deb /opt/
-RUN echo "Installing geo libs" \
-  && dpkg -i /opt/libkea*deb \
-  && dpkg -i /opt/liblerc*deb \
-  && dpkg -i /opt/libproj*deb \
-  && dpkg -i /opt/libgdal*deb \
+RUN --mount=type=bind,from=builder,target=/b \
+  echo "Installing geo libs" \
+  && dpkg -i /b/opt/libkea*deb \
+  && dpkg -i /b/opt/liblerc*deb \
+  && dpkg -i /b/opt/libproj*deb \
+  && dpkg -i /b/opt/libgdal*deb \
   && ldconfig \
+  && cp /b/opt/constraints-gdal.txt /opt/ \
+  && cp /b/opt/compile-wheels.mk /opt/ \
+  && cp /b/usr/local/bin/env-build-tool /usr/local/bin/env-build-tool \
   && echo "Done"
 
 RUN echo "Run smoke test" \

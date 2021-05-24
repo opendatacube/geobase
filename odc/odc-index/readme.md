@@ -13,7 +13,7 @@ This one has:
 ## Build
 
 ```
-docker build -t odc-index
+make dkr
 ```
 
 ## Run
@@ -30,5 +30,6 @@ docker run --rm -ti \
 ## Customizing
 
 1. Edit `requirements.txt` to add/remove packages you need
-2. Edit `Dockerfile` to add/remove extra packages
-2. Optionally edit `with_bootstrap` if you need to do extra steps
+2. Edit `constraints.txt`
+3. Edit `Dockerfile` to add/remove extra packages
+4. Optionally edit `with_bootstrap` if you need to do extra steps

@@ -7,8 +7,8 @@ crypto
 libz=internal
 liblzma
 zstd
-libtiff
-geotiff
+libtiff=internal
+geotiff=internal
 jpeg
 png
 gif

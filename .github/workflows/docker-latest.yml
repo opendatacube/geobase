@@ -2,6 +2,7 @@ name: docker-latest
 on: [workflow_dispatch]
 
 env:
+  DOCKER_BUILDKIT: 1
   BUILDER_IMAGE: opendatacube/geobase-builder:latest
   RUNNER_IMAGE: opendatacube/geobase-runner:latest
 

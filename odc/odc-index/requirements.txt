@@ -2,6 +2,6 @@
 datacube[performance,distributed]
 odc-apps-cloud[GCP,THREDDS]
 odc-apps-dc-tools
-git+https://github.com/opendatacube/datacube-ows.git
+datacube-ows
 
 aiobotocore[boto3,awscli]

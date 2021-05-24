@@ -11,6 +11,7 @@ on:
       - '.github/workflows/docker-stable.yml'
 
 env:
+  DOCKER_BUILDKIT: 1
   ORG: opendatacube
   IMAGE: geobase
   V: 3.3.0

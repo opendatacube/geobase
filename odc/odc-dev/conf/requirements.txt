@@ -70,7 +70,6 @@ pyproj
 h5py
 netcdf4
 rtree
-pandana
 pysal
 pyepsg
 mapclassify
