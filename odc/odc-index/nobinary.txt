@@ -1,0 +1,6 @@
+# List any python modules you want to force local compilation for here
+# comments and empty lines will be stripped
+
+# just for testing compile zmq and tornado instead of using binary wheels
+tornado
+zmq
