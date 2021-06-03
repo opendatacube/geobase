@@ -15,11 +15,14 @@ jobs:
 
     - name: Base Image (builder)
       run: |
-        docker build --tag ${BUILDER_IMAGE} ./base/builder
+        docker build \
+               --build-arg BUILDKIT_INLINE_CACHE=1 \
+               --tag ${BUILDER_IMAGE} ./base/builder
 
     - name: Base Image (runner)
       run: |
         docker build \
+          --build-arg BUILDKIT_INLINE_CACHE=1 \
           --build-arg base=${BUILDER_IMAGE} \
           --tag ${RUNNER_IMAGE} ./base/runner
 
