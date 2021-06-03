@@ -28,7 +28,7 @@ COPY requirements.txt constraints.txt nobinary.txt /conf/
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=cache,target=/var/cache/wheels \
     mkdir /wheels \
-    && NOBINARY=/conf/nobinary.txt env-build-tool wheels /conf/requirements.txt /conf/constraints.txt /var/cache/wheels \
+    && env-build-tool wheels /conf/requirements.txt /conf/constraints.txt /var/cache/wheels \
     && python3 -m pip wheel \
     -r /conf/requirements.txt \
     --find-links /var/cache/wheels \
