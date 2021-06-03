@@ -7,7 +7,6 @@ set -o nounset
 
 CC_GDAL=/opt/constraints-gdal.txt
 MK=/opt/compile-wheels.mk
-_NOBINARY_GEO=/conf/nobinary-geo.txt
 
 env_bootstrap_libs="pip setuptools wheel"
 
@@ -23,24 +22,30 @@ uncomment () {
 
 # if BINARY_ONLY=yes print nothing
 #
-# - /conf/nobinary.txt (if exists)
+# - /conf/nobinary*.txt files
 # - $NOBINARY pointing to a file
 # - $NOBINARY with embedded content
 get_nobinary () {
+    local dir=${1:-/conf}
     local nobin="${NOBINARY:-}"
     if [ "${BINARY_ONLY:-}" = "yes" ]; then
         return 0
     fi
 
-    [[ ! -e "${_NOBINARY_GEO}" ]] || uncomment < "${_NOBINARY_GEO}"
-
-    if [ -n "${nobin}" ]; then
-        if [ -f "${nobin}" ]; then
-            uncomment < "${nobin}"
-        else
-            echo "${nobin}" | uncomment
+    (
+        if [[ -d $dir ]]; then
+            for f in $(find $dir -maxdepth 1 -name "nobinary*txt"); do
+                cat $f
+            done
         fi
-    fi
+        if [ -n "${nobin}" ]; then
+            if [ -f "${nobin}" ]; then
+                cat "${nobin}"
+            else
+                echo "${nobin}"
+            fi
+        fi
+    )| uncomment | sort | uniq
 }
 
 # construct and print --no-binary=lib,lib2, option, or "" if not set
