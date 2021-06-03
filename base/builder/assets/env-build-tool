@@ -15,10 +15,10 @@ env_bootstrap_libs="pip setuptools wheel"
 uncomment () {
     awk '!/^[[:blank:]]*#/ && \
          !/^[[:blank:]]*$/\
-    {gsub(/^[[:blank:]]*/, ""); \
-    gsub(/[[:blank:]]*$/, "");\
-    gsub(/#.*$/, "");\
-    print $0}'
+    {gsub(/#.*$/, "");\
+     gsub(/^[[:blank:]]*/, "");\
+     gsub(/[[:blank:]]*$/, "");\
+     print $0}'
 }
 
 # if BINARY_ONLY=yes print nothing
