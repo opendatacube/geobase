@@ -92,7 +92,7 @@ You need to supply 3 files
   rather than using `manylinux` wheels from pypi. Note that common geospatial
   libraries will be compiled to ensure consistent C library usage across those
   packages regardless of the content of your `nobinary.txt` file. For a full
-  list see `/conf/nobinary.txt` inside the docker.
+  list see `/conf/nobinary-geo.txt` inside the docker.
 
 Put all three files in one folder. Then you can run something like the script
 below to generate wheels and build python environment from that. Wheels and
@@ -111,7 +111,6 @@ dkr() {
   docker run --rm -ti \
     -v "${CODE}":/code \
     -v $(pwd):/wk \
-    -e NOBINARY=/wk/nobinary.txt \
     ${img} \
     $@
 }
