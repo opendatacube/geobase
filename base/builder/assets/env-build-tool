@@ -249,6 +249,13 @@ cmd_main () {
        wheels|download|compile|new|extend|pkg-recompile|new_no_index|list-manylinux-wheels|help)
            "cmd_${cmd}" $@
            ;;
+       dbg)
+           shift
+           $@
+           ;;
+       uncomment)
+           uncomment
+           ;;
        *)
            echo "ERROR: No such command \"${cmd}\""
            echo
