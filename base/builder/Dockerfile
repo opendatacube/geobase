@@ -64,11 +64,19 @@ RUN apt-get update -y \
     libgeos++-dev \
     pybind11-dev \
     libeigen3-dev \
+    #rsgislib deps
+    libcgal-dev \
+    libgsl-dev \
+    libmuparser-dev \
+    libxerces-c-dev \
+    libboost-filesystem-dev \
+    libboost-date-time-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # dev conveniences
 RUN apt-get update -y \
     && apt-get install -y --fix-missing --no-install-recommends \
+    patchelf \
     htop \
     tmux \
     sudo \
