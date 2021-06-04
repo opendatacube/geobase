@@ -28,6 +28,7 @@ jobs:
       run: |
         docker pull ${ORG}/${IMAGE}-builder:latest
         docker build \
+          --build-arg BUILDKIT_INLINE_CACHE=1 \
           --cache-from ${ORG}/${IMAGE}-builder:latest \
           --tag ${ORG}/${IMAGE}-builder:${V} \
           ./base/builder
@@ -36,6 +37,7 @@ jobs:
       run: |
         docker pull ${ORG}/${IMAGE}-runner:latest
         docker build \
+          --build-arg BUILDKIT_INLINE_CACHE=1 \
           --cache-from ${ORG}/${IMAGE}-runner:latest \
           --tag ${ORG}/${IMAGE}-runner:${V} \
           --build-arg base=${ORG}/${IMAGE}-builder:${V} \

@@ -73,6 +73,7 @@ jobs:
     - name: Base Image (builder)
       run: |
         docker build \
+              --build-arg BUILDKIT_INLINE_CACHE=1 \
               --cache-from ${im_builder} \
               --tag        ${im_builder} \
               ./base/builder
@@ -93,6 +94,7 @@ jobs:
     - name: Base Image (runner)
       run: |
         docker build \
+              --build-arg BUILDKIT_INLINE_CACHE=1 \
               --build-arg base=${im_builder} \
               --cache-from ${im_runner} \
               --tag        ${im_runner} \

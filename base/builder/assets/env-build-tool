@@ -103,8 +103,17 @@ cmd_wheels () {
         shift 3
     fi
 
+    echo "Download base packages"
+    python3 -m pip download \
+            --no-build-isolation \
+            --dest=${dst_wheels} \
+            --constraint="${constraints}" \
+            ${env_bootstrap_libs} \
+            $@
+
     echo "Downloading wheels/sources"
     cmd_download "${requirements}" "${constraints}" "${dst_wheels}" $@
+
     echo "Compiling sources on $(nproc) core[s]"
     cmd_compile ${dst_wheels} $@
 }
@@ -183,7 +192,7 @@ cmd_new () {
     python3 -m venv "${env}"
     local pip="${env}/bin/python -m pip"
 
-    $pip install --upgrade $env_bootstrap_libs
+    $pip install --upgrade $env_bootstrap_libs $@
 
     $pip install \
         --constraint="${CC_GDAL}" \
