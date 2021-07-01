@@ -1,11 +1,12 @@
 name: Runner Scan
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'
 
 env:
-  RUNNER_IMAGE_NAME: opendatacube/geobase:runner
+  RUNNER_IMAGE_NAME: opendatacube/geobase-runner:latest
 jobs:
   runner-cve-scanner:
     runs-on: ubuntu-latest

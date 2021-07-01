@@ -1,11 +1,12 @@
 name: Builder Scan
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'
 
 env:
-  BUILDER_IMAGE_NAME: opendatacube/geobase:builder
+  BUILDER_IMAGE_NAME: opendatacube/geobase-builder:latest
 jobs:
   builder-cve-scanner:
     runs-on: ubuntu-latest
