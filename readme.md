@@ -1,3 +1,9 @@
+# DEPRECATION NOTICE - 2022-02-08
+
+The geobase image is being deprecated and is no longer maintained. Whilst is has been useful to provide a consistent geospatial library build there are now other sources which are more actively maintained that are suitable.
+As an example of the changes necessary to utilise an alternate base image (e.g. `osgeo/gdal`) please see datacube-docker#59
+
+
 opendatacube/geobase
 ====================
 
